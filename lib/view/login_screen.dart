@@ -2,7 +2,6 @@ import 'package:ciilaabokk/controller/auth_controller.dart';
 import 'package:ciilaabokk/view/signup_screen.dart';
 import 'package:flutter/material.dart';
 
-import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
 class LoginScreen extends StatelessWidget {
