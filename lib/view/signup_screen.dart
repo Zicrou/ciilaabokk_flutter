@@ -21,7 +21,7 @@ class SignupScreen extends StatelessWidget {
                 style: TextStyle(
                   fontSize: 32,
                   fontWeight: FontWeight.bold,
-                  color: Color(0xFF493AD5),
+                  color: Color.fromARGB(255, 0, 173, 253),
                 ),
                 textAlign: TextAlign.center,
               ),
@@ -30,9 +30,14 @@ class SignupScreen extends StatelessWidget {
                 () => TextField(
                   controller: authController.phoneNumberController,
                   decoration: InputDecoration(
-                    prefixIcon: Icon(Icons.email, color: Color(0xFF493aD5)),
+                    prefixIcon: Icon(
+                      Icons.email,
+                      color: Color.fromARGB(255, 0, 173, 253),
+                    ),
                     labelText: "Numéro de téléphone",
-                    labelStyle: TextStyle(color: Color(0xFF493AD5)),
+                    labelStyle: TextStyle(
+                      color: Color.fromARGB(255, 0, 173, 253),
+                    ),
                     errorText: authController.isPhoneNumberValid.value
                         ? null
                         : "Numéro de téléphone invalide",
@@ -55,12 +60,17 @@ class SignupScreen extends StatelessWidget {
                 () => TextField(
                   controller: authController.passwordController,
                   decoration: InputDecoration(
-                    prefixIcon: Icon(Icons.lock, color: Color(0xFF493aD5)),
+                    prefixIcon: Icon(
+                      Icons.lock,
+                      color: Color.fromARGB(255, 0, 173, 253),
+                    ),
                     labelText: "Mot de passe",
-                    labelStyle: TextStyle(color: Color(0xFF493AD5)),
+                    labelStyle: TextStyle(
+                      color: Color.fromARGB(255, 0, 173, 253),
+                    ),
                     errorText: authController.isPasswordValid.value
                         ? null
-                        : "mot de passe invalide",
+                        : "Mot de passe invalide",
                     filled: true,
                     fillColor: Colors.white,
                     border: OutlineInputBorder(
@@ -80,12 +90,17 @@ class SignupScreen extends StatelessWidget {
                 () => TextField(
                   controller: authController.confirmPasswordController,
                   decoration: InputDecoration(
-                    prefixIcon: Icon(Icons.lock, color: Color(0xFF493aD5)),
+                    prefixIcon: Icon(
+                      Icons.lock,
+                      color: Color.fromARGB(255, 0, 173, 253),
+                    ),
                     labelText: "Confirm Password",
-                    labelStyle: TextStyle(color: Color(0xFF493AD5)),
+                    labelStyle: TextStyle(
+                      color: Color.fromARGB(255, 0, 173, 253),
+                    ),
                     errorText: authController.isConfirmPasswordValid.value
                         ? null
-                        : "Password do not match",
+                        : "Mot de passe de confirmation ne correspond pas",
                     filled: true,
                     fillColor: Colors.white,
                     border: OutlineInputBorder(
@@ -105,7 +120,7 @@ class SignupScreen extends StatelessWidget {
                 onPressed: () => authController.signup(),
                 child: Text("Sign Up", style: TextStyle(fontSize: 18)),
                 style: ElevatedButton.styleFrom(
-                  backgroundColor: Color(0xFF493AD5),
+                  backgroundColor: Color.fromARGB(255, 0, 173, 253),
                   foregroundColor: Colors.white,
                   padding: EdgeInsets.symmetric(vertical: 16),
                   shape: RoundedRectangleBorder(
@@ -118,7 +133,10 @@ class SignupScreen extends StatelessWidget {
                 onPressed: () => Get.to(LoginScreen()),
                 child: Text(
                   "Already have an account ? Sign In",
-                  style: TextStyle(color: Color(0xFF493AD5), fontSize: 16),
+                  style: TextStyle(
+                    color: Color.fromARGB(255, 0, 173, 253),
+                    fontSize: 16,
+                  ),
                 ),
               ),
             ],
