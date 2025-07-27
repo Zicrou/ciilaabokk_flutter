@@ -1,4 +1,5 @@
-import 'package:ciilaabokk/view/login_screen.dart';
+import 'package:ciilaabokk/app/initial_bindings.dart';
+import 'package:ciilaabokk/app/modules/auths/login/login_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
@@ -15,6 +16,7 @@ class MyApp extends StatelessWidget {
     return GetMaterialApp(
       debugShowCheckedModeBanner: false,
       title: 'Getx Auth',
+      initialBinding: AppInitialBindings(),
       theme: ThemeData(
         primaryColor: Color(0xFF493AD5),
         scaffoldBackgroundColor: Color(0xFFF5F5F5),

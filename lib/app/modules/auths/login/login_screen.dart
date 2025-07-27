@@ -1,12 +1,11 @@
+import 'package:ciilaabokk/app/modules/auths/login/login_controller.dart';
 import 'package:ciilaabokk/controller/auth_controller.dart';
 import 'package:ciilaabokk/view/signup_screen.dart';
 import 'package:flutter/material.dart';
 
 import 'package:get/get.dart';
 
-class LoginScreen extends StatelessWidget {
-  final AuthController authController = Get.put(AuthController());
-
+class LoginScreen extends GetView<LoginController> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -29,7 +28,7 @@ class LoginScreen extends StatelessWidget {
               SizedBox(height: 30),
               Obx(
                 () => TextField(
-                  controller: authController.phoneNumberController,
+                  controller: controller.phoneNumberController,
                   decoration: InputDecoration(
                     prefixIcon: Icon(
                       Icons.email,
@@ -39,7 +38,7 @@ class LoginScreen extends StatelessWidget {
                     labelStyle: TextStyle(
                       color: Color.fromARGB(255, 0, 173, 253),
                     ),
-                    errorText: authController.isPhoneNumberValid.value
+                    errorText: controller.isPhoneNumberValid.value
                         ? null
                         : "Numéro de téléphone invalide",
                     filled: true,
@@ -53,13 +52,13 @@ class LoginScreen extends StatelessWidget {
                       borderSide: BorderSide.none,
                     ),
                   ),
-                  keyboardType: TextInputType.emailAddress,
+                  keyboardType: TextInputType.phone,
                 ),
               ),
               SizedBox(height: 20),
               Obx(
                 () => TextField(
-                  controller: authController.passwordController,
+                  controller: controller.passwordController,
                   decoration: InputDecoration(
                     prefixIcon: Icon(
                       Icons.lock,
@@ -69,7 +68,7 @@ class LoginScreen extends StatelessWidget {
                     labelStyle: TextStyle(
                       color: Color.fromARGB(255, 0, 173, 253),
                     ),
-                    errorText: authController.isPasswordValid.value
+                    errorText: controller.isPasswordValid.value
                         ? null
                         : "Mot de passe invalide",
                     filled: true,
@@ -88,7 +87,7 @@ class LoginScreen extends StatelessWidget {
               ),
               SizedBox(height: 20),
               ElevatedButton(
-                onPressed: () => authController.login(),
+                onPressed: () => controller.login(),
                 child: Text("Se connecter", style: TextStyle(fontSize: 18)),
                 style: ElevatedButton.styleFrom(
                   backgroundColor: Color.fromARGB(255, 0, 173, 253),
