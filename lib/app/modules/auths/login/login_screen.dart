@@ -1,11 +1,11 @@
-import 'package:ciilaabokk/app/modules/auths/login/login_controller.dart';
 import 'package:ciilaabokk/controller/auth_controller.dart';
 import 'package:ciilaabokk/view/signup_screen.dart';
 import 'package:flutter/material.dart';
 
 import 'package:get/get.dart';
 
-class LoginScreen extends GetView<LoginController> {
+class LoginScreen extends StatelessWidget {
+  AuthController authController = AuthController();
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -28,7 +28,7 @@ class LoginScreen extends GetView<LoginController> {
               SizedBox(height: 30),
               Obx(
                 () => TextField(
-                  controller: controller.phoneNumberController,
+                  controller: authController.phoneNumberController,
                   decoration: InputDecoration(
                     prefixIcon: Icon(
                       Icons.email,
@@ -38,7 +38,7 @@ class LoginScreen extends GetView<LoginController> {
                     labelStyle: TextStyle(
                       color: Color.fromARGB(255, 0, 173, 253),
                     ),
-                    errorText: controller.isPhoneNumberValid.value
+                    errorText: authController.isPhoneNumberValid.value
                         ? null
                         : "Numéro de téléphone invalide",
                     filled: true,
@@ -58,7 +58,7 @@ class LoginScreen extends GetView<LoginController> {
               SizedBox(height: 20),
               Obx(
                 () => TextField(
-                  controller: controller.passwordController,
+                  controller: authController.passwordController,
                   decoration: InputDecoration(
                     prefixIcon: Icon(
                       Icons.lock,
@@ -68,7 +68,7 @@ class LoginScreen extends GetView<LoginController> {
                     labelStyle: TextStyle(
                       color: Color.fromARGB(255, 0, 173, 253),
                     ),
-                    errorText: controller.isPasswordValid.value
+                    errorText: authController.isPasswordValid.value
                         ? null
                         : "Mot de passe invalide",
                     filled: true,
@@ -87,7 +87,7 @@ class LoginScreen extends GetView<LoginController> {
               ),
               SizedBox(height: 20),
               ElevatedButton(
-                onPressed: () => controller.login(),
+                onPressed: () => authController.login(),
                 child: Text("Se connecter", style: TextStyle(fontSize: 18)),
                 style: ElevatedButton.styleFrom(
                   backgroundColor: Color.fromARGB(255, 0, 173, 253),

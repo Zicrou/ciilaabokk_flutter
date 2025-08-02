@@ -5,9 +5,9 @@ import 'package:ciilaabokk/app/core/exceptions/network_exceptions.dart';
 import 'package:ciilaabokk/app/core/interceptors/api_interceptors.dart';
 import 'package:ciilaabokk/app/utils/no_internet_snack.dart';
 import 'package:dio/dio.dart';
-
 // import 'package:firebase_crashlytics/firebase_crashlytics.dart';
-import 'package:get/get.dart' hide FormData;
+import 'package:get/get.dart' hide FormData, Response;
+import 'package:get_storage/get_storage.dart';
 import 'package:logger/logger.dart';
 
 final logger = Logger();
@@ -18,6 +18,15 @@ class ApiProvider {
 
   ApiProvider() {
     _dio.interceptors.add(ApiInterceptor());
+  }
+
+  Future<Response> getVentes() async {
+    return await _dio.get('http://10.0.2.2:8000/api/V1/ventes');
+  }
+
+  Future<dynamic> postLogin(String api, dynamic payload) async {
+    logger.i("Url : ${api}");
+    return requestWrapper(() async => await _dio.post(api, data: payload));
   }
 
   static Duration timeOutDuration = 20.seconds;
@@ -66,6 +75,7 @@ class ApiProvider {
   }
 
   Future<dynamic> post(String api, dynamic payload) async {
+    logger.i("Url : ${api}");
     return requestWrapper(() async => await _dio.post(api, data: payload));
   }
 

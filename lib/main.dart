@@ -1,9 +1,30 @@
+import 'package:ciilaabokk/app/data/providers/api_providers.dart';
+import 'package:ciilaabokk/app/data/providers/auth_providers.dart';
+import 'package:ciilaabokk/app/data/providers/storage_providers.dart';
+import 'package:ciilaabokk/app/data/repositories/auth_repositories.dart';
+import 'package:ciilaabokk/app/data/services/auth_services.dart';
 import 'package:ciilaabokk/app/initial_bindings.dart';
+import 'package:ciilaabokk/app/modules/auths/login/login_controller.dart';
 import 'package:ciilaabokk/app/modules/auths/login/login_screen.dart';
+import 'package:ciilaabokk/app/modules/auths/ventes/new_vente/vente_controller.dart';
+import 'package:ciilaabokk/app/modules/auths/ventes/ventes/ventes_controller.dart';
+import 'package:ciilaabokk/app/modules/auths/ventes/ventes/ventes_screen.dart';
+import 'package:ciilaabokk/controller/auth_controller.dart';
+// import 'package:ciilaabokk/app/modules/auths/login/login_screen.dart';
+// import 'package:ciilaabokk/app/modules/auths/ventes/ventes/ventes_screen.dart';
+import 'package:ciilaabokk/view/homePage.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
+// import 'app/modules/auths/ventes/new_vente/vente_screen.dart';
+
 void main() {
+  Get.put(StorageProvider(), permanent: true);
+  Get.put(AuthProvider(), permanent: true);
+  Get.put(ApiProvider());
+  Get.lazyPut(() => AuthRepositories()); // MUST come before AuthServices
+  Get.lazyPut(() => AuthServices());
+  // Add other dependencies as needed
   runApp(const MyApp());
 }
 
@@ -16,11 +37,11 @@ class MyApp extends StatelessWidget {
     return GetMaterialApp(
       debugShowCheckedModeBanner: false,
       title: 'Getx Auth',
-      initialBinding: AppInitialBindings(),
       theme: ThemeData(
         primaryColor: Color(0xFF493AD5),
         scaffoldBackgroundColor: Color(0xFFF5F5F5),
       ),
+      initialBinding: AppInitialBindings(),
       home: LoginScreen(),
     );
   }

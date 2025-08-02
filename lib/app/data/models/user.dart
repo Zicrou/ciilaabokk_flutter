@@ -34,4 +34,9 @@ class User {
     data['updated_at'] = this.updatedAt;
     return data;
   }
+
+  @override
+  String toString() {
+    return "Id: ${id}, Name: ${name}, Phone number: ${phoneNumber}, DeletedAt: ${deletedAt}, CreatedAt: ${createdAt}, UpdatedAt: ${updatedAt}";
+  }
 }

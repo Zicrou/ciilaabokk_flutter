@@ -4,6 +4,11 @@ import 'package:get_storage/get_storage.dart';
 class StorageProvider {
   final appStorage = GetStorage();
 
+  Future<String?> readToken() async {
+    var readToken = await appStorage.read(authTokenKey);
+    return readToken;
+  }
+
   bool? get authStatus => appStorage.read(authStatusKey);
 
   set refreshToken(String? value) {

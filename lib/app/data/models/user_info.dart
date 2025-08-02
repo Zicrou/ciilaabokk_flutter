@@ -11,8 +11,8 @@ class UserInfo {
   UserInfo.fromJson(Map<String, dynamic> json) {
     user = json['user'] != null ? new User.fromJson(json['user']) : null;
     token = json['token'];
-    tokenFromRequest = json['$tokenFromRequest'] != null
-        ? new TokenFromRequest.fromJson(json['$tokenFromRequest'])
+    tokenFromRequest = json['tokenFromRequest'] != null
+        ? new TokenFromRequest.fromJson(json['tokenFromRequest'])
         : null;
   }
 
@@ -26,5 +26,10 @@ class UserInfo {
       data['$tokenFromRequest'] = this.tokenFromRequest!.toJson();
     }
     return data;
+  }
+
+  @override
+  String toString() {
+    return "User: ${user}, Token: ${token}, TokenFromrequest: ${tokenFromRequest}";
   }
 }

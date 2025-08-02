@@ -1,6 +1,4 @@
-import 'package:ciilaabokk/app/core/interceptors/api_interceptors.dart';
 import 'package:ciilaabokk/app/data/models/login.dart';
-import 'package:ciilaabokk/app/data/models/user.dart';
 import 'package:ciilaabokk/app/data/services/auth_services.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
@@ -29,22 +27,22 @@ class LoginController extends GetxController {
   }
 
   void login() async {
-    //try {
-    //isLoading.value = true;
-    var login = Login();
-    login.phoneNumber = phoneNumberController.text.trim();
-    login.password = passwordController.text.trim();
-    logger.i("Login data to Json: ${login.toJson()}");
-    final response = await auth_services.login(
-      login.phoneNumber!,
-      login.password!,
-    );
+    try {
+      isLoading.value = true;
+      var login = Login();
+      login.phoneNumber = phoneNumberController.text.trim();
+      login.password = passwordController.text.trim();
+      logger.i("LoginController: Login data to Json: ${login.toJson()}");
+      final response = await auth_services.login(
+        login.phoneNumber!,
+        login.password!,
+      );
 
-    logger.i("Login response: $response");
-    //} catch (e) {
-    //  logger.e("Error in login method: $e");
-    // } finally {
-    //  isLoading.value = false;
-    // }
+      logger.i("Login response: $response");
+    } catch (e) {
+      logger.e("Error in login method: $e");
+    } finally {
+      isLoading.value = false;
+    }
   }
 }
