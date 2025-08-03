@@ -2,6 +2,7 @@ import 'package:ciilaabokk/app/core/exceptions/network_exceptions.dart';
 import 'package:ciilaabokk/app/core/values/endpoints.dart';
 import 'package:ciilaabokk/app/data/models/login.dart';
 import 'package:ciilaabokk/app/data/models/user_info.dart';
+import 'package:ciilaabokk/app/data/models/user_register.dart';
 import 'package:ciilaabokk/app/data/models/ventes.dart';
 import 'package:ciilaabokk/app/data/providers/api_providers.dart';
 import 'package:ciilaabokk/app/data/providers/auth_providers.dart';
@@ -45,6 +46,62 @@ class AuthRepositories {
     } on BadRequestException {
       rethrow;
     }
+  }
+
+  Future<UserRegister> signin(
+    String name,
+    String phone,
+    String password,
+  ) async {
+    try {
+      logger.i(
+        'Auth Repositories: login with phone => $phone and password => $password',
+      );
+      final response = await _apiProvider.post(
+        registerEndPoint,
+        {'name': name, 'phone_number': phone, 'password': password},
+        //options: Options(headers: {'Content-type': 'application/json'}),
+      );
+      // logger.w('Login response: $response');
+      // logger.w('Login response data: $response.data');
+
+      // var userRegister = UserRegister();
+      // userRegister = UserRegister.fromJson((response));
+      var userRegister = UserRegister();
+      userRegister = UserRegister.fromJson((response));
+
+      if (userRegister.token == null) {
+        throw Exception("Login failed: token is null in response");
+      }
+      _authProvider.isAuthenticated = true;
+      _authProvider.authToken = userRegister.token!;
+      // logger.i('authToken: ${_authProvider.authToken}');
+      // logger.i("userRegister from Repositories: ${userRegister.toString()}");
+      return userRegister;
+    } on BadRequestException {
+      rethrow;
+    }
+  }
+
+  Future<dynamic> signout() async {
+    // try {
+    //   logger.i('Auth Repositories: signing out ${_authProvider.authToken}');
+    // final response = await _apiProvider.post(
+    //signOutEndpoint,
+    // Options(
+    //   headers: {'Authorization': 'Bearer ${_authProvider.authToken}'},
+    // ),
+    // );
+    //   logger.i("Response from Auth Repositories: ${response}");
+    //   _authProvider.reset();
+    //   if (!_authProvider.isAuthenticated) {
+    //     return true;
+    //   } else {
+    //     return false;
+    //   }
+    // } on BadRequestException {
+    //   rethrow;
+    // }
   }
 
   // Future<dynamic> createVente(

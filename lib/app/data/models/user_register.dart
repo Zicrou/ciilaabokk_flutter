@@ -19,4 +19,10 @@ class UserRegister {
     data['token'] = this.token;
     return data;
   }
+
+  @override
+  String toString() {
+    // TODO: implement toString
+    return "User: ${user}, Token: ${token}";
+  }
 }

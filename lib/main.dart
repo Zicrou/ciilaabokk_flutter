@@ -13,6 +13,7 @@ import 'package:ciilaabokk/controller/auth_controller.dart';
 // import 'package:ciilaabokk/app/modules/auths/login/login_screen.dart';
 // import 'package:ciilaabokk/app/modules/auths/ventes/ventes/ventes_screen.dart';
 import 'package:ciilaabokk/view/homePage.dart';
+import 'package:ciilaabokk/view/signup_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
@@ -42,7 +43,7 @@ class MyApp extends StatelessWidget {
         scaffoldBackgroundColor: Color(0xFFF5F5F5),
       ),
       initialBinding: AppInitialBindings(),
-      home: LoginScreen(),
+      home: SignupScreen(),
     );
   }
 }

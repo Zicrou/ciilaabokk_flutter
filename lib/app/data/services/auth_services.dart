@@ -1,4 +1,5 @@
 import 'package:ciilaabokk/app/data/models/user_info.dart';
+import 'package:ciilaabokk/app/data/models/user_register.dart';
 import 'package:ciilaabokk/app/data/models/ventes.dart';
 import 'package:ciilaabokk/app/data/repositories/auth_repositories.dart';
 import 'package:get/get.dart';
@@ -35,6 +36,24 @@ class AuthServices extends GetxService {
       'AuthService: Logging in with phone: $phone and password: $password',
     );
     return await _authRepositories.login(phone, password);
+  }
+
+  Future<UserRegister> signin(
+    String name,
+    String phone,
+    String password,
+  ) async {
+    logger.w("AuthReppositories: ${_authRepositories}");
+
+    logger.i(
+      'AuthService: Signing in with name: ${name}, phone: $phone and password: $password',
+    );
+    return await _authRepositories.signin(name, phone, password);
+  }
+
+  Future<dynamic> signout() async {
+    logger.i('AuthService: Signing out');
+    return await _authRepositories.signout();
   }
 
   // createVente(

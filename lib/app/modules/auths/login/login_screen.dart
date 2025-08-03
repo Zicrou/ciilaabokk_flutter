@@ -1,13 +1,38 @@
+import 'package:ciilaabokk/app/data/providers/auth_providers.dart';
+import 'package:ciilaabokk/app/modules/auths/ventes/ventes/ventes_screen.dart';
 import 'package:ciilaabokk/controller/auth_controller.dart';
 import 'package:ciilaabokk/view/signup_screen.dart';
 import 'package:flutter/material.dart';
 
 import 'package:get/get.dart';
+import 'package:logger/logger.dart';
+
+final logger = Logger();
 
 class LoginScreen extends StatelessWidget {
   AuthController authController = AuthController();
+  // autif (userInfo != null) {
+  //     Get.offAll(() => VentesScreen());
+  //     Get.snackbar(
+  //       "Success",
+  //       "You are already logged in",
+  //       colorText: Colors.white,
+  //       backgroundColor: Colors.green,
+  //     );
+  //   }hContr
+
+  void checkLoginStatus() async {
+    final storage = Get.find<AuthProvider>();
+    final token = await storage.authToken;
+    logger.i("token: ${token}");
+    if (token.isNotEmpty || storage.isAuthenticated == true) {
+      Get.to(() => VentesScreen());
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
+    checkLoginStatus();
     return Scaffold(
       backgroundColor: Color(0xFFF5F5F5),
       body: Center(

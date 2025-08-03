@@ -1,8 +1,11 @@
+import 'package:ciilaabokk/app/data/models/login.dart';
 import 'package:ciilaabokk/app/data/models/user_info.dart';
 import 'package:ciilaabokk/app/data/models/vente.dart';
 import 'package:ciilaabokk/app/data/providers/auth_providers.dart';
+import 'package:ciilaabokk/app/modules/auths/login/login_screen.dart';
 import 'package:ciilaabokk/app/modules/auths/ventes/new_vente/vente_screen.dart';
 import 'package:ciilaabokk/app/modules/auths/ventes/ventes/ventes_controller.dart';
+import 'package:ciilaabokk/controller/auth_controller.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:get/get.dart';
@@ -13,6 +16,7 @@ final logger = Logger();
 
 class VentesScreen extends StatelessWidget {
   final authProvider = Get.find<AuthProvider>();
+  final authController = Get.find<AuthController>();
   // final Vente vente;
   // const VentesScreen(this.vente, {Key? key}) : super(key: key);
   //final UserInfo userInfo = Get.arguments;
@@ -32,6 +36,40 @@ class VentesScreen extends StatelessWidget {
           ),
         ),
         backgroundColor: Color.fromARGB(255, 255, 255, 255),
+        actions: [
+          IconButton(
+            icon: Icon(Icons.logout, color: Colors.red),
+            onPressed: () {
+              showDialog(
+                context: context,
+                builder: (BuildContext context) {
+                  return AlertDialog(
+                    title: Text("Déconnexion"),
+                    content: Text(
+                      "Êtes-vous sûr de vouloir vous déconnecter ?",
+                    ),
+                    actions: [
+                      TextButton(
+                        child: Text("Annuler"),
+                        onPressed: () {
+                          Navigator.of(context).pop();
+                        },
+                      ),
+                      TextButton(
+                        child: Text("Se déconnecter"),
+                        onPressed: () async {
+                          Navigator.of(context).pop(); // Close the dialog
+                          await authController.logout();
+                          Get.to(() => LoginScreen());
+                        },
+                      ),
+                    ],
+                  );
+                },
+              );
+            },
+          ),
+        ],
       ),
       backgroundColor: Color(0xFFF5F5F5),
       body: Column(

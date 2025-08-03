@@ -61,7 +61,7 @@ class AuthProvider extends GetxService {
   reset() {
     isAuthenticated = false;
     authToken = '';
-    user = UserInfo();
+    //user = UserInfo();
   }
 
   @override

@@ -28,10 +28,41 @@ class SignupScreen extends StatelessWidget {
               SizedBox(height: 30),
               Obx(
                 () => TextField(
+                  controller: authController.nameController,
+                  decoration: InputDecoration(
+                    prefixIcon: Icon(
+                      Icons.person,
+                      color: Color.fromARGB(255, 0, 173, 253),
+                    ),
+                    labelText: "Nom & Prénom",
+                    labelStyle: TextStyle(
+                      color: Color.fromARGB(255, 0, 173, 253),
+                    ),
+                    errorText: authController.isNameValid.value
+                        ? null
+                        : "Nom et Prénom invalide",
+                    filled: true,
+                    fillColor: Colors.white,
+                    border: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(12),
+                      borderSide: BorderSide.none,
+                    ),
+                    focusedBorder: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(12),
+                      borderSide: BorderSide.none,
+                    ),
+                  ),
+                  keyboardType: TextInputType.text,
+                  obscureText: false,
+                ),
+              ),
+              SizedBox(height: 20),
+              Obx(
+                () => TextField(
                   controller: authController.phoneNumberController,
                   decoration: InputDecoration(
                     prefixIcon: Icon(
-                      Icons.email,
+                      Icons.phone,
                       color: Color.fromARGB(255, 0, 173, 253),
                     ),
                     labelText: "Numéro de téléphone",
@@ -52,7 +83,7 @@ class SignupScreen extends StatelessWidget {
                       borderSide: BorderSide.none,
                     ),
                   ),
-                  keyboardType: TextInputType.emailAddress,
+                  keyboardType: TextInputType.phone,
                 ),
               ),
               SizedBox(height: 20),
@@ -70,7 +101,7 @@ class SignupScreen extends StatelessWidget {
                     ),
                     errorText: authController.isPasswordValid.value
                         ? null
-                        : "Mot de passe invalide",
+                        : "Mot de passe invalide, saisir au moins 6 caractéres",
                     filled: true,
                     fillColor: Colors.white,
                     border: OutlineInputBorder(
@@ -86,36 +117,7 @@ class SignupScreen extends StatelessWidget {
                 ),
               ),
               SizedBox(height: 20),
-              Obx(
-                () => TextField(
-                  controller: authController.confirmPasswordController,
-                  decoration: InputDecoration(
-                    prefixIcon: Icon(
-                      Icons.lock,
-                      color: Color.fromARGB(255, 0, 173, 253),
-                    ),
-                    labelText: "Confirm Password",
-                    labelStyle: TextStyle(
-                      color: Color.fromARGB(255, 0, 173, 253),
-                    ),
-                    errorText: authController.isConfirmPasswordValid.value
-                        ? null
-                        : "Mot de passe de confirmation ne correspond pas",
-                    filled: true,
-                    fillColor: Colors.white,
-                    border: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(12),
-                      borderSide: BorderSide.none,
-                    ),
-                    focusedBorder: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(12),
-                      borderSide: BorderSide.none,
-                    ),
-                  ),
-                  obscureText: true,
-                ),
-              ),
-              SizedBox(height: 20),
+
               ElevatedButton(
                 onPressed: () => authController.signup(),
                 child: Text("Sign Up", style: TextStyle(fontSize: 18)),
