@@ -16,22 +16,16 @@ import 'package:ciilaabokk/view/homePage.dart';
 import 'package:ciilaabokk/view/signup_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:get_storage/get_storage.dart';
+import 'package:logger/web.dart';
 
 // import 'app/modules/auths/ventes/new_vente/vente_screen.dart';
-
-void main() {
-  Get.put(StorageProvider(), permanent: true);
-  Get.put(AuthProvider(), permanent: true);
-  Get.put(ApiProvider());
-  Get.lazyPut(() => AuthRepositories()); // MUST come before AuthServices
-  Get.lazyPut(() => AuthServices());
-  // Add other dependencies as needed
-  runApp(const MyApp());
+final logger = Logger();
+void main() async {
+  runApp(Home());
 }
 
-class MyApp extends StatelessWidget {
-  const MyApp({super.key});
-
+class Home extends StatelessWidget {
   // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
@@ -43,7 +37,7 @@ class MyApp extends StatelessWidget {
         scaffoldBackgroundColor: Color(0xFFF5F5F5),
       ),
       initialBinding: AppInitialBindings(),
-      home: SignupScreen(),
+      home: LoginScreen(),
     );
   }
 }

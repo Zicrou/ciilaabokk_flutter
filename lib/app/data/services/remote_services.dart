@@ -1,16 +1,119 @@
 import 'dart:convert';
 
+import 'package:ciilaabokk/app/data/models/depenses.dart';
+import 'package:ciilaabokk/app/data/models/depensesInfo.dart';
 import 'package:ciilaabokk/app/data/models/user.dart';
 import 'package:ciilaabokk/app/data/models/user_info.dart';
 import 'package:ciilaabokk/app/data/models/user_register.dart';
-import 'package:ciilaabokk/app/data/models/ventes.dart';
+import 'package:ciilaabokk/app/data/models/vente.dart';
+import 'package:ciilaabokk/app/data/models/vente_info.dart';
+import 'package:ciilaabokk/app/data/models/ventes.dart' hide Vente;
+import 'package:ciilaabokk/app/data/providers/auth_providers.dart';
+import 'package:ciilaabokk/app/modules/auths/depenses/new_depense/vente_controller.dart';
+import 'package:ciilaabokk/app/modules/auths/ventes/ventes/ventes_screen.dart';
 import 'package:dio/dio.dart';
+import 'package:get/get.dart';
 import 'package:logger/logger.dart';
 
 final logger = Logger();
 
 class RemoteServices {
+  final AuthProvider authProvider = Get.find<AuthProvider>();
+
   static final Dio _dio = Dio();
+
+  Future<Vente> updateVente(int id, Vente vente) async {
+    final userId = authProvider.user.user?.id;
+    logger.w(userId);
+    if (userId == null) {
+      throw Exception("User ID is null — user is not logged in.");
+    }
+    var body = {
+      "designation": vente.designation,
+      "prix": int.parse(vente.prix.toString()),
+      "user_id": userId,
+      "nombre": int.parse(vente.nombre.toString()),
+      "type_id":
+          vente.types, // Assuming types is a list and you want the first type
+    };
+    // var bodyToJson = jsonEncode(body);
+    logger.i("Body from params: ${body}");
+    // print(bodyToJson);
+    try {
+      final token = authProvider.authToken;
+      logger.i("Token from Authprovider: ${token}");
+      final response = await _dio.put(
+        'http://10.0.2.2:8000/api/V1/ventes/${id}',
+        data: body,
+        options: Options(
+          headers: {
+            'Content-type': 'application/json',
+            'Accept': 'application/json',
+            'Authorization': 'Bearer $token',
+          },
+        ),
+      );
+
+      logger.i("Response from remote service: ${response.data})");
+
+      if (response.statusCode == 200 && response.data != null) {
+        // Dio automatically parses JSON, so we use response.data
+        var venteUpdated = Vente.fromJson(response.data);
+        logger.i(
+          "Response Depense from Remote Services: ${venteUpdated.toString()}",
+        );
+        logger.i("Vente: ${venteUpdated}");
+        return vente;
+      } else {
+        throw Exception("Failed to load Vente with Dio");
+      }
+    } catch (e) {
+      throw Exception("Error Update vente: ${e.toString()}");
+    }
+  }
+
+  Future<DepensesInfo> createDepense(String libelle, int montant) async {
+    final userId = authProvider.user.user?.id;
+    logger.w(userId);
+    if (userId == null) {
+      throw Exception("User ID is null — user is not logged in.");
+    }
+    var body = {"libelle": libelle, "montant": montant, "user_id": userId};
+    var bodyToJson = jsonEncode(body);
+    print(bodyToJson);
+    try {
+      final token = authProvider.authToken;
+      logger.i("Token from Authprovider: ${token}");
+      final response = await _dio.post(
+        'http://10.0.2.2:8000/api/V1/depenses',
+        data: body,
+        options: Options(
+          headers: {
+            'Content-type': 'application/json',
+            'Accept': 'application/json',
+            'Authorization': 'Bearer $token',
+          },
+        ),
+      );
+
+      logger.i("Response from remote service: ${response.data})");
+
+      if (response.statusCode == 200 && response.data != null) {
+        // Dio automatically parses JSON, so we use response.data
+        var depenses = DepensesInfo.fromJson(response.data);
+        //ventesList.assignAll([ventes]);
+        logger.i(
+          "Response Depense from Remote Services: ${depenses.toString()}",
+        );
+        logger.i("Depense: ${depenses}");
+        return depenses;
+      } else {
+        throw Exception("Failed to load Depense with Dio");
+      }
+    } catch (e) {
+      throw Exception("Error fetching Depense: $e.");
+    }
+  }
 
   Future<dynamic> login(String phone, String password) async {
     try {
@@ -26,6 +129,57 @@ class RemoteServices {
       throw Exception("Error fetching UserInfo: $e");
     }
   }
+
+  // Future<Vente> storeVente(
+  //   String designation,
+  //   int nombre,
+  //   int prix,
+  //   int types,
+  // ) async {
+  //   final userId = authProvider.user.user?.id;
+  //   logger.w(userId);
+  //   if (userId == null) {
+  //     throw Exception("User ID is null — user is not logged in.");
+  //   }
+  //   var body = {
+  //     "nombre": nombre,
+  //     "designation": designation,
+  //     "prix": prix,
+  //     "user_id": userId,
+  //     "types": types,
+  //   };
+  //   var bodyToJson = jsonEncode(body);
+  //   print(bodyToJson);
+  //   try {
+  //     final token = authProvider.authToken;
+  //     logger.i("Token from Authprovider: ${token}");
+  //     final response = await _dio.post(
+  //       'http://10.0.2.2:8000/api/V1/ventes',
+  //       data: body,
+  //       options: Options(
+  //         headers: {
+  //           'Content-type': 'application/json',
+  //           'Accept': 'application/json',
+  //           'Authorization': 'Bearer $token',
+  //         },
+  //       ),
+  //     );
+  //     logger.i("Response from remote service: ${response})");
+
+  //     if (response.statusCode == 200 && response.data != null) {
+  //       // Dio automatically parses JSON, so we use response.data
+  //       var vente = Vente.fromJson(response.data);
+  //       //ventesList.assignAll([ventes]);
+  //       logger.i("Response Vente from Remote Services: ${vente}");
+  //       logger.i(vente);
+  //       return vente;
+  //     } else {
+  //       throw Exception("Failed to load Vente with Dio");
+  //     }
+  //   } catch (e) {
+  //     throw Exception("Error fetching Vente: $e.");
+  //   }
+  // }
 
   Future<dynamic> signUp(String name, String phone, String password) async {
     try {
@@ -67,6 +221,34 @@ class RemoteServices {
       if (response.statusCode == 200 && response.data != null) {
         // Dio automatically parses JSON, so we use response.data
         return VenteResponse.fromJson(response.data);
+        // if venteFromJson expects raw JSON string
+        // OR: return VenteResponse.fromJson(response.data); // if you have fromJson constructor
+      } else {
+        throw Exception("Failed to load ventes with Dio");
+      }
+    } catch (e) {
+      throw Exception("Error fetching ventes: $e");
+    }
+  }
+
+  static Future<DepensesInfo> fetchDepenses() async {
+    try {
+      final token = Get.find<AuthProvider>().authToken;
+      logger.i("Token from RemoteServices in  Authprovider: ${token}");
+      final response = await _dio.get(
+        'http://10.0.2.2:8000/api/V1/depenses',
+        options: Options(
+          headers: {
+            'Content-type': 'application/json',
+            'Accept': 'application/json',
+            'Authorization': 'Bearer $token',
+          },
+        ),
+      );
+      logger.i("Response from remote service: ${response.data})");
+      if (response.statusCode == 200 && response.data != null) {
+        // Dio automatically parses JSON, so we use response.data
+        return DepensesInfo.fromJson(response.data);
         // if venteFromJson expects raw JSON string
         // OR: return VenteResponse.fromJson(response.data); // if you have fromJson constructor
       } else {

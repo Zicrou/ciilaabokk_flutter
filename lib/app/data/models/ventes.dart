@@ -61,7 +61,7 @@ class Vente {
   dynamic image;
   int? produitId;
   dynamic deletedAt;
-  int userId;
+  final int userId;
   DateTime createdAt;
   DateTime updatedAt;
 
@@ -86,7 +86,7 @@ class Vente {
     image: json["image"],
     produitId: json["produit_id"],
     deletedAt: json["deleted_at"],
-    userId: json["user_id"] ?? 1,
+    userId: json["user_id"],
     createdAt: DateTime.parse(json["created_at"]),
     updatedAt: DateTime.parse(json["updated_at"]),
   );
@@ -106,6 +106,6 @@ class Vente {
 
   @override
   String toString() {
-    return 'Vente{id: $id, designation: $designation, nombre: $nombre, prix: $prix, image: $image, produitId: $produitId, deletedAt: $deletedAt, userId: $userId, createdAt: $createdAt, updatedAt: $updatedAt}';
+    return 'Vente to String {id: $id, designation: $designation, nombre: $nombre, prix: $prix, image: $image, produitId: $produitId, deletedAt: $deletedAt, userId: $userId, createdAt: $createdAt, updatedAt: $updatedAt}';
   }
 }

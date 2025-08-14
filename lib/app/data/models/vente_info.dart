@@ -1,7 +1,9 @@
 import 'package:ciilaabokk/app/data/models/vente.dart';
+import 'package:get/get.dart';
 
 class VenteInfo {
-  List<Vente>? ventes;
+  RxList<Vente> ventes = <Vente>[].obs;
+  // RxList<
   List<dynamic>? input;
   int? totalOfTheDay;
   int? totalVenteOfTheDay;
@@ -10,7 +12,7 @@ class VenteInfo {
   String? status;
 
   VenteInfo({
-    this.ventes,
+    required this.ventes,
     this.input,
     this.totalOfTheDay,
     this.totalVenteOfTheDay,
@@ -21,9 +23,10 @@ class VenteInfo {
 
   VenteInfo.fromJson(Map<String, dynamic> json) {
     if (json['ventes'] != null) {
-      ventes = <Vente>[];
+      ventes = ventes;
       json['ventes'].forEach((v) {
         ventes!.add(new Vente.fromJson(v));
+        json['types'] = v['types']['name']; // Ensure types is handled correctly
       });
     }
     if (json['input'] != null) {
@@ -41,9 +44,9 @@ class VenteInfo {
 
   Map<String, dynamic> toJson() {
     final Map<String, dynamic> data = new Map<String, dynamic>();
-    if (this.ventes != null) {
-      data['ventes'] = this.ventes!.map((v) => v.toJson()).toList();
-    }
+    //if (this.ventes != null) {
+    data['ventes'] = this.ventes.map((v) => v.toJson()).toList();
+    //}
     if (this.input != null) {
       data['input'] = this.input;
     }

@@ -3,17 +3,19 @@ import 'package:ciilaabokk/app/core/values/endpoints.dart';
 import 'package:ciilaabokk/app/data/models/login.dart';
 import 'package:ciilaabokk/app/data/models/user_info.dart';
 import 'package:ciilaabokk/app/data/models/user_register.dart';
+import 'package:ciilaabokk/app/data/models/vente_info.dart';
 import 'package:ciilaabokk/app/data/models/ventes.dart';
 import 'package:ciilaabokk/app/data/providers/api_providers.dart';
 import 'package:ciilaabokk/app/data/providers/auth_providers.dart';
 import 'package:dio/dio.dart';
+import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:logger/logger.dart';
 
 final logger = Logger();
 
 class AuthRepositories {
-  final dio = Dio();
+  //final dio = Dio();
   final _authProvider = Get.find<AuthProvider>();
   final _apiProvider = Get.find<ApiProvider>();
 
@@ -27,6 +29,9 @@ class AuthRepositories {
         {'phone_number': phone, 'password': password},
         //options: Options(headers: {'Content-type': 'application/json'}),
       );
+      if (response == null) {
+        return response;
+      }
       // logger.w('Login response: $response');
       // logger.w('Login response data: $response.data');
 
@@ -84,50 +89,36 @@ class AuthRepositories {
   }
 
   Future<dynamic> signout() async {
-    // try {
-    //   logger.i('Auth Repositories: signing out ${_authProvider.authToken}');
-    // final response = await _apiProvider.post(
-    //signOutEndpoint,
-    // Options(
-    //   headers: {'Authorization': 'Bearer ${_authProvider.authToken}'},
-    // ),
-    // );
-    //   logger.i("Response from Auth Repositories: ${response}");
-    //   _authProvider.reset();
-    //   if (!_authProvider.isAuthenticated) {
-    //     return true;
-    //   } else {
-    //     return false;
-    //   }
-    // } on BadRequestException {
-    //   rethrow;
-    // }
+    try {
+      logger.i('Auth Repositories: signing out ${_authProvider.authToken}');
+      final response = await _apiProvider.post(
+        signOutEndpoint,
+        Options(
+          headers: {'Authorization': 'Bearer ${_authProvider.authToken}'},
+        ),
+      );
+      logger.i("Response from Auth Repositories: ${response}");
+      _authProvider.reset();
+      if (!_authProvider.isAuthenticated) {
+        return true;
+      } else {
+        return false;
+      }
+    } on BadRequestException {
+      rethrow;
+    }
   }
 
-  // Future<dynamic> createVente(
-  //   String designation,
-  //   double prix,
-  //   int userId,
-  //   int nombre,
-  //   int types,
-  // ) async {
-  //   try {
-  //     logger.i(
-  //       'Auth Repositories: Creating vente with designation: $designation, prix: $prix, userId: $userId, nombre: $nombre, types: $types',
-  //     );
-  //     final res = await _apiProvider.post(createVenteEndpoint, {
-  //       'designation': designation,
-  //       'prix': prix,
-  //       'user_id': userId,
-  //       'nombre': nombre,
-  //       'types': types,
-  //     });
-  //     logger.w('Create Vente response: $res');
-  //     return res;
-  //   } on BadRequestException {
-  //     rethrow;
-  //   }
-  // }
+  Future createVente(Map<String, dynamic> json) async {
+    try {
+      logger.i("Json from Repositories: ${json}");
+      final res = await _apiProvider.post(createVenteEndpoint, json);
+      logger.w('AuthRepositories: Create Vente response: $res');
+      return res;
+    } on BadRequestException {
+      rethrow;
+    }
+  }
 
   // Future<List<dynamic>> fetchVentes() async {
   //   try {
@@ -150,9 +141,9 @@ class AuthRepositories {
   //   }
   // }
 
-  Future<VenteResponse> listVentes() async {
-    final response = await _apiProvider.getVentes();
-    //final ventesResponse = VenteResponse.fromJson(response.data);
-    return VenteResponse.fromJson(response.data);
-  }
+  // Future<VenteInfo> listVentes() async {
+  //   final response = await _apiProvider.getVentes();
+  //   //final ventesResponse = VenteResponse.fromJson(response.data);
+  //   return VenteInfo.fromJson(response.data);
+  // }
 }

@@ -8,17 +8,6 @@ final logger = Logger();
 
 class LoginController extends GetxController {
   final auth_services = Get.find<AuthServices>();
-  var phoneNumberController = TextEditingController();
-  var passwordController = TextEditingController();
-  var confirmPasswordController = TextEditingController();
-
-  var isPhoneNumberValid = true.obs;
-  var isPasswordValid = true.obs;
-  var isConfirmPasswordValid = true.obs;
-
-  final _isLoading = false.obs;
-
-  get isLoading => _isLoading.value;
 
   @override
   void onInit() {
@@ -27,22 +16,8 @@ class LoginController extends GetxController {
   }
 
   void login() async {
-    try {
-      isLoading.value = true;
-      var login = Login();
-      login.phoneNumber = phoneNumberController.text.trim();
-      login.password = passwordController.text.trim();
-      logger.i("LoginController: Login data to Json: ${login.toJson()}");
-      final response = await auth_services.login(
-        login.phoneNumber!,
-        login.password!,
-      );
-
-      logger.i("Login response: $response");
-    } catch (e) {
-      logger.e("Error in login method: $e");
-    } finally {
-      isLoading.value = false;
+    try {} catch (e) {
+      throw ("Impossible de se connecter ${e}");
     }
   }
 }

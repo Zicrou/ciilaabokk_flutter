@@ -20,14 +20,14 @@ class ApiProvider {
     _dio.interceptors.add(ApiInterceptor());
   }
 
-  Future<Response> getVentes() async {
-    return await _dio.get('http://10.0.2.2:8000/api/V1/ventes');
-  }
+  // Future<Response> getVentes() async {
+  //   return await _dio.get('http://10.0.2.2:8000/api/V1/ventes');
+  // }
 
-  Future<dynamic> postLogin(String api, dynamic payload) async {
-    logger.i("Url : ${api}");
-    return requestWrapper(() async => await _dio.post(api, data: payload));
-  }
+  // Future<dynamic> postLogin(String api, dynamic payload) async {
+  //   logger.i("Url : ${api}");
+  //   return requestWrapper(() async => await _dio.post(api, data: payload));
+  // }
 
   static Duration timeOutDuration = 20.seconds;
 

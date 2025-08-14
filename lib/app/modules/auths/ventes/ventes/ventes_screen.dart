@@ -2,7 +2,10 @@ import 'package:ciilaabokk/app/data/models/login.dart';
 import 'package:ciilaabokk/app/data/models/user_info.dart';
 import 'package:ciilaabokk/app/data/models/vente.dart';
 import 'package:ciilaabokk/app/data/providers/auth_providers.dart';
+import 'package:ciilaabokk/app/data/repositories/auth_repositories.dart';
+import 'package:ciilaabokk/app/modules/auths/depenses/depenses/depenses_screen.dart';
 import 'package:ciilaabokk/app/modules/auths/login/login_screen.dart';
+import 'package:ciilaabokk/app/modules/auths/ventes/new_vente/vente_controller.dart';
 import 'package:ciilaabokk/app/modules/auths/ventes/new_vente/vente_screen.dart';
 import 'package:ciilaabokk/app/modules/auths/ventes/ventes/ventes_controller.dart';
 import 'package:ciilaabokk/controller/auth_controller.dart';
@@ -15,16 +18,21 @@ import 'package:logger/web.dart';
 final logger = Logger();
 
 class VentesScreen extends StatelessWidget {
-  final authProvider = Get.find<AuthProvider>();
-  final authController = Get.find<AuthController>();
+  final VentesController controller = Get.put(VentesController());
   // final Vente vente;
   // const VentesScreen(this.vente, {Key? key}) : super(key: key);
   //final UserInfo userInfo = Get.arguments;
 
   @override
   Widget build(BuildContext context) {
-    final VentesController controller = Get.put(VentesController());
+    //final VentesController controller = Get.put(VentesController());
     return Scaffold(
+      floatingActionButton: FloatingActionButton(
+        backgroundColor: Color.fromARGB(255, 0, 173, 253),
+
+        onPressed: () => Get.to(() => VenteScreen()),
+        child: Center(child: Icon(Icons.add, size: 30, color: Colors.white)),
+      ),
       appBar: AppBar(
         title: Text(
           "Liste des ventes",
@@ -59,7 +67,7 @@ class VentesScreen extends StatelessWidget {
                         child: Text("Se déconnecter"),
                         onPressed: () async {
                           Navigator.of(context).pop(); // Close the dialog
-                          await authController.logout();
+                          await controller.authControler.logout();
                           Get.to(() => LoginScreen());
                         },
                       ),
@@ -80,11 +88,13 @@ class VentesScreen extends StatelessWidget {
               padding: const EdgeInsets.all(16),
               child: Row(
                 children: [
+                  Text("${controller.authProvider.user.user?.name}"),
                   TextButton(
-                    onPressed: () => Get.to(() => VenteScreen()),
-                    child: Text("Ajouter une vente"),
+                    onPressed: () {
+                      Get.offAll(DepensesScreen());
+                    },
+                    child: Text("Dépenses"),
                   ),
-                  Text("${authProvider.user.user?.name}"),
                 ],
               ),
             ),
@@ -105,6 +115,7 @@ class VentesScreen extends StatelessWidget {
 
                   return Column(
                     children: vente.ventes.map((v) {
+                      var total = (v.prix!) * (v.nombre!);
                       return Card(
                         margin: EdgeInsets.symmetric(
                           horizontal: 16,
@@ -117,8 +128,51 @@ class VentesScreen extends StatelessWidget {
                                 : 'Produit ID: ${v.produitId}',
                             style: TextStyle(fontWeight: FontWeight.bold),
                           ),
-                          subtitle: Text('Quantité: ${v.nombre}'),
-                          trailing: Text('${v.prix} FCFA'),
+                          subtitle: Text.rich(
+                            TextSpan(
+                              style: TextStyle(color: Colors.black),
+                              children: [
+                                TextSpan(text: 'Type: ${v.types.name}\n'),
+                                TextSpan(text: 'Nombre: ${v.nombre}\n'),
+                                TextSpan(text: 'Prix: ${v.prix} FCFA\n'),
+                                TextSpan(
+                                  text: '\nTotal:${total} FCFA',
+                                  style: TextStyle(fontWeight: FontWeight.bold),
+                                ),
+                              ],
+                            ),
+                          ),
+                          leading: CircleAvatar(
+                            backgroundColor: Color.fromARGB(255, 0, 173, 253),
+                            child: Text(
+                              v.nombre.toString(),
+                              style: TextStyle(color: Colors.white),
+                            ),
+                          ),
+                          trailing: Row(
+                            mainAxisSize: MainAxisSize.min,
+                            children: [
+                              IconButton(
+                                icon: Icon(
+                                  Icons.edit,
+                                  color: Color.fromARGB(255, 4, 38, 255),
+                                ),
+                                onPressed: () {
+                                  logger.i("ok pour modifier la vente ${v.id}");
+                                  Get.to(() => VenteScreen(), arguments: v);
+                                },
+                              ),
+                              IconButton(
+                                icon: Icon(Icons.delete, color: Colors.red),
+                                onPressed: () {
+                                  logger.i(
+                                    "ok pour supprimer la vente ${v.id}",
+                                  );
+                                  controller.deleteVente(v.id!);
+                                },
+                              ),
+                            ],
+                          ),
                         ),
                       );
                     }).toList(),

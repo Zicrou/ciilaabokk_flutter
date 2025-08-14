@@ -1,5 +1,7 @@
 import 'dart:convert';
 
+import 'package:ciilaabokk/app/core/exceptions/network_exceptions.dart';
+import 'package:ciilaabokk/app/data/models/login.dart';
 import 'package:ciilaabokk/app/data/models/user.dart';
 import 'package:ciilaabokk/app/data/models/user_info.dart';
 import 'package:ciilaabokk/app/data/providers/auth_providers.dart';
@@ -7,9 +9,11 @@ import 'package:ciilaabokk/app/data/repositories/auth_repositories.dart'
     hide logger;
 import 'package:ciilaabokk/app/data/services/auth_services.dart' hide logger;
 import 'package:ciilaabokk/app/data/services/remote_services.dart' hide logger;
+import 'package:ciilaabokk/app/initial_bindings.dart';
 import 'package:ciilaabokk/app/modules/auths/login/login_screen.dart'
     hide logger;
-import 'package:ciilaabokk/app/modules/auths/ventes/new_vente/vente_screen.dart';
+import 'package:ciilaabokk/app/modules/auths/ventes/new_vente/vente_screen.dart'
+    hide logger;
 import 'package:ciilaabokk/app/modules/auths/ventes/ventes/ventes_controller.dart'
     hide logger;
 import 'package:ciilaabokk/app/modules/auths/ventes/ventes/ventes_screen.dart'
@@ -18,13 +22,15 @@ import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:get_storage/get_storage.dart';
-import 'package:http/http.dart';
 
 class AuthController extends GetxController {
   final AuthProvider authProvider = Get.find<AuthProvider>();
   final AuthServices authServices = AuthServices();
-  final RemoteServices remoteServices = RemoteServices();
-  final dio = Dio();
+  final GlobalKey<FormState> loginFormKey = GlobalKey<FormState>();
+  final GlobalKey<FormState> signupFormKey = GlobalKey<FormState>();
+  final _isLoading = false.obs;
+
+  get isLoading => _isLoading.value;
   var phoneNumberController = TextEditingController();
   var passwordController = TextEditingController();
   var nameController = TextEditingController();
@@ -34,140 +40,96 @@ class AuthController extends GetxController {
   var isNameValid = true.obs;
 
   void login() async {
-    String phoneNumber = phoneNumberController.text.trim();
-    String password = passwordController.text.trim();
+    logger.i("LoginFormKey: ${loginFormKey}");
+    try {
+      logger.i("conecting..");
+      _isLoading.value = true;
+      if (loginFormKey.currentState!.validate()) {
+        loginFormKey.currentState!.save();
+        String phoneNumber = phoneNumberController.text.trim();
+        String password = passwordController.text.trim();
 
-    if (phoneNumber.isEmpty || !phoneNumberController.text.isPhoneNumber) {
-      isPhoneNumberValid.value = false;
-    } else {
-      isPhoneNumberValid.value = true;
-    }
+        // Call the post Api method to send data
+        var userInfo = await authServices.login(phoneNumber, password);
+        logger.i("Response Auth Controller: ${userInfo}");
+        phoneNumberController.clear();
+        passwordController.clear();
 
-    if (password.isEmpty || password.length < 6) {
-      isPasswordValid.value = false;
-      return;
-    } else {
-      isPasswordValid.value = true;
-    }
-
-    //validating email and password and checking a static email just for checking
-    if (isPhoneNumberValid.value && isPasswordValid.value) {
-      // Call the post Api method to send data
-      var userInfo = await authServices.login(phoneNumber, password);
-      logger.i("Response Auth Controller: ${userInfo}");
-      phoneNumberController.clear();
-      passwordController.clear();
-
-      authProvider.user = userInfo;
-      Get.offAll(() => VentesScreen());
-      Get.snackbar(
-        "Success",
-        "Logged In Successfully",
-        colorText: Colors.white,
-        backgroundColor: Colors.green,
-      );
-    } else {
+        authProvider.user = userInfo;
+        //authProvider.user.token;
+        Get.offAll(() => VentesScreen());
+        Get.snackbar(
+          "Success",
+          "Logged In Successfully",
+          colorText: Colors.white,
+          backgroundColor: Colors.green,
+        );
+      }
+    } catch (e) {
       Get.snackbar(
         "Error",
-        "Logged In Failed",
+        "Impossible de se connecter, identifiant incorrect",
         colorText: Colors.white,
         backgroundColor: Colors.redAccent,
       );
+      logger.w("Error: ${e}");
+    } finally {
+      _isLoading.value = false;
     }
+
+    // } else {
+    //   Get.snackbar(
+    //     "Error",
+    //     "Logged In Failed",
+    //     colorText: Colors.white,
+    //     backgroundColor: Colors.redAccent,
+    //   );
+    // }
   }
 
   void signup() async {
     String phoneNumber = phoneNumberController.text.trim();
     String password = passwordController.text.trim();
     String name = nameController.text.trim();
-
-    if (phoneNumber.isEmpty || !phoneNumberController.text.isPhoneNumber) {
-      isPhoneNumberValid.value = false;
-    } else {
-      isPhoneNumberValid.value = true;
-    }
-
-    if (password.isEmpty || password.length < 6) {
-      isPasswordValid.value = false;
-    }
-
-    if (name.isEmpty || nameController.text.isPhoneNumber) {
-      isNameValid.value = false;
-    }
-    //validating email and password and checking a static email just for checking
-    if (isPhoneNumberValid.value &&
-        isPasswordValid.value &&
-        isNameValid.value) {
-      phoneNumberController.clear();
-      passwordController.clear();
-      nameController.clear();
-      logger.i(
-        "Registering Name: ${name}, Phone: ${phoneNumber}, Password: ${password}",
-      );
-      //var response = remoteServices.signUp(name, phoneNumber, password);
-      var userRegistred = authServices.signin(name, phoneNumber, password);
-      logger.i("AuthController User Registered ${userRegistred.toString()}");
-      authProvider.userRegister = await userRegistred;
-      Get.offAll(() => LoginScreen());
+    try {
+      if (signupFormKey.currentState!.validate()) {
+        //signupFormKey.currentState!.save();
+        logger.i("Signin in signinFormKey : ${signupFormKey}");
+        _isLoading.value = true;
+        var userRegistred = authServices.signin(name, phoneNumber, password);
+        authProvider.userRegister = await userRegistred;
+        Get.offAll(() => LoginScreen());
+        Get.snackbar(
+          "Success",
+          "Signed In Successfully",
+          colorText: Colors.white,
+          backgroundColor: Colors.green,
+        );
+      }
+    } catch (e) {
       Get.snackbar(
-        "Success",
-        "Signed In Successfully",
-        colorText: Colors.white,
-        backgroundColor: Colors.green,
-      );
-    } else {
-      Get.snackbar(
-        "Error",
+        "Error ${e}",
         "Signed In Failed",
         colorText: Colors.white,
         backgroundColor: Colors.redAccent,
       );
+    } finally {
+      _isLoading.value = false;
     }
+    //validating email and password and checking a static email just for checking
+
+    //var response = remoteServices.signUp(name, phoneNumber, password);
   }
 
   Future<void> logout() async {
-    logger.i("Signing out");
-    final token = authProvider.authToken;
-    logger.i("Token from Authprovider: ${token}");
-    if (authProvider.isAuthenticated == false || token.isEmpty) {
-      logger.e("No token found — user might already be logged out.");
-      Get.offAll(() => LoginScreen());
-    }
-
-    try {
-      //final response = await authServices.signout();
-      final response = await dio.post(
-        'http://10.0.2.2:8000/api/V1/logout',
-        options: Options(headers: {'Authorization': 'Bearer $token'}),
-      );
-      logger.i("Response ${response.data['loggedOut']}");
-      var res = response.data['loggedOut'];
-      if (res == true) {
-        authProvider.reset();
-        Get.delete<AuthRepositories>(force: true);
-        // Rebind if need it
-        Get.put(AuthRepositories());
-        Get.put(AuthProvider());
-        Get.offAll(() => LoginScreen());
-        Get.snackbar(
-          "Déconnexion",
-          "Vous êtes déconnecté(e).",
-          backgroundColor: Colors.blue,
-          colorText: Colors.white,
-        );
-      } else {
-        Get.to(VentesScreen());
-      }
-      logger.i("Logout response: ${response}");
-    } catch (e, stacktrace) {
-      logger.e("Logout failed: $e");
-      logger.e("Stacktrace: $stacktrace");
-      Get.snackbar(
-        "Erreur",
-        "Échec de la déconnexion",
-        backgroundColor: Colors.red,
-        colorText: Colors.white,
-      );
-    }
+    Get.offAll(() => LoginScreen());
+    authProvider.reset();
+    // Rebind if need it
+    Get.snackbar(
+      "Déconnexion",
+      "Vous êtes déconnecté(e).",
+      backgroundColor: Colors.blue,
+      colorText: Colors.white,
+    );
   }
 }
