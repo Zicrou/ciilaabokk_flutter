@@ -128,7 +128,7 @@ class DepensesScreen extends StatelessWidget {
                     final depense = controller.listeDepenses[index];
 
                     return Column(
-                      children: depense.depenses.map((v) {
+                      children: depense.depenses.map((d) {
                         return Card(
                           margin: EdgeInsets.symmetric(
                             horizontal: 16,
@@ -136,10 +136,36 @@ class DepensesScreen extends StatelessWidget {
                           ),
                           child: ListTile(
                             title: Text(
-                              v.libelle!,
+                              d.libelle!,
                               style: TextStyle(fontWeight: FontWeight.bold),
                             ),
-                            subtitle: Text('Montant: ${v.montant}'),
+                            subtitle: Text('Montant: ${d.montant}'),
+                            trailing: Row(
+                              mainAxisSize: MainAxisSize.min,
+                              children: [
+                                IconButton(
+                                  icon: Icon(
+                                    Icons.edit,
+                                    color: Color.fromARGB(255, 4, 38, 255),
+                                  ),
+                                  onPressed: () {
+                                    logger.i(
+                                      "ok pour modifier la la dépense ${d.id}",
+                                    );
+                                    Get.to(() => DepenseScreen(), arguments: d);
+                                  },
+                                ),
+                                IconButton(
+                                  icon: Icon(Icons.delete, color: Colors.red),
+                                  onPressed: () {
+                                    logger.i(
+                                      "ok pour supprimer la dépense ${d.id}",
+                                    );
+                                    controller.deleteDepense(d.id!);
+                                  },
+                                ),
+                              ],
+                            ),
                           ),
                         );
                       }).toList(),

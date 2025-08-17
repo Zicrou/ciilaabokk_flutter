@@ -23,6 +23,7 @@ class DepenseController extends GetxController {
   final AuthServices authServices = Get.find<AuthServices>();
 
   final GlobalKey<FormState> depensesKeyForm = GlobalKey<FormState>();
+  final GlobalKey<FormState> depensesUpdateKeyForm = GlobalKey<FormState>();
 
   RxString userName = ''.obs;
   RxBool _isLoading = false.obs;
@@ -111,6 +112,52 @@ class DepenseController extends GetxController {
           colorText: Colors.red,
           backgroundColor: Colors.redAccent,
         );
+      }
+    }
+  }
+
+  void updateDepense(Depenses depense) async {
+    if (depensesUpdateKeyForm.currentState!.validate()) {
+      depensesUpdateKeyForm.currentState!.save();
+      if (user_id == null) {
+        Get.snackbar(
+          "Error",
+          "User ID is not available",
+          colorText: Colors.white,
+          backgroundColor: Colors.redAccent,
+        );
+        return;
+      }
+      depense.id = depense.id; // Ensure the ID is set for update
+      depense.libelle = libelle.text.trim();
+      depense.montant = int.tryParse(montant.text.trim());
+      depense.userId = user_id;
+      logger.i("depense from DepenseController: ${depense.toJson()}");
+
+      var response = await depensesRepositories.updateDepense(
+        depense.id!,
+        depense.toJson(),
+      );
+
+      var updatedDepense = response;
+      logger.i("Response Depense updatedDepense: ${response}");
+      if (updatedDepense == null) {
+        Get.snackbar(
+          "Failed",
+          "Échec de la modification: User ou dépense non trouvée",
+          colorText: Colors.white,
+          backgroundColor: Colors.redAccent,
+        );
+      } else {
+        Get.snackbar(
+          "Success",
+          "Dépense mise à jour avec succès",
+          colorText: Colors.white,
+          backgroundColor: Colors.green,
+        );
+        Future.delayed(Duration(seconds: 1), () {
+          Get.offAll(DepensesScreen());
+        });
       }
     }
   }

@@ -26,7 +26,7 @@ class DepensesController extends GetxController {
   final depensesProvider = Get.find<DepensesProvider>();
   final authControler = Get.find<AuthController>();
   var user = UserInfo();
-
+  RxBool _isLoading = false.obs;
   @override
   void onInit() {
     super.onInit();
@@ -51,6 +51,40 @@ class DepensesController extends GetxController {
       print("Error fetching depenses: $e");
     } finally {
       isLoading(false);
+    }
+  }
+
+  Future<void> deleteDepense(int id) async {
+    try {
+      _isLoading.value = true;
+      var response = await _depensesRepositories.deleteDepenses(id);
+      logger.i("Response Depense: ${response}");
+      if (response != null) {
+        Get.snackbar(
+          "Success",
+          "Dépense supprimée avec succès",
+          colorText: Colors.white,
+          backgroundColor: Colors.green,
+        );
+        fetchDepenses(); // Refresh the list after deletion
+      } else {
+        Get.snackbar(
+          "Failed",
+          "Échec de la suppression de la dépense",
+          colorText: Colors.white,
+          backgroundColor: Colors.redAccent,
+        );
+      }
+    } catch (e) {
+      Get.snackbar(
+        "Error",
+        "Erreur lors de la suppression de la dépense",
+        colorText: Colors.white,
+        backgroundColor: Colors.redAccent,
+      );
+      logger.e("Error deleting depense: $e");
+    } finally {
+      _isLoading.value = false;
     }
   }
 }

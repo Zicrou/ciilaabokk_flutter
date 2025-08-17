@@ -31,10 +31,11 @@ class Depenses {
 
   Map<String, dynamic> toJson() {
     final Map<String, dynamic> data = new Map<String, dynamic>();
+    data['id'] = this.id;
     data['libelle'] = this.libelle;
     data['montant'] = this.montant;
     data['user_id'] = this.userId;
-    logger.i("Depenses toJson: ${data}");
+    logger.i("Depenses toJson from Depense model: ${data}");
     return data;
   }
 
