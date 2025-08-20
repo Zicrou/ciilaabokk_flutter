@@ -111,9 +111,47 @@ class DepensesScreen extends StatelessWidget {
               ),
             ),
           ),
+          SizedBox(height: 2),
+
+          Obx(() {
+            if (controller.listeDepenses.isEmpty) {
+              return SizedBox.shrink();
+            }
+            return Card(
+              elevation: 4,
+              margin: EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+              child: ListTile(
+                title: Text(
+                  "Total dépense de la journée: ${controller.listeDepenses[0].totalOfTheDay}FCFA",
+                  style: TextStyle(fontWeight: FontWeight.bold),
+                ),
+                subtitle: Text.rich(
+                  TextSpan(
+                    style: TextStyle(color: Colors.black),
+                    children: [
+                      // TextSpan(
+                      //   text:
+                      //       'Vente total: ${controller.listeDepenses[0].totalVenteOfTheDay}FCFA\n',
+                      // ),
+                      // TextSpan(
+                      //   text:
+                      //       'Réparation: ${controller.listeDepenses[0].totalReparationOfTheDay} FCFA\n',
+                      // ),
+                      // TextSpan(
+                      //   text:
+                      //       'Dépense total:${controller.listeDepenses[0].depenseTotal} FCFA',
+                      // ),
+                    ],
+                  ),
+                ),
+              ),
+            );
+          }),
+          SizedBox(height: 2),
 
           Expanded(
             child: Obx(() {
+              print(controller.listeDepenses.isEmpty);
               {
                 if (controller.isLoading.value) {
                   return Center(child: CircularProgressIndicator());

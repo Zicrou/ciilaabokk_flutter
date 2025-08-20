@@ -5,6 +5,7 @@ import 'package:get/get.dart';
 class DepensesInfo {
   RxList<Depenses> depenses = <Depenses>[].obs;
   String? status;
+  int? totalOfTheDay;
 
   DepensesInfo({required this.depenses, this.status});
 
@@ -17,6 +18,7 @@ class DepensesInfo {
       });
     }
     status = json['status'];
+    totalOfTheDay = json['totalOfTheDay'];
   }
 
   Map<String, dynamic> toJson() {
@@ -31,6 +33,6 @@ class DepensesInfo {
   @override
   String toString() {
     // TODO: implement toString
-    return "Depense Info: Depense ${depenses}, Statut: ${status}";
+    return "Depense Info: Depense ${depenses}, Statut: ${status}, Dépense total: ${totalOfTheDay}";
   }
 }
