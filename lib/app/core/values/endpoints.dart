@@ -12,3 +12,4 @@ const venteUpdateEndpoint = '$baseUrl/api/V1/ventes/';
 const updateDepenses = '$baseUrl/api/V1/depenses/';
 const depenseDeleteEndpoint = '$baseUrl/api/V1/depenses/';
 const typesListEndpoint = '$baseUrl/api/V1/types/';
+const produitsListEndpoint = '$baseUrl/api/V1/produits';

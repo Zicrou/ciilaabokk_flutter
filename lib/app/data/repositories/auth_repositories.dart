@@ -24,7 +24,7 @@ class AuthRepositories {
       logger.i(
         'Auth Repositories: login with phone => $phone and password => $password',
       );
-      final response = await _apiProvider.post(
+      final response = await _apiProvider.postN(
         loginEndpoint,
         {'phone_number': phone, 'password': password},
         //options: Options(headers: {'Content-type': 'application/json'}),
@@ -62,7 +62,7 @@ class AuthRepositories {
       logger.i(
         'Auth Repositories: login with phone => $phone and password => $password',
       );
-      final response = await _apiProvider.post(
+      final response = await _apiProvider.postN(
         registerEndPoint,
         {'name': name, 'phone_number': phone, 'password': password},
         //options: Options(headers: {'Content-type': 'application/json'}),

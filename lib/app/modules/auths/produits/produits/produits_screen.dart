@@ -6,10 +6,11 @@ import 'package:ciilaabokk/app/data/providers/auth_providers.dart';
 import 'package:ciilaabokk/app/data/repositories/auth_repositories.dart';
 import 'package:ciilaabokk/app/modules/auths/depenses/depenses/depenses_screen.dart';
 import 'package:ciilaabokk/app/modules/auths/login/login_screen.dart';
-import 'package:ciilaabokk/app/modules/auths/produits/produits/produits_screen.dart';
+import 'package:ciilaabokk/app/modules/auths/produits/produits/produits_controller.dart';
 import 'package:ciilaabokk/app/modules/auths/ventes/new_vente/vente_controller.dart';
 import 'package:ciilaabokk/app/modules/auths/ventes/new_vente/vente_screen.dart';
 import 'package:ciilaabokk/app/modules/auths/ventes/ventes/ventes_controller.dart';
+import 'package:ciilaabokk/app/modules/auths/ventes/ventes/ventes_screen.dart';
 import 'package:ciilaabokk/controller/auth_controller.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
@@ -19,16 +20,11 @@ import 'package:logger/web.dart';
 // ...existing code...
 final logger = Logger();
 
-class VentesScreen extends StatelessWidget {
-  final VentesController controller = Get.put(VentesController());
-  // final Vente vente;
-  // const VentesScreen(this.vente, {Key? key}) : super(key: key);
-  //final UserInfo userInfo = Get.arguments;
+class ProduitsScreen extends StatelessWidget {
+  final ProduitsController controller = Get.put(ProduitsController());
 
   @override
   Widget build(BuildContext context) {
-    //final VentesController controller = Get.put(VentesController());
-
     return Scaffold(
       floatingActionButton: FloatingActionButton(
         backgroundColor: Color.fromARGB(255, 0, 173, 253),
@@ -38,7 +34,7 @@ class VentesScreen extends StatelessWidget {
       ),
       appBar: AppBar(
         title: Text(
-          "Liste des ventes",
+          "Liste des produits",
           style: TextStyle(
             fontSize: 32,
             fontFamily: 'avenir',
@@ -101,9 +97,9 @@ class VentesScreen extends StatelessWidget {
                   ),
                   TextButton(
                     onPressed: () {
-                      Get.offAll(ProduitsScreen());
+                      Get.offAll(VentesScreen());
                     },
-                    child: Text("Produits"),
+                    child: Text("Ventes"),
                   ),
                 ],
               ),
@@ -112,7 +108,7 @@ class VentesScreen extends StatelessWidget {
           SizedBox(height: 2),
 
           Obx(() {
-            if (controller.ventesList.isEmpty) {
+            if (controller.produitsList.isEmpty) {
               return SizedBox.shrink();
             }
             return Card(
@@ -120,27 +116,8 @@ class VentesScreen extends StatelessWidget {
               margin: EdgeInsets.symmetric(horizontal: 16, vertical: 8),
               child: ListTile(
                 title: Text(
-                  "Total journée: ${controller.ventesList[0].totalOfTheDay}FCFA",
+                  "Total des produits: ${controller.produitsList[0].produits!.length}",
                   style: TextStyle(fontWeight: FontWeight.bold),
-                ),
-                subtitle: Text.rich(
-                  TextSpan(
-                    style: TextStyle(color: Colors.black),
-                    children: [
-                      TextSpan(
-                        text:
-                            'Vente total: ${controller.ventesList[0].totalVenteOfTheDay}FCFA\n',
-                      ),
-                      TextSpan(
-                        text:
-                            'Réparation: ${controller.ventesList[0].totalReparationOfTheDay} FCFA\n',
-                      ),
-                      TextSpan(
-                        text:
-                            'Dépense total:${controller.ventesList[0].depenseTotal} FCFA',
-                      ),
-                    ],
-                  ),
                 ),
               ),
             );
@@ -153,13 +130,13 @@ class VentesScreen extends StatelessWidget {
               }
               // Default widget if none of the above conditions are met
               return ListView.builder(
-                itemCount: controller.ventesList.length,
+                itemCount: controller.produitsList.length,
                 itemBuilder: (context, index) {
-                  final vente = controller.ventesList[index];
+                  final produit = controller.produitsList[index];
 
                   return Column(
-                    children: vente.ventes.map((v) {
-                      var total = (v.prix!) * (v.nombre!);
+                    children: produit.produits!.map((p) {
+                      var total = (p.montant!) * (p.nombre!);
                       return Card(
                         margin: EdgeInsets.symmetric(
                           horizontal: 16,
@@ -167,18 +144,16 @@ class VentesScreen extends StatelessWidget {
                         ),
                         child: ListTile(
                           title: Text(
-                            v.designation?.isNotEmpty == true
-                                ? v.designation!
-                                : 'Produit ID: ${v.produitId}',
+                            p.designation!,
                             style: TextStyle(fontWeight: FontWeight.bold),
                           ),
                           subtitle: Text.rich(
                             TextSpan(
                               style: TextStyle(color: Colors.black),
                               children: [
-                                TextSpan(text: 'Type: ${v.types.name}\n'),
-                                TextSpan(text: 'Nombre: ${v.nombre}\n'),
-                                TextSpan(text: 'Prix: ${v.prix} FCFA\n'),
+                                TextSpan(text: 'Impage produit: ${p.image}\n'),
+                                TextSpan(text: 'Nombre: ${p.nombre}\n'),
+                                TextSpan(text: 'Montant: ${p.montant} FCFA\n'),
                                 TextSpan(
                                   text: '\nTotal:${total} FCFA',
                                   style: TextStyle(fontWeight: FontWeight.bold),
@@ -189,7 +164,7 @@ class VentesScreen extends StatelessWidget {
                           leading: CircleAvatar(
                             backgroundColor: Color.fromARGB(255, 0, 173, 253),
                             child: Text(
-                              v.nombre.toString(),
+                              p.nombre.toString(),
                               style: TextStyle(color: Colors.white),
                             ),
                           ),
@@ -202,17 +177,17 @@ class VentesScreen extends StatelessWidget {
                                   color: Color.fromARGB(255, 4, 38, 255),
                                 ),
                                 onPressed: () {
-                                  logger.i("ok pour modifier la vente ${v.id}");
-                                  Get.to(() => VenteScreen(), arguments: v);
+                                  logger.i("ok pour modifier la vente ${p.id}");
+                                  Get.to(() => VenteScreen(), arguments: p);
                                 },
                               ),
                               IconButton(
                                 icon: Icon(Icons.delete, color: Colors.red),
                                 onPressed: () {
                                   logger.i(
-                                    "ok pour supprimer la vente ${v.id}",
+                                    "ok pour supprimer la vente ${p.id}",
                                   );
-                                  controller.deleteVente(v.id!);
+                                  controller.deleteVente(p.id!);
                                 },
                               ),
                             ],
