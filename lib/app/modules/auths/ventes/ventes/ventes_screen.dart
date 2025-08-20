@@ -1,6 +1,7 @@
 import 'package:ciilaabokk/app/data/models/login.dart';
 import 'package:ciilaabokk/app/data/models/user_info.dart';
 import 'package:ciilaabokk/app/data/models/vente.dart';
+import 'package:ciilaabokk/app/data/models/vente_info.dart';
 import 'package:ciilaabokk/app/data/providers/auth_providers.dart';
 import 'package:ciilaabokk/app/data/repositories/auth_repositories.dart';
 import 'package:ciilaabokk/app/modules/auths/depenses/depenses/depenses_screen.dart';
@@ -26,11 +27,12 @@ class VentesScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     //final VentesController controller = Get.put(VentesController());
+
     return Scaffold(
       floatingActionButton: FloatingActionButton(
         backgroundColor: Color.fromARGB(255, 0, 173, 253),
 
-        onPressed: () => Get.to(() => VenteScreen()),
+        onPressed: () => Get.offAll(() => VenteScreen()),
         child: Center(child: Icon(Icons.add, size: 30, color: Colors.white)),
       ),
       appBar: AppBar(
@@ -80,12 +82,13 @@ class VentesScreen extends StatelessWidget {
         ],
       ),
       backgroundColor: Color(0xFFF5F5F5),
+
       body: Column(
         children: [
           Container(
-            margin: EdgeInsets.all(16),
+            margin: EdgeInsets.all(4),
             child: Padding(
-              padding: const EdgeInsets.all(16),
+              padding: const EdgeInsets.all(4),
               child: Row(
                 children: [
                   Text("${controller.authProvider.user.user?.name}"),
@@ -99,13 +102,47 @@ class VentesScreen extends StatelessWidget {
               ),
             ),
           ),
+          SizedBox(height: 2),
+
+          Obx(() {
+            if (controller.ventesList.isEmpty) {
+              return SizedBox.shrink();
+            }
+            return Card(
+              elevation: 4,
+              margin: EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+              child: ListTile(
+                title: Text(
+                  "Total journée: ${controller.ventesList[0].totalOfTheDay}FCFA",
+                  style: TextStyle(fontWeight: FontWeight.bold),
+                ),
+                subtitle: Text.rich(
+                  TextSpan(
+                    style: TextStyle(color: Colors.black),
+                    children: [
+                      TextSpan(
+                        text:
+                            'Vente total: ${controller.ventesList[0].totalVenteOfTheDay}FCFA\n',
+                      ),
+                      TextSpan(
+                        text:
+                            'Réparation: ${controller.ventesList[0].totalReparationOfTheDay} FCFA\n',
+                      ),
+                      TextSpan(
+                        text:
+                            'Dépense total:${controller.ventesList[0].depenseTotal} FCFA',
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+            );
+          }),
+          SizedBox(height: 2),
           Expanded(
             child: Obx(() {
               if (controller.isLoading.value) {
                 return Center(child: CircularProgressIndicator());
-              }
-              if (controller.ventesList.isEmpty) {
-                return Center(child: Text("Aucune vente trouvée."));
               }
               // Default widget if none of the above conditions are met
               return ListView.builder(

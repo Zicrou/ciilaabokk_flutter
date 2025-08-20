@@ -5,7 +5,6 @@ import 'package:ciilaabokk/app/data/repositories/types_repositories.dart';
 import 'package:ciilaabokk/app/data/repositories/ventes_repository.dart';
 import 'package:ciilaabokk/app/data/services/auth_services.dart';
 import 'package:ciilaabokk/app/data/services/remote_services.dart';
-import 'package:ciilaabokk/app/modules/auths/depenses/new_depense/vente_controller.dart';
 import 'package:ciilaabokk/app/modules/auths/ventes/ventes/ventes_controller.dart';
 import 'package:ciilaabokk/app/modules/auths/ventes/ventes/ventes_screen.dart';
 import 'package:flutter/material.dart';
@@ -156,8 +155,10 @@ class VenteController extends GetxController {
           backgroundColor: Colors.green,
         );
         // Get.offAll(VentesScreen());
-        VentesController().fetchVentes();
-        Future.delayed(Duration(seconds: 1), () {
+
+        await VentesController().fetchVentes();
+
+        Future.delayed(Duration(seconds: 2), () {
           Get.offAll(VentesScreen());
         });
       } else {
