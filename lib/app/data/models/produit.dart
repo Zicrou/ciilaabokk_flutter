@@ -1,4 +1,4 @@
-class Produits {
+class Produit {
   int? id;
   String? designation;
   int? nombre;
@@ -9,7 +9,7 @@ class Produits {
   String? createdAt;
   String? updatedAt;
 
-  Produits({
+  Produit({
     this.id,
     this.designation,
     this.nombre,
@@ -21,7 +21,7 @@ class Produits {
     this.updatedAt,
   });
 
-  Produits.fromJson(Map<String, dynamic> json) {
+  Produit.fromJson(Map<String, dynamic> json) {
     id = json['id'];
     designation = json['designation'];
     nombre = json['nombre'];
@@ -40,7 +40,7 @@ class Produits {
     data['nombre'] = this.nombre;
     data['montant'] = this.montant;
     data['image'] = this.image;
-    // data['user_id'] = this.userId;
+    data['user_id'] = this.userId;
     return data;
   }
 }

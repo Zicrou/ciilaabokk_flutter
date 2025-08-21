@@ -1,8 +1,8 @@
-import 'package:ciilaabokk/app/data/models/produits.dart';
+import 'package:ciilaabokk/app/data/models/produit.dart';
 import 'package:get/get.dart';
 
 class ProduitsInfo {
-  RxList<Produits>? produits = <Produits>[].obs;
+  RxList<Produit>? produits = <Produit>[].obs;
   String? status;
 
   ProduitsInfo({this.produits, this.status});
@@ -11,7 +11,7 @@ class ProduitsInfo {
     if (json['produits'] != null) {
       produits = produits;
       json['produits'].forEach((p) {
-        produits!.add(new Produits.fromJson(p));
+        produits!.add(new Produit.fromJson(p));
       });
     }
     status = json['status'];

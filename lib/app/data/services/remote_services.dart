@@ -1,16 +1,12 @@
 import 'dart:convert';
-
-import 'package:ciilaabokk/app/data/models/depenses.dart';
 import 'package:ciilaabokk/app/data/models/depensesInfo.dart';
-import 'package:ciilaabokk/app/data/models/user.dart';
+import 'package:ciilaabokk/app/data/models/produit.dart';
+import 'package:ciilaabokk/app/data/models/produitsInfo.dart';
 import 'package:ciilaabokk/app/data/models/user_info.dart';
 import 'package:ciilaabokk/app/data/models/user_register.dart';
 import 'package:ciilaabokk/app/data/models/vente.dart';
-import 'package:ciilaabokk/app/data/models/vente_info.dart';
 import 'package:ciilaabokk/app/data/models/ventes.dart' hide Vente;
 import 'package:ciilaabokk/app/data/providers/auth_providers.dart';
-import 'package:ciilaabokk/app/modules/auths/depenses/new_depense/vente_controller.dart';
-import 'package:ciilaabokk/app/modules/auths/ventes/ventes/ventes_screen.dart';
 import 'package:dio/dio.dart';
 import 'package:get/get.dart';
 import 'package:logger/logger.dart';
@@ -21,6 +17,107 @@ class RemoteServices {
   final AuthProvider authProvider = Get.find<AuthProvider>();
 
   static final Dio _dio = Dio();
+
+  Future<Produit> createProduit(String libelle, int montant, int nombre) async {
+    final userId = authProvider.user.user?.id;
+    logger.w(userId);
+    if (userId == null) {
+      throw Exception("User ID is null — user is not logged in.");
+    }
+    var body = {
+      "designation": libelle,
+      "montant": montant,
+      "user_id": userId,
+      'nombre': nombre,
+    };
+    var bodyToJson = jsonEncode(body);
+    print(bodyToJson);
+    try {
+      final token = authProvider.authToken;
+      logger.i("Token from Authprovider: ${token}");
+      final response = await _dio.post(
+        'http://10.0.2.2:8000/api/V1/produits',
+        data: body,
+        options: Options(
+          headers: {
+            'Content-type': 'application/json',
+            'Accept': 'application/json',
+            'Authorization': 'Bearer $token',
+          },
+        ),
+      );
+
+      logger.i("Response from remote service: ${response.data})");
+
+      if (response.statusCode == 200 && response.data != null) {
+        // Dio automatically parses JSON, so we use response.data
+        var produits = Produit.fromJson(response.data);
+        //ventesList.assignAll([ventes]);
+        logger.i(
+          "Response Produit from Remote Services: ${produits.toString()}",
+        );
+        logger.i("Produit: ${produits}");
+        return produits;
+      } else {
+        throw Exception("Failed to load Produit with Dio");
+      }
+    } catch (e) {
+      throw Exception("Error fetching Produit: ${e.toString()}");
+    }
+  }
+
+  Future<Produit> updateProduits(
+    String designation,
+    int nombre,
+    int montant,
+    int produitId,
+  ) async {
+    final userId = authProvider.user.user?.id;
+    logger.w(userId);
+    if (userId == null) {
+      throw Exception("User ID is null — user is not logged in.");
+    }
+    var body = {
+      "designation": designation,
+      "montant": int.parse(montant.toString()),
+      "user_id": userId,
+      "nombre": int.parse(nombre.toString()),
+    };
+    var bodyToJson = jsonEncode(body);
+    logger.i("Body from params: ${body}, ProduitId: ${produitId}");
+    print(bodyToJson);
+    try {
+      final token = authProvider.authToken;
+      logger.i("Token from Authprovider: ${token}");
+      final response = await _dio.put(
+        'http://10.0.2.2:8000/api/V1/produits/${produitId}',
+        data: body,
+        options: Options(
+          headers: {
+            'Content-type': 'application/json',
+            'Accept': 'application/json',
+            'Authorization': 'Bearer $token',
+          },
+        ),
+      );
+
+      logger.i("Response from remote service: ${response.data})");
+
+      if (response.statusCode == 200 && response.data != null) {
+        // Dio automatically parses JSON, so we use response.data
+        var produitUpdated = Produit.fromJson(response.data);
+        logger.i(
+          "Response Depense from Remote Services: ${produitUpdated.toString()}",
+        );
+        logger.i("Vente: ${produitUpdated}");
+        return produitUpdated;
+      } else {
+        throw Exception("Failed to load Produit with Dio");
+      }
+    } catch (e) {
+      throw Exception("Error Update Produit: ${e.toString()}");
+    }
+  }
 
   Future<Vente> updateVente(int id, Vente vente) async {
     final userId = authProvider.user.user?.id;
@@ -60,15 +157,15 @@ class RemoteServices {
         // Dio automatically parses JSON, so we use response.data
         var venteUpdated = Vente.fromJson(response.data);
         logger.i(
-          "Response Depense from Remote Services: ${venteUpdated.toString()}",
+          "Response Produit from Remote Services: ${venteUpdated.toString()}",
         );
-        logger.i("Vente: ${venteUpdated}");
+        logger.i("Produit: ${venteUpdated}");
         return vente;
       } else {
-        throw Exception("Failed to load Vente with Dio");
+        throw Exception("Failed to load produit with Dio");
       }
     } catch (e) {
-      throw Exception("Error Update vente: ${e.toString()}");
+      throw Exception("Error Update produit: ${e.toString()}");
     }
   }
 

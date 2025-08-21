@@ -16,7 +16,7 @@ class ProduitsRepositories {
   final _apiProvider = Get.find<ApiProvider>();
 
   Future<ProduitsInfo> listProduits() async {
-    final response = await _apiProvider.get(produitsListEndpoint);
+    final response = await _apiProvider.get(produitsEndpoint);
     logger.i("Response: ${response}");
     //final ventesResponse = VenteResponse.fromJson(response.data);
     return ProduitsInfo.fromJson(response);
@@ -25,7 +25,7 @@ class ProduitsRepositories {
   Future createProduits(Map<String, dynamic> json) async {
     try {
       logger.i("Json from Repositories: ${json}");
-      final res = await _apiProvider.post(createDepenses, json);
+      final res = await _apiProvider.post(produitsEndpoint, json);
       logger.w('DepensesRepositories: Create depense response: $res');
       return res;
     } on BadRequestException {
@@ -33,20 +33,20 @@ class ProduitsRepositories {
     }
   }
 
-  Future updateProduits(int id, Map<String, dynamic> json) async {
+  Future updateProduit(int id, Map<String, dynamic> json) async {
     var res;
     try {
-      logger.i("Json from Repositories: $updateDepenses$id'");
-      res = await _apiProvider.put('$updateDepenses$id', json);
-      logger.i('Update Depense response: $res.StatusCode');
+      logger.i("Json from Repositories: $produitsEndpoint$id'");
+      res = await _apiProvider.put('$produitsEndpoint$id', json);
+      logger.i('Update Produit response: $res.StatusCode');
       if (res == null) {
         res = null;
-        throw FetchDataException('Update depense failed');
+        throw FetchDataException('Update produit failed');
       }
       return res;
     } on FetchDataException catch (e) {
       logger.e("FetchDataException: ${e.message}");
-      logger.i('Update Depense response: $res');
+      logger.i('Update Produit response: $res');
       return res = null;
     } on BadRequestException {
       rethrow;

@@ -26,10 +26,10 @@ class ProduitsController extends GetxController {
   void onInit() {
     super.onInit();
     //fetchVentes();
-    fetchVentes();
+    fetchProduits();
   }
 
-  Future<void> fetchVentes() async {
+  Future<void> fetchProduits() async {
     isLoading(true);
     try {
       // var ventes = await RemoteServices.fetchVentes();
@@ -51,7 +51,7 @@ class ProduitsController extends GetxController {
       isLoading(true);
       await _produitsRepositories.deleteProduits(id);
       logger.i("Vente with ID $id deleted successfully.");
-      fetchVentes(); // Refresh the list after deletion
+      fetchProduits(); // Refresh the list after deletion
       Get.snackbar(
         "Succès",
         "Vente supprimée avec succès",

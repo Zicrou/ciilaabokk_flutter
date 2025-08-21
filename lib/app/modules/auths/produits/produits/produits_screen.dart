@@ -6,6 +6,7 @@ import 'package:ciilaabokk/app/data/providers/auth_providers.dart';
 import 'package:ciilaabokk/app/data/repositories/auth_repositories.dart';
 import 'package:ciilaabokk/app/modules/auths/depenses/depenses/depenses_screen.dart';
 import 'package:ciilaabokk/app/modules/auths/login/login_screen.dart';
+import 'package:ciilaabokk/app/modules/auths/produits/new_produit/produit_screen.dart';
 import 'package:ciilaabokk/app/modules/auths/produits/produits/produits_controller.dart';
 import 'package:ciilaabokk/app/modules/auths/ventes/new_vente/vente_controller.dart';
 import 'package:ciilaabokk/app/modules/auths/ventes/new_vente/vente_screen.dart';
@@ -29,7 +30,7 @@ class ProduitsScreen extends StatelessWidget {
       floatingActionButton: FloatingActionButton(
         backgroundColor: Color.fromARGB(255, 0, 173, 253),
 
-        onPressed: () => Get.offAll(() => VenteScreen()),
+        onPressed: () => Get.offAll(() => ProduitScreen()),
         child: Center(child: Icon(Icons.add, size: 30, color: Colors.white)),
       ),
       appBar: AppBar(
@@ -151,7 +152,7 @@ class ProduitsScreen extends StatelessWidget {
                             TextSpan(
                               style: TextStyle(color: Colors.black),
                               children: [
-                                TextSpan(text: 'Impage produit: ${p.image}\n'),
+                                TextSpan(text: 'Images produit: ${p.image}\n'),
                                 TextSpan(text: 'Nombre: ${p.nombre}\n'),
                                 TextSpan(text: 'Montant: ${p.montant} FCFA\n'),
                                 TextSpan(
@@ -178,7 +179,7 @@ class ProduitsScreen extends StatelessWidget {
                                 ),
                                 onPressed: () {
                                   logger.i("ok pour modifier la vente ${p.id}");
-                                  Get.to(() => VenteScreen(), arguments: p);
+                                  Get.to(() => ProduitScreen(), arguments: p);
                                 },
                               ),
                               IconButton(
