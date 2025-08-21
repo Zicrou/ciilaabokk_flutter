@@ -46,7 +46,7 @@ class ProduitsController extends GetxController {
     }
   }
 
-  Future<void> deleteVente(int id) async {
+  Future<void> deleteProduits(int id) async {
     try {
       isLoading(true);
       await _produitsRepositories.deleteProduits(id);

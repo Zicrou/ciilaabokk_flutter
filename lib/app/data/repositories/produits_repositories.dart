@@ -56,8 +56,8 @@ class ProduitsRepositories {
   Future deleteProduits(int id) async {
     try {
       logger.i("Id from Repositories: ${id}");
-      final res = await _apiProvider.delete('$depenseDeleteEndpoint$id');
-      logger.i('$depenseDeleteEndpoint$id');
+      final res = await _apiProvider.delete('$produitsEndpoint$id');
+      logger.i('$produitsEndpoint$id');
       logger.w('Depenses Repositories: Delete Depense response: $res');
       return res;
     } on BadRequestException {

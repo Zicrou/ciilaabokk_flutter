@@ -187,7 +187,7 @@ class ProduitsScreen extends StatelessWidget {
                                   logger.i(
                                     "ok pour supprimer la vente ${p.id}",
                                   );
-                                  controller.deleteVente(p.id!);
+                                  controller.deleteProduits(p.id!);
                                 },
                               ),
                             ],
