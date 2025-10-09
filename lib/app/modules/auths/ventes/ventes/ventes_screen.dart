@@ -5,11 +5,15 @@ import 'package:ciilaabokk/app/data/models/vente_info.dart';
 import 'package:ciilaabokk/app/data/providers/auth_providers.dart';
 import 'package:ciilaabokk/app/data/repositories/auth_repositories.dart';
 import 'package:ciilaabokk/app/modules/auths/depenses/depenses/depenses_screen.dart';
+import 'package:ciilaabokk/app/modules/auths/journaux/journaux/journal_screen.dart';
 import 'package:ciilaabokk/app/modules/auths/login/login_screen.dart';
+import 'package:ciilaabokk/app/modules/auths/produits/new_produit/produit_controller.dart';
+import 'package:ciilaabokk/app/modules/auths/produits/produits/produits_controller.dart';
 import 'package:ciilaabokk/app/modules/auths/produits/produits/produits_screen.dart';
 import 'package:ciilaabokk/app/modules/auths/ventes/new_vente/vente_controller.dart';
 import 'package:ciilaabokk/app/modules/auths/ventes/new_vente/vente_screen.dart';
 import 'package:ciilaabokk/app/modules/auths/ventes/ventes/ventes_controller.dart';
+import 'package:ciilaabokk/app/utils/messages.dart';
 import 'package:ciilaabokk/controller/auth_controller.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
@@ -21,6 +25,7 @@ final logger = Logger();
 
 class VentesScreen extends StatelessWidget {
   final VentesController controller = Get.put(VentesController());
+  final ProduitController produitController = Get.put(ProduitController());
   // final Vente vente;
   // const VentesScreen(this.vente, {Key? key}) : super(key: key);
   //final UserInfo userInfo = Get.arguments;
@@ -101,6 +106,12 @@ class VentesScreen extends StatelessWidget {
                   ),
                   TextButton(
                     onPressed: () {
+                      Get.offAll(JournalScreen());
+                    },
+                    child: Text("Journal"),
+                  ),
+                  TextButton(
+                    onPressed: () {
                       Get.offAll(ProduitsScreen());
                     },
                     child: Text("Produits"),
@@ -156,7 +167,6 @@ class VentesScreen extends StatelessWidget {
                 itemCount: controller.ventesList.length,
                 itemBuilder: (context, index) {
                   final vente = controller.ventesList[index];
-
                   return Column(
                     children: vente.ventes.map((v) {
                       var total = (v.prix!) * (v.nombre!);
@@ -169,7 +179,7 @@ class VentesScreen extends StatelessWidget {
                           title: Text(
                             v.designation?.isNotEmpty == true
                                 ? v.designation!
-                                : 'Produit ID: ${v.produitId}',
+                                : 'Produit ID: ${v.produit.designation}',
                             style: TextStyle(fontWeight: FontWeight.bold),
                           ),
                           subtitle: Text.rich(
@@ -201,9 +211,43 @@ class VentesScreen extends StatelessWidget {
                                   Icons.edit,
                                   color: Color.fromARGB(255, 4, 38, 255),
                                 ),
-                                onPressed: () {
-                                  logger.i("ok pour modifier la vente ${v.id}");
-                                  Get.to(() => VenteScreen(), arguments: v);
+                                onPressed: () async {
+                                  produitController.isLoading(true);
+                                  // if (produitController.isLoading.value ==
+                                  //     true) {
+                                  //   CircularProgressIndicator;
+                                  // }
+
+                                  var produitFromVenteList;
+                                  try {
+                                    if (v.produit == null) {
+                                      produitFromVenteList = null;
+                                    } else {
+                                      produitFromVenteList =
+                                          await produitController.getProduit(
+                                            v.produit.id,
+                                          );
+                                      logger.w(
+                                        "Produit: ${produitFromVenteList == null}",
+                                      );
+                                    }
+
+                                    logger.i(
+                                      "ok pour modifier la vente ${v} et Produit ${produitFromVenteList}",
+                                    );
+                                    Get.to(
+                                      () => VenteScreen(),
+                                      arguments: {
+                                        "vente": v,
+                                        "produit": produitFromVenteList,
+                                      },
+                                    );
+                                  } catch (e) {
+                                    throw errorMessage("${e.toString()}");
+                                  } finally {
+                                    produitController.isLoading(false);
+                                  }
+                                  // verifier si le produit de la vente existe dans produitList;
                                 },
                               ),
                               IconButton(

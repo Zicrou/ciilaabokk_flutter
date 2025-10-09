@@ -13,6 +13,7 @@ import 'package:ciilaabokk/app/modules/auths/depenses/depenses/depenses_screen.d
 import 'package:ciilaabokk/app/modules/auths/depenses/new_depense/depense_screen.dart';
 import 'package:ciilaabokk/app/modules/auths/ventes/ventes/ventes_controller.dart';
 import 'package:ciilaabokk/app/modules/auths/ventes/ventes/ventes_screen.dart';
+import 'package:ciilaabokk/app/utils/messages.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:logger/web.dart';
@@ -34,84 +35,50 @@ class DepenseController extends GetxController {
   final DepensesRepositories depensesRepositories =
       Get.find<DepensesRepositories>();
 
-  // var isLibelleValid = true.obs;
-  // var isMontantValid = true.obs;
-  // var isUserIdValid = true.obs;
-
-  //var ventes = [].obs; // Observable list to hold ventes
-
-  //final _isLoading = false.obs;
-
-  // VenteController() {
-  //   final authProvider = Get.find<AuthProvider>();
-  //   user_id = authProvider.user?.user?.id;
-  // }
-
   @override
   void onInit() {
     super.onInit();
-    //getTypes();
-    // Initialize any necessary data or state here
   }
-
-  //void getTypes() async {}
 
   void createDepense() async {
     // Implement the logic to create a vente
     // You can access the controllers like this:
-    //_isLoading = true.obs;
     if (depensesKeyForm.currentState!.validate()) {
       depensesKeyForm.currentState!.save();
       if (user_id == null) {
-        Get.snackbar(
-          "Error",
-          "User ID is not available",
-          colorText: Colors.white,
-          backgroundColor: Colors.redAccent,
-        );
-        return;
+        errorMessage("User non trouvé");
       }
-      var response;
-      var depense = Depenses();
-      depense.libelle = libelle.text.trim();
-      depense.montant = int.tryParse(montant.text.trim());
-      depense.userId = user_id;
-      logger.i("Libelle from DepenseController: ${depense.toString()}");
-      response = await depensesRepositories.createDepense(depense.toJson());
+      _isLoading(true);
+      try {
+        var response;
+        var depense = Depenses();
+        depense.libelle = libelle.text.trim();
+        depense.montant = int.tryParse(montant.text.trim());
+        depense.userId = user_id;
+        logger.i("Libelle from DepenseController: ${depense.toString()}");
+        response = await depensesRepositories.createDepense(depense.toJson());
 
-      // logger.i("Depense: ${depense.toJson()}");
-      // var libelleValue = libelle.text.trim();
-      // var montantValue = int.tryParse(montant.text.trim());
-      // var res = RemoteServices();
-      // var response = await res.createDepense(libelleValue, montantValue!);
-      //logger.i("Response Depense: ${response.toJson()}");
-      logger.i("Res: ${response}");
-      var depenses = Depenses.fromJson(response);
-      logger.i("Depense from createDepense: ${depenses.toString()}");
-      if (depenses != null) {
-        //Depenses
-        Get.snackbar(
-          "Success",
-          "Dépense ajouter avec succés",
+        logger.i("Res: ${response}");
+        var depenses = Depenses.fromJson(response);
+        logger.i("Depense from createDepense: ${depenses.toString()}");
+        if (depenses != null) {
+          //Depenses
+          goodMessage("Dépense créée avec succés");
 
-          colorText: Colors.white,
-          backgroundColor: Colors.green,
-        );
-        Future.delayed(Duration(seconds: 1), () {
-          Get.offAll(DepensesScreen());
-        });
+          Future.delayed(Duration(seconds: 1), () {
+            Get.offAll(DepensesScreen());
+          });
 
-        // You can also reset the controllers if needed
-        // libelle.clear();
-        // montant.clear();
-      } else {
-        Get.snackbar(
-          "Failed",
-          "Ajout dépense erreur",
-
-          colorText: Colors.red,
-          backgroundColor: Colors.redAccent,
-        );
+          // You can also reset the controllers if needed
+          // libelle.clear();
+          // montant.clear();
+        } else {
+          errorMessage("Erreur");
+        }
+      } catch (e) {
+        throw "Erreur: ${e}";
+      } finally {
+        _isLoading(false);
       }
     }
   }
@@ -120,44 +87,34 @@ class DepenseController extends GetxController {
     if (depensesUpdateKeyForm.currentState!.validate()) {
       depensesUpdateKeyForm.currentState!.save();
       if (user_id == null) {
-        Get.snackbar(
-          "Error",
-          "User ID is not available",
-          colorText: Colors.white,
-          backgroundColor: Colors.redAccent,
-        );
-        return;
+        errorMessage("User non trouvé");
       }
-      depense.id = depense.id; // Ensure the ID is set for update
-      depense.libelle = libelle.text.trim();
-      depense.montant = int.tryParse(montant.text.trim());
-      depense.userId = user_id;
-      logger.i("depense from DepenseController: ${depense.toJson()}");
+      try {
+        depense.id = depense.id; // Ensure the ID is set for update
+        depense.libelle = libelle.text.trim();
+        depense.montant = int.tryParse(montant.text.trim());
+        depense.userId = user_id;
+        logger.i("depense from DepenseController: ${depense.toJson()}");
 
-      var response = await depensesRepositories.updateDepense(
-        depense.id!,
-        depense.toJson(),
-      );
+        var response = await depensesRepositories.updateDepense(
+          depense.id!,
+          depense.toJson(),
+        );
 
-      var updatedDepense = response;
-      logger.i("Response Depense updatedDepense: ${response}");
-      if (updatedDepense == null) {
-        Get.snackbar(
-          "Failed",
-          "Échec de la modification: User ou dépense non trouvée",
-          colorText: Colors.white,
-          backgroundColor: Colors.redAccent,
-        );
-      } else {
-        Get.snackbar(
-          "Success",
-          "Dépense mise à jour avec succès",
-          colorText: Colors.white,
-          backgroundColor: Colors.green,
-        );
-        Future.delayed(Duration(seconds: 1), () {
-          Get.offAll(DepensesScreen());
-        });
+        var updatedDepense = response;
+        logger.i("Response Depense updatedDepense: ${response}");
+        if (updatedDepense == null) {
+          errorMessage("Erreur: Modification dépense");
+        } else {
+          goodMessage("Dépense modifiée avec succés");
+          Future.delayed(Duration(seconds: 1), () {
+            Get.offAll(DepensesScreen());
+          });
+        }
+      } catch (e) {
+        throw "Erreur : ${e}";
+      } finally {
+        _isLoading(false);
       }
     }
   }

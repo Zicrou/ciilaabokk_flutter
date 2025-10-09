@@ -7,6 +7,7 @@ import 'package:ciilaabokk/app/modules/auths/produits/produits/produits_screen.d
 import 'package:ciilaabokk/app/modules/auths/types/types_controller.dart';
 import 'package:ciilaabokk/app/modules/auths/ventes/new_vente/vente_controller.dart';
 import 'package:ciilaabokk/app/modules/auths/ventes/ventes/ventes_screen.dart';
+import 'package:ciilaabokk/app/utils/messages.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:logger/logger.dart';
@@ -107,6 +108,9 @@ class ProduitScreen extends StatelessWidget {
                     if (!RegExp(r'^[0-9]+$').hasMatch(value)) {
                       return 'Nombres uniquement';
                     }
+                    if (int.parse(controller.montant.text) <= 0) {
+                      return "Le prix n'est pas valide";
+                    }
                     return null;
                   },
                   decoration: InputDecoration(
@@ -144,6 +148,9 @@ class ProduitScreen extends StatelessWidget {
                     }
                     if (!RegExp(r'^[0-9]+$').hasMatch(value)) {
                       return 'Nombre uniquement';
+                    }
+                    if (int.parse(value) <= 0) {
+                      return "Le nombre n'est pas valide";
                     }
                     return null;
                   },

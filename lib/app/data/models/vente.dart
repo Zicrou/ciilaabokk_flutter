@@ -1,5 +1,6 @@
 import 'dart:convert';
 
+import 'package:ciilaabokk/app/data/models/produit.dart';
 import 'package:ciilaabokk/app/data/models/types.dart';
 import 'package:ciilaabokk/app/data/services/remote_services.dart';
 import 'package:get/get.dart';
@@ -12,7 +13,7 @@ class Vente {
   int? nombre;
   int? prix;
   String? image;
-  dynamic produitId;
+  dynamic produit;
   dynamic deletedAt;
   int? userId;
   String? createdAt;
@@ -26,7 +27,7 @@ class Vente {
     this.nombre,
     this.prix,
     this.image,
-    this.produitId,
+    this.produit,
     this.deletedAt,
     this.userId,
     this.createdAt,
@@ -40,7 +41,9 @@ class Vente {
     nombre = json['nombre'];
     prix = json['prix']; //!= null ? (json['prix'] as num).toDouble() : 0.0;
     image = json['image'];
-    produitId = json['produit_id'];
+    produit = json['produit'] != null
+        ? Produit.fromJson(json['produit'])
+        : null;
     deletedAt = json['deleted_at'];
     userId = json['user_id'];
     types = json['types'] != null
@@ -58,7 +61,7 @@ class Vente {
     data['nombre'] = this.nombre;
     data['prix'] = this.prix;
     // data['image'] = this.image;
-    // data['produit_id'] = this.produitId;
+    data['produit_id'] = this.produit;
     // data['deleted_at'] = this.deletedAt;
     data['user_id'] = this.userId;
     logger.i("Types from toJson: ${types}");
@@ -70,6 +73,6 @@ class Vente {
 
   @override
   String toString() {
-    return 'Vente{id: $id, designation: $designation, nombre: $nombre, prix: $prix, image: $image, produitId: $produitId, deletedAt: $deletedAt, userId: $userId, createdAt: $createdAt, updatedAt: $updatedAt}';
+    return 'Vente{id: $id, designation: $designation, nombre: $nombre, prix: $prix, image: $image, produitId: ${produit}, Type: ${types}, deletedAt: $deletedAt, userId: $userId, createdAt: $createdAt, updatedAt: $updatedAt}';
   }
 }

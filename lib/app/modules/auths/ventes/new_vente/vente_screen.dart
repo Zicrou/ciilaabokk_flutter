@@ -1,8 +1,12 @@
+import 'package:ciilaabokk/app/data/models/produit.dart';
+import 'package:ciilaabokk/app/data/models/produitsInfo.dart';
 import 'package:ciilaabokk/app/data/models/types.dart';
 import 'package:ciilaabokk/app/data/models/vente.dart';
+import 'package:ciilaabokk/app/modules/auths/produits/produits/produits_controller.dart';
 import 'package:ciilaabokk/app/modules/auths/types/types_controller.dart';
 import 'package:ciilaabokk/app/modules/auths/ventes/new_vente/vente_controller.dart';
 import 'package:ciilaabokk/app/modules/auths/ventes/ventes/ventes_screen.dart';
+import 'package:ciilaabokk/app/utils/messages.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:logger/logger.dart';
@@ -13,33 +17,51 @@ final logger = Logger();
 class VenteScreen extends StatelessWidget {
   final VenteController venteController = Get.put(VenteController());
   final TypesController typesController = Get.put(TypesController());
-  final Vente vente = Get.arguments ?? Vente();
-  var stl = ''.obs;
+  final ProduitsController produitsController = Get.put(ProduitsController());
 
   var title = "Nouvelle Vente";
   @override
   Widget build(BuildContext context) {
-    logger.i("Liste Types : ${typesController.fetchTypes().toString()}");
-    if (vente.id != null && vente is Vente) {
+    final args = Get.arguments;
+    var produit;
+    var vente;
+    if (args == null) {
+      // print({args['produit']});
+    } else if (args['produit'] != null || args['vente'] != null) {
+      produit = args['produit'];
+      vente = args['vente'];
+    }
+    RxList<Produit?> produitList = <Produit>[].obs;
+    Future.delayed(Duration(seconds: 1), () {
+      if (produitsController.produitsList.isNotEmpty) {
+        produitsController.produitsList[0].produits!.forEach((produit) {
+          if (produit.nombre != null && produit.nombre! > 0) {
+            produitList.add(produit);
+          }
+        });
+      }
+    });
+    // logger.i("ProduitList from ProduitController: ${produitList}");
+    // var produit;
+    // if (produitsController.produitsList.isNotEmpty) {
+    //   produit = produitsController.produitsList[0].produits!
+    //       .firstWhereOrNull((p) => p.id == produitId);
+    // }
+    // else {
+    //   produitList.value = [produit];
+    // }
+
+    logger.w("Le produit a modifier: ${produit}");
+    if (vente != null && vente.id != null && vente is Vente) {
       title = "Modifier Vente";
-      venteController.designation.text = vente.designation!;
+      if (vente.designation != null) {
+        venteController.designation.text = vente.designation!;
+      }
+      if (produit != null) {
+        venteController.selectedProduit.value = produit;
+      }
       venteController.prix.text = vente.prix.toString();
       venteController.nombre.text = vente.nombre.toString();
-      // Trouver dans la liste le type correspondant à la vente
-      // Rx<Types?> typeMatch = typesController.typesList
-      //     .firstWhereOrNull((t) => t.name == vente.types)
-      //     .obs;
-      // var matchType = typesController.typesList.firstWhereOrNull(
-      //   (t) => t.name == vente.types,
-      // );
-      // if (matchType != null) {
-      //   venteController.selectedType.value = matchType;
-      //   logger.i("Selected Type: ${venteController.selectedType.value!.id}");
-      // } else {
-      //   venteController.selectedType.value = null;
-      //   logger.w("No matching type found for vente: ${vente.types?.name}");
-      // }
-
       logger.i("Selected Type: ${venteController.selectedType.value}");
     }
 
@@ -61,7 +83,7 @@ class VenteScreen extends StatelessWidget {
         child: SingleChildScrollView(
           padding: EdgeInsets.all(24),
           child: Form(
-            key: vente.id != null
+            key: vente?.id != null
                 ? venteController.updateVenteKeyForm
                 : venteController.createVenteKeyForm,
             child: Column(
@@ -77,39 +99,199 @@ class VenteScreen extends StatelessWidget {
                   textAlign: TextAlign.center,
                 ),
                 SizedBox(height: 30),
-                TextFormField(
-                  controller: venteController.designation,
-                  validator: (value) {
-                    if (value!.isEmpty) {
-                      return "Svp veuillez remplir le champs";
-                    }
-                    return null;
-                  },
-                  decoration: InputDecoration(
-                    prefixIcon: Icon(
-                      Icons.label,
-                      color: Color.fromARGB(255, 0, 173, 253),
-                    ),
 
-                    labelText: "Désignation",
-                    labelStyle: TextStyle(
-                      color: Color.fromARGB(255, 0, 173, 253),
+                Obx(() {
+                  if (vente != null && vente.produit != null) {
+                    print(
+                      "Vente id: ${vente.id} et produit id: ${vente.produit}",
+                    );
+                    if (produit != null) {
+                      return DropdownButtonFormField<Produit>(
+                        value: venteController.selectedProduit.value,
+                        decoration: InputDecoration(
+                          prefixIcon: Icon(
+                            Icons.category,
+                            color: Color.fromARGB(255, 0, 173, 253),
+                          ),
+                          labelText: " ${produit?.designation}",
+                          labelStyle: TextStyle(
+                            color: Color.fromARGB(255, 0, 173, 253),
+                          ),
+                          filled: true,
+
+                          fillColor: Colors.white,
+                          border: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(12),
+                            borderSide: BorderSide.none,
+                          ),
+
+                          focusedBorder: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(12),
+                            borderSide: BorderSide.none,
+                          ),
+                        ),
+
+                        items: [
+                          DropdownMenuItem<Produit>(
+                            value: produit,
+                            child: Text(
+                              produit.designation!,
+                              style: TextStyle(
+                                color: Color.fromARGB(255, 0, 173, 253),
+                              ),
+                            ),
+                          ),
+                        ],
+
+                        onChanged: (value) {
+                          venteController.selectedProduit.value = value!;
+                          logger.i(
+                            "Selected Type Vente Screen: ${venteController.selectedProduit.value!.id}",
+                          );
+                        },
+                      );
+                    } else {}
+                  } else if (vente != null &&
+                      vente.id != null &&
+                      vente.designation != null) {
+                  } else {
+                    return DropdownButtonFormField<Produit>(
+                      value: venteController.selectedProduit.value,
+                      decoration: InputDecoration(
+                        prefixIcon: Icon(
+                          Icons.category,
+                          color: Color.fromARGB(255, 0, 173, 253),
+                        ),
+                        labelText: "Sélectionner dans le stock",
+                        labelStyle: TextStyle(
+                          color: Color.fromARGB(255, 0, 173, 253),
+                        ),
+                        filled: true,
+                        fillColor: Colors.white,
+                        border: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(12),
+                          borderSide: BorderSide.none,
+                        ),
+                        focusedBorder: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(12),
+                          borderSide: BorderSide.none,
+                        ),
+                      ),
+                      items: produitList.isNotEmpty
+                          ? produitList.map((produit) {
+                              return DropdownMenuItem<Produit>(
+                                value: produit,
+                                child: Text(
+                                  produit!.designation!,
+                                  style: TextStyle(
+                                    color: Color.fromARGB(255, 0, 173, 253),
+                                  ),
+                                ),
+                              );
+                            }).toList()
+                          : [],
+
+                      onChanged: (value) {
+                        venteController.selectedProduit.value = value!;
+                        logger.i(
+                          "Selected Type Vente Screen: ${venteController.selectedProduit.value!.id}",
+                        );
+                      },
+                    );
+                  }
+                  return SizedBox.shrink();
+                }),
+
+                // return "Pas de produit rattaché";
+                // Obx(
+                // () => DropdownButtonFormField<Produit>(
+                //   value: venteController.selectedProduit.value,
+                //   decoration: InputDecoration(
+                //     prefixIcon: Icon(
+                //       Icons.category,
+                //       color: Color.fromARGB(255, 0, 173, 253),
+                //     ),
+                //     labelText:
+                //         " ${produit?.designation ?? 'Sélectionner dans le stock'}",
+                //     labelStyle: TextStyle(
+                //       color: Color.fromARGB(255, 0, 173, 253),
+                //     ),
+                //     filled: true,
+                //     fillColor: Colors.white,
+                //     border: OutlineInputBorder(
+                //       borderRadius: BorderRadius.circular(12),
+                //       borderSide: BorderSide.none,
+                //     ),
+                //     focusedBorder: OutlineInputBorder(
+                //       borderRadius: BorderRadius.circular(12),
+                //       borderSide: BorderSide.none,
+                //     ),
+                //   ),
+                //   // produitsController.produitsList.isNotEmpty
+                //   //     ? produitsController.produitsList[0].produits!
+                //   // if produit on modif return item with produitFromVente
+                //   // else return item with  produitsController.produitsList.isNotEmpty
+                //   //     ? produitsController.produitsList[0].produits!
+                //   items: produitsController.produitsList.isNotEmpty
+                //       ? produitsController.produitsList[0].produits!.map((
+                //           produit,
+                //         ) {
+                //           return DropdownMenuItem<Produit>(
+                //             value: produit,
+                //             child: Text(
+                //               produit.designation!,
+                //               style: TextStyle(
+                //                 color: Color.fromARGB(255, 0, 173, 253),
+                //               ),
+                //             ),
+                //           );
+                //         }).toList()
+                //       : [],
+
+                //   // value: vente.types != null
+                //   //     ? vente.types
+                //   //     : venteController.selectedType.value,
+                //   onChanged: (value) {
+                //     venteController.selectedProduit.value = value!;
+                //     logger.i(
+                //       "Selected Type Vente Screen: ${venteController.selectedProduit.value!.id}",
+                //     );
+                //   },
+                // ),
+                // ),
+                SizedBox(height: 30),
+                // vente?.designation == null
+                //     ? SizedBox.shrink() :
+                Visibility(
+                  visible: venteController.selectedProduit.value == null,
+                  child: TextFormField(
+                    controller: venteController.designation,
+                    decoration: InputDecoration(
+                      prefixIcon: Icon(
+                        Icons.label,
+                        color: Color.fromARGB(255, 0, 173, 253),
+                      ),
+
+                      labelText: "Désignation",
+                      labelStyle: TextStyle(
+                        color: Color.fromARGB(255, 0, 173, 253),
+                      ),
+                      // errorText: venteController.isDesignationValid.value
+                      //     ? null
+                      //     : "Désignation invalide",
+                      filled: true,
+                      fillColor: Colors.white,
+                      border: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(12),
+                        borderSide: BorderSide.none,
+                      ),
+                      focusedBorder: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(12),
+                        borderSide: BorderSide.none,
+                      ),
                     ),
-                    // errorText: venteController.isDesignationValid.value
-                    //     ? null
-                    //     : "Désignation invalide",
-                    filled: true,
-                    fillColor: Colors.white,
-                    border: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(12),
-                      borderSide: BorderSide.none,
-                    ),
-                    focusedBorder: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(12),
-                      borderSide: BorderSide.none,
-                    ),
+                    keyboardType: TextInputType.text,
                   ),
-                  keyboardType: TextInputType.text,
                 ),
                 SizedBox(height: 20),
                 TextFormField(
@@ -120,6 +302,10 @@ class VenteScreen extends StatelessWidget {
                     }
                     if (!RegExp(r'^[0-9]+$').hasMatch(value)) {
                       return 'Nombres uniquement';
+                    }
+                    if (int.parse(value) <= 0) {
+                      errorMessage("Le prix n'est pas valide");
+                      return null;
                     }
                     return null;
                   },
@@ -159,7 +345,10 @@ class VenteScreen extends StatelessWidget {
                     if (!RegExp(r'^[0-9]+$').hasMatch(value)) {
                       return 'Nombre uniquement';
                     }
-                    return null;
+                    if (int.parse(venteController.nombre.text) <= 0) {
+                      errorMessage("Le nombre n'est pas valide");
+                      return null;
+                    }
                   },
                   decoration: InputDecoration(
                     prefixIcon: Icon(
@@ -189,7 +378,9 @@ class VenteScreen extends StatelessWidget {
                 SizedBox(height: 20),
                 Obx(
                   () => DropdownButtonFormField<Types>(
-                    value: venteController.selectedType.value,
+                    value: venteController
+                        .selectedType
+                        .value, //Check if type is selected  on create
                     decoration: InputDecoration(
                       prefixIcon: Icon(
                         Icons.category,
@@ -212,6 +403,7 @@ class VenteScreen extends StatelessWidget {
                       ),
                     ),
                     items: typesController.typesList.map((type) {
+                      logger.i("Type value: ${type}");
                       return DropdownMenuItem<Types>(
                         value: type,
                         child: Text(
@@ -235,9 +427,30 @@ class VenteScreen extends StatelessWidget {
                   ),
                 ),
                 SizedBox(height: 20),
-                (vente.id != null && vente is Vente)
+                (vente?.id != null && vente is Vente)
                     ? ElevatedButton(
                         onPressed: () => {
+                          logger.w("ok pour modifier vente: ${vente.id}"),
+                          // if (venteController.designation.text.isNotEmpty &&
+                          //     venteController.selectedProduit.value != null) {
+                          //   errorMessage(
+                          //     "Vous devez choisir entre Produit et Désignation"
+                          //   ),
+
+                          // },
+                          // if ((int.parse(venteController.prix.text) <= 0) ||
+                          //     (int.parse(venteController.nombre.text) <= 0)) {
+                          //   errorMessage(
+                          //     'Le montant ou le nombre doît être supérieur a 0',
+                          //   )
+                          //   return;
+                          // },
+                          // if (venteController.prix.text.length < 3) {
+                          //   errorMessage(
+                          //     "Le prix doît être supérieur à 3 chiffres",
+                          //   )
+                          //   return null;
+                          // },
                           venteController.updateVente(
                             vente,
                           ), // Update the vente
@@ -256,8 +469,31 @@ class VenteScreen extends StatelessWidget {
                         ),
                       )
                     : ElevatedButton(
-                        onPressed: () => {
-                          venteController.createVente(),
+                        onPressed: () {
+                          if (venteController.selectedType.value == null) {
+                            errorMessage("Vous devez selectionner un type");
+                          }
+                          if (venteController.designation.text.isNotEmpty &&
+                              venteController.selectedProduit.value != null) {
+                            errorMessage(
+                              "Vous devez choisir entre Produit et Désignation",
+                            );
+                          }
+                          if ((int.parse(venteController.prix.text) <= 0) ||
+                              (int.parse(venteController.nombre.text) <= 0)) {
+                            errorMessage(
+                              'Le montant ou le nombre doît être supérieur a 0',
+                            );
+                            return;
+                          }
+                          if (venteController.prix.text.length < 3) {
+                            errorMessage(
+                              "Le prix doît être supérieur à 3 chiffres",
+                            );
+                            return null;
+                          }
+                          venteController.createVente();
+                          //}
                         }, //  venteController.createVente(),
                         child: Text(
                           "Créer vente",

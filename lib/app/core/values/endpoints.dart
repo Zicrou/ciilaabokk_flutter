@@ -13,3 +13,4 @@ const updateDepenses = '$baseUrl/depenses/';
 const depenseDeleteEndpoint = '$baseUrl/depenses/';
 const typesListEndpoint = '$baseUrl/types/';
 const produitsEndpoint = '$baseUrl/produits/';
+const journauxEndpoints = '$baseUrl/journal/';

@@ -9,6 +9,7 @@ import 'package:ciilaabokk/app/data/repositories/ventes_repository.dart';
 import 'package:ciilaabokk/app/data/services/auth_services.dart';
 import 'package:ciilaabokk/app/data/services/remote_services.dart';
 import 'package:ciilaabokk/app/data/services/vente_services.dart';
+import 'package:ciilaabokk/app/utils/messages.dart';
 import 'package:ciilaabokk/controller/auth_controller.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
@@ -26,7 +27,7 @@ class DepensesController extends GetxController {
   final depensesProvider = Get.find<DepensesProvider>();
   final authControler = Get.find<AuthController>();
   var user = UserInfo();
-  RxBool _isLoading = false.obs;
+  // RxBool _isLoading = false.obs;
   @override
   void onInit() {
     super.onInit();
@@ -55,36 +56,21 @@ class DepensesController extends GetxController {
   }
 
   Future<void> deleteDepense(int id) async {
+    isLoading(true);
     try {
-      _isLoading.value = true;
       var response = await _depensesRepositories.deleteDepenses(id);
       logger.i("Response Depense: ${response}");
       if (response != null) {
-        Get.snackbar(
-          "Success",
-          "Dépense supprimée avec succès",
-          colorText: Colors.white,
-          backgroundColor: Colors.green,
-        );
+        goodMessage("Dépense supprimée avec succés");
         fetchDepenses(); // Refresh the list after deletion
       } else {
-        Get.snackbar(
-          "Failed",
-          "Échec de la suppression de la dépense",
-          colorText: Colors.white,
-          backgroundColor: Colors.redAccent,
-        );
+        errorMessage("Erreur, Dépense ne peut pas être suprrimée");
       }
     } catch (e) {
-      Get.snackbar(
-        "Error",
-        "Erreur lors de la suppression de la dépense",
-        colorText: Colors.white,
-        backgroundColor: Colors.redAccent,
-      );
+      errorMessage("Erreur");
       logger.e("Error deleting depense: $e");
     } finally {
-      _isLoading.value = false;
+      isLoading(false);
     }
   }
 }

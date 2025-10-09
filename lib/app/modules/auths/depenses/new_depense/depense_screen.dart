@@ -99,6 +99,9 @@ class DepenseScreen extends StatelessWidget {
                     } else if (!RegExp(r'^[0-9]+$').hasMatch(value)) {
                       return 'Nombres uniquement';
                     }
+                    if (int.parse(value) <= 0) {
+                      return "Veuillez saisir un montant valide";
+                    }
                     return null;
                   },
                   controller: controller.montant,

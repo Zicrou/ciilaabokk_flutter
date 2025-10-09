@@ -10,7 +10,7 @@ abstract class AppColors {
   static const lightGreyColor = Color(0xffe8e6e0);
 
   //static const primaryColor = Color(0xFFa73f72);
-  static const primaryColor = Color(0xFF009ca7);
+  static const primaryColor = Color.fromARGB(255, 0, 173, 253);
   static const secondaryColor = Color(0xFF80c6ce);
   static const backgroundColor = greyColor;
   static const tertiaryColor = brownColor;

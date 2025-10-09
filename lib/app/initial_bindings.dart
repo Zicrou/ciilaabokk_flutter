@@ -4,6 +4,7 @@ import 'package:ciilaabokk/app/data/providers/depenses_provider.dart';
 import 'package:ciilaabokk/app/data/providers/storage_providers.dart';
 import 'package:ciilaabokk/app/data/repositories/auth_repositories.dart';
 import 'package:ciilaabokk/app/data/repositories/depenses_repositories.dart';
+import 'package:ciilaabokk/app/data/repositories/journaux_repositories.dart';
 import 'package:ciilaabokk/app/data/repositories/produits_repositories.dart';
 import 'package:ciilaabokk/app/data/repositories/types_repositories.dart';
 import 'package:ciilaabokk/app/data/repositories/ventes_repository.dart';
@@ -11,6 +12,7 @@ import 'package:ciilaabokk/app/data/services/auth_services.dart';
 import 'package:ciilaabokk/app/data/services/remote_services.dart';
 import 'package:ciilaabokk/app/modules/auths/depenses/depenses/depenses_controller.dart';
 import 'package:ciilaabokk/app/modules/auths/depenses/new_depense/depense_controller.dart';
+import 'package:ciilaabokk/app/modules/auths/journaux/journaux/journal_controller.dart';
 import 'package:ciilaabokk/app/modules/auths/login/login_controller.dart';
 import 'package:ciilaabokk/app/modules/auths/produits/produits/produits_controller.dart';
 import 'package:ciilaabokk/app/modules/auths/types/types_controller.dart';
@@ -25,6 +27,7 @@ class AppInitialBindings extends Bindings {
     Get.put(StorageProvider(), permanent: true);
     Get.put(AuthProvider(), permanent: true);
     Get.put(ApiProvider());
+    Get.put(JournauxRepositories());
     Get.put(DepensesProvider());
     Get.put(AuthRepositories()); // MUST come before AuthServices
     Get.put(DepensesRepositories());
@@ -42,5 +45,6 @@ class AppInitialBindings extends Bindings {
     Get.put(() => DepenseController());
     Get.lazyPut(() => DepensesController());
     Get.put(() => TypesController());
+    Get.lazyPut(() => JournalController());
   }
 }

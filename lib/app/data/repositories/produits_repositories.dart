@@ -1,6 +1,7 @@
 import 'package:ciilaabokk/app/core/exceptions/network_exceptions.dart';
 import 'package:ciilaabokk/app/core/values/endpoints.dart';
 import 'package:ciilaabokk/app/data/models/depensesInfo.dart';
+import 'package:ciilaabokk/app/data/models/produit.dart';
 import 'package:ciilaabokk/app/data/models/produitsInfo.dart';
 
 import 'package:ciilaabokk/app/data/providers/api_providers.dart';
@@ -19,6 +20,16 @@ class ProduitsRepositories {
     final response = await _apiProvider.get(produitsEndpoint);
     logger.i("Response: ${response}");
     //final ventesResponse = VenteResponse.fromJson(response.data);
+
+    return ProduitsInfo.fromJson(response);
+  }
+
+  Future<ProduitsInfo> listProduitsSupAZero() async {
+    var supAZero = 'supeAZero/';
+    final response = await _apiProvider.get('$produitsEndpoint$supAZero');
+    logger.i("Response: ${response}");
+    //final ventesResponse = VenteResponse.fromJson(response.data);
+
     return ProduitsInfo.fromJson(response);
   }
 
@@ -31,6 +42,13 @@ class ProduitsRepositories {
     } on BadRequestException {
       rethrow;
     }
+  }
+
+  Future<Produit> getProduit(id) async {
+    final response = await _apiProvider.get('$produitsEndpoint$id');
+    logger.i("Response: ${response['produit']}");
+
+    return Produit.fromJson(response['produit']);
   }
 
   Future updateProduit(int id, Map<String, dynamic> json) async {
@@ -58,7 +76,9 @@ class ProduitsRepositories {
       logger.i("Id from Repositories: ${id}");
       final res = await _apiProvider.delete('$produitsEndpoint$id');
       logger.i('$produitsEndpoint$id');
-      logger.w('Depenses Repositories: Delete Depense response: $res');
+      logger.w(
+        "Produits Repositories: Delete Produit response: ${res['errMessage']}",
+      );
       return res;
     } on BadRequestException {
       rethrow;

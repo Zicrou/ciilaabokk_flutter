@@ -10,26 +10,6 @@ import 'package:logger/logger.dart';
 final logger = Logger();
 
 class LoginScreen extends GetView<AuthController> {
-  //AuthController authController = AuthController();
-  // autif (userInfo != null) {
-  //     Get.offAll(() => VentesScreen());
-  //     Get.snackbar(
-  //       "Success",
-  //       "You are already logged in",
-  //       colorText: Colors.white,
-  //       backgroundColor: Colors.green,
-  //     );
-  //   }hContr
-
-  // void checkLoginStatus() async {
-  //   final storage = Get.find<AuthProvider>();
-  //   final token = await storage.authToken;
-  //   logger.i("token: ${token}");
-  //   if (token.isNotEmpty || storage.isAuthenticated == true) {
-  //     Get.to(() => VentesScreen());
-  //   }
-  // }
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(

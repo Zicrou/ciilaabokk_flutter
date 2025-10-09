@@ -18,6 +18,7 @@ import 'package:ciilaabokk/app/modules/auths/ventes/ventes/ventes_controller.dar
     hide logger;
 import 'package:ciilaabokk/app/modules/auths/ventes/ventes/ventes_screen.dart'
     hide logger;
+import 'package:ciilaabokk/app/utils/messages.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
@@ -58,33 +59,14 @@ class AuthController extends GetxController {
         authProvider.user = userInfo;
         //authProvider.user.token;
         Get.offAll(() => VentesScreen());
-        Get.snackbar(
-          "Success",
-          "Logged In Successfully",
-          colorText: Colors.white,
-          backgroundColor: Colors.green,
-        );
+        goodMessage("Connexion avec succés");
       }
     } catch (e) {
-      Get.snackbar(
-        "Error",
-        "Impossible de se connecter, identifiant incorrect",
-        colorText: Colors.white,
-        backgroundColor: Colors.redAccent,
-      );
+      errorMessage("Impossible de se connecter");
       logger.w("Error: ${e}");
     } finally {
       _isLoading.value = false;
     }
-
-    // } else {
-    //   Get.snackbar(
-    //     "Error",
-    //     "Logged In Failed",
-    //     colorText: Colors.white,
-    //     backgroundColor: Colors.redAccent,
-    //   );
-    // }
   }
 
   void signup() async {
@@ -99,20 +81,10 @@ class AuthController extends GetxController {
         var userRegistred = authServices.signin(name, phoneNumber, password);
         authProvider.userRegister = await userRegistred;
         Get.offAll(() => LoginScreen());
-        Get.snackbar(
-          "Success",
-          "Signed In Successfully",
-          colorText: Colors.white,
-          backgroundColor: Colors.green,
-        );
+        goodMessage("Succés: Inscription");
       }
     } catch (e) {
-      Get.snackbar(
-        "Error ${e}",
-        "Signed In Failed",
-        colorText: Colors.white,
-        backgroundColor: Colors.redAccent,
-      );
+      errorMessage("Erreur");
     } finally {
       _isLoading.value = false;
     }
@@ -125,11 +97,6 @@ class AuthController extends GetxController {
     Get.offAll(() => LoginScreen());
     authProvider.reset();
     // Rebind if need it
-    Get.snackbar(
-      "Déconnexion",
-      "Vous êtes déconnecté(e).",
-      backgroundColor: Colors.blue,
-      colorText: Colors.white,
-    );
+    goodMessage("Déconneté");
   }
 }

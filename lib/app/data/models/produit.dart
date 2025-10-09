@@ -1,3 +1,5 @@
+import 'package:ciilaabokk/app/data/models/depensesInfo.dart';
+
 class Produit {
   int? id;
   String? designation;
@@ -5,9 +7,9 @@ class Produit {
   int? montant;
   String? image;
   int? userId;
-  String? deletedAt;
-  String? createdAt;
-  String? updatedAt;
+  // String? deletedAt;
+  // String? createdAt;
+  // String? updatedAt;
 
   Produit({
     this.id,
@@ -16,9 +18,9 @@ class Produit {
     this.montant,
     this.image,
     this.userId,
-    this.deletedAt,
-    this.createdAt,
-    this.updatedAt,
+    // this.deletedAt,
+    // this.createdAt,
+    // this.updatedAt,
   });
 
   Produit.fromJson(Map<String, dynamic> json) {
@@ -28,9 +30,9 @@ class Produit {
     montant = json['montant'];
     image = json['image'];
     userId = json['user_id'];
-    deletedAt = json['deleted_at'];
-    createdAt = json['created_at'];
-    updatedAt = json['updated_at'];
+    // deletedAt = json['deleted_at'];
+    // createdAt = json['created_at'];
+    // updatedAt = json['updated_at'];
   }
 
   Map<String, dynamic> toJson() {
@@ -42,5 +44,11 @@ class Produit {
     data['image'] = this.image;
     data['user_id'] = this.userId;
     return data;
+  }
+
+  @override
+  String toString() {
+    // TODO: implement toString
+    return "ID ${id}, Designation: ${designation}, Nombre: ${nombre}, Montant: ${montant}, Image: ${image}, UserId: ${userId}";
   }
 }

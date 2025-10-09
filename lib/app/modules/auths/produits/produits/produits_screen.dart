@@ -1,3 +1,4 @@
+import 'package:ciilaabokk/app/core/values/app_colors.dart';
 import 'package:ciilaabokk/app/data/models/login.dart';
 import 'package:ciilaabokk/app/data/models/user_info.dart';
 import 'package:ciilaabokk/app/data/models/vente.dart';
@@ -26,6 +27,17 @@ class ProduitsScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    Color getColorForNombre(int? nombre) {
+      if (nombre! <= 0) {
+        return Colors.red;
+      } else if (nombre! == 1) {
+        return AppColors.backgroundColor;
+      } else {
+        return AppColors.primaryColor;
+      }
+    }
+
+    logger.i("Produit from screen: ${controller.produitsList}");
     return Scaffold(
       floatingActionButton: FloatingActionButton(
         backgroundColor: Color.fromARGB(255, 0, 173, 253),
@@ -117,7 +129,7 @@ class ProduitsScreen extends StatelessWidget {
               margin: EdgeInsets.symmetric(horizontal: 16, vertical: 8),
               child: ListTile(
                 title: Text(
-                  "Total des produits: ${controller.produitsList[0].produits!.length}",
+                  "Total des produits: ${(controller.produitsList != null) ? controller.produitsList[0].produits!.length : null}",
                   style: TextStyle(fontWeight: FontWeight.bold),
                 ),
               ),
@@ -139,6 +151,8 @@ class ProduitsScreen extends StatelessWidget {
                     children: produit.produits!.map((p) {
                       var total = (p.montant!) * (p.nombre!);
                       return Card(
+                        //borderOnForeground: (p.nombre! <= 0) ? false : true,
+                        color: getColorForNombre(p.nombre!),
                         margin: EdgeInsets.symmetric(
                           horizontal: 16,
                           vertical: 8,
@@ -153,7 +167,14 @@ class ProduitsScreen extends StatelessWidget {
                               style: TextStyle(color: Colors.black),
                               children: [
                                 TextSpan(text: 'Images produit: ${p.image}\n'),
-                                TextSpan(text: 'Nombre: ${p.nombre}\n'),
+                                TextSpan(
+                                  text: 'Nombre: ${p.nombre}\n',
+                                  // style: TextStyle(
+                                  //   backgroundColor: (p.nombre! <= 0)
+                                  //       ? Colors.red
+                                  //       : AppColors.cardColor,
+                                  // ),
+                                ),
                                 TextSpan(text: 'Montant: ${p.montant} FCFA\n'),
                                 TextSpan(
                                   text: '\nTotal:${total} FCFA',
@@ -163,10 +184,12 @@ class ProduitsScreen extends StatelessWidget {
                             ),
                           ),
                           leading: CircleAvatar(
-                            backgroundColor: Color.fromARGB(255, 0, 173, 253),
+                            radius: 40,
+                            backgroundColor:
+                                Colors.white, //fromARGB(255, 0, 173, 253),
                             child: Text(
-                              p.nombre.toString(),
-                              style: TextStyle(color: Colors.white),
+                              p.image != null ? p.image.toString() : "Image",
+                              style: TextStyle(color: Colors.black),
                             ),
                           ),
                           trailing: Row(
@@ -183,7 +206,12 @@ class ProduitsScreen extends StatelessWidget {
                                 },
                               ),
                               IconButton(
-                                icon: Icon(Icons.delete, color: Colors.red),
+                                icon: Icon(
+                                  Icons.delete,
+                                  color: (p.nombre! <= 0)
+                                      ? Colors.white
+                                      : AppColors.errorColor,
+                                ),
                                 onPressed: () {
                                   logger.i(
                                     "ok pour supprimer la vente ${p.id}",

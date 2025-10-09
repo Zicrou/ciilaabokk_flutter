@@ -5,6 +5,7 @@ import 'package:ciilaabokk/app/data/repositories/ventes_repository.dart';
 import 'package:ciilaabokk/app/data/services/auth_services.dart';
 import 'package:ciilaabokk/app/data/services/remote_services.dart';
 import 'package:ciilaabokk/app/data/services/vente_services.dart';
+import 'package:ciilaabokk/app/utils/messages.dart';
 import 'package:ciilaabokk/controller/auth_controller.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
@@ -29,21 +30,6 @@ class VentesController extends GetxController {
     fetchVentes();
   }
 
-  // Future<void> fetchVentes() async {
-  //   try {
-  //     isLoading(true);
-  //     final response = await _authServices.getAllVentes();
-  //     ventesList.value = [response];
-  //   } catch (e) {
-  //     Get.snackbar(
-  //       "Erreur",
-  //       "Impossible de récupérer les ventes",
-  //       colorText: Colors.white,
-  //       backgroundColor: Colors.redAccent,
-  //     );
-  //   }
-  // }
-
   Future<void> fetchVentes() async {
     isLoading(true);
     try {
@@ -63,24 +49,14 @@ class VentesController extends GetxController {
   }
 
   Future<void> deleteVente(int id) async {
+    isLoading(true);
     try {
-      isLoading(true);
       await _ventesRespository.deleteVente(id);
       logger.i("Vente with ID $id deleted successfully.");
       fetchVentes(); // Refresh the list after deletion
-      Get.snackbar(
-        "Succès",
-        "Vente supprimée avec succès",
-        colorText: Colors.white,
-        backgroundColor: Colors.green,
-      );
+      goodMessage("Vente supprimée avec succés");
     } catch (e) {
-      Get.snackbar(
-        "Erreur",
-        "Impossible de supprimer la vente",
-        colorText: Colors.white,
-        backgroundColor: Colors.redAccent,
-      );
+      errorMessage("Erreur");
       logger.e("Error deleting vente: $e");
     } finally {
       isLoading(false);

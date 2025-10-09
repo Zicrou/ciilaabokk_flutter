@@ -29,4 +29,28 @@ goodMessage(String textMsg) {
       size: Dimens.x4lSize,
     ),
   );
+
+  // Get.snackbar(
+  //   "",
+  //   "",
+  //   titleText: Text(
+  //     "Failed",
+  //     style: TextStyle(
+  //       fontSize: 20,
+  //       color: Colors.white,
+  //       fontWeight: FontWeight.bold,
+  //     ),
+  //   ),
+  //   messageText: Text(
+  //     textMsg,
+  //     style: TextStyle(
+  //       fontSize: 18, // 🔹 bigger font for message
+  //       color: AppColors.whiteColor,
+  //     ),
+  //   ),
+  //   backgroundColor: AppColors.errorColor,
+  //   snackPosition: SnackPosition.TOP,
+  //   duration: Duration(seconds: 3),
+  //   icon: Icon(Icons.error_outline, color: AppColors.whiteColor, size: 20),
+  // );
 }
