@@ -32,7 +32,7 @@ class ProduitsController extends GetxController {
     super.onInit();
     //fetchVentes();
     fetchProduits();
-    // getProduitsSupAZero();
+    getProduitsSupAZero();
   }
 
   Future<void> fetchProduits() async {
@@ -55,12 +55,27 @@ class ProduitsController extends GetxController {
   Future<void> getProduitsSupAZero() async {
     isLoading(true);
     try {
-      // var produits = await _produitsRepositories.listProduitsSupAZero();
-      // logger.i("Liste produits from ProduitController supeAzero: ${produits}");
+      // Wait for produitsController to have its data ready
+      await Future.delayed(Duration(seconds: 1));
 
-      // produitsListSupAZero.assignAll([produits]);
+      if (produitsList.isNotEmpty) {
+        // Clear old data first
+        produitsListSupAZero.clear();
 
-      // logger.i("Fetched produits: ${produitsListSupAZero.toString()}");
+        // Get first produits group (adjust this to your structure)
+        var produits = produitsList[0].produits;
+
+        // Filter products where nombre > 0
+        if (produits != null) {
+          for (var produit in produits) {
+            if (produit.nombre != null && produit.nombre! > 0) {
+              produitsListSupAZero.add(produit);
+            }
+          }
+        }
+      } else {
+        logger.w("La liste des produits est vide");
+      }
     } catch (e) {
       throw "Error fetching produits > 0, ${e.toString()}";
     } finally {

@@ -23,16 +23,16 @@ class VenteScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     // Create a list of Produit with nombre > 0
-    RxList<Produit?> produitList = <Produit>[].obs;
-    Future.delayed(Duration(seconds: 1), () {
-      if (produitsController.produitsList.isNotEmpty) {
-        produitsController.produitsList[0].produits!.forEach((produit) {
-          if (produit.nombre != null && produit.nombre! > 0) {
-            produitList.add(produit);
-          }
-        });
-      }
-    });
+    // RxList<Produit?> produitList = <Produit>[].obs;
+    // Future.delayed(Duration(seconds: 1), () {
+    //   if (produitsController.produitsList.isNotEmpty) {
+    //     produitsController.produitsList[0].produits!.forEach((produit) {
+    //       if (produit.nombre != null && produit.nombre! > 0) {
+    //         produitList.add(produit);
+    //       }
+    //     });
+    //   }
+    // });
 
     logger.w("Le produit a modifier: ${venteController.produit}");
     if (venteController.vente != null && venteController.vente is Vente) {
@@ -107,12 +107,13 @@ class VenteScreen extends StatelessWidget {
                           borderSide: BorderSide.none,
                         ),
                       ),
-                      items:
-                          // produitsController.produitsListSupAZero.isNotEmpty
-                          //     ? produitsController.produitsListSupAZero[0].produits!
-                          //           .map((produit)
-                          produitList.isNotEmpty
-                          ? produitList.map((produit) {
+                      items: produitsController.produitsListSupAZero.isNotEmpty
+                          ? produitsController.produitsListSupAZero.map((
+                              produit,
+                            )
+                            // produitList.isNotEmpty
+                            // ? produitList.map((produit)
+                            {
                               return DropdownMenuItem<Produit>(
                                 value: produit,
                                 child: Text(
