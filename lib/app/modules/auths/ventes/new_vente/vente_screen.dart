@@ -22,16 +22,7 @@ class VenteScreen extends StatelessWidget {
   var title = "Nouvelle Vente";
   @override
   Widget build(BuildContext context) {
-    // final args = Get.arguments;
-    // var produit;
-    // var vente;
-    // if (args == null) {
-    // print({args['produit']});
-    // } else if (args['produit'] != null || args['vente'] != null) {
-    // produit = args['produit'];
-    // vente = args['vente'];
-    //isProduct(true);
-    // }
+    // Create a list of Produit with nombre > 0
     RxList<Produit?> produitList = <Produit>[].obs;
     Future.delayed(Duration(seconds: 1), () {
       if (produitsController.produitsList.isNotEmpty) {
@@ -42,15 +33,6 @@ class VenteScreen extends StatelessWidget {
         });
       }
     });
-    // logger.i("ProduitList from ProduitController: ${produitList}");
-    // var produit;
-    // if (produitsController.produitsList.isNotEmpty) {
-    //   produit = produitsController.produitsList[0].produits!
-    //       .firstWhereOrNull((p) => p.id == produitId);
-    // }
-    // else {
-    //   produitList.value = [produit];
-    // }
 
     logger.w("Le produit a modifier: ${venteController.produit}");
     if (venteController.vente != null && venteController.vente is Vente) {
@@ -125,7 +107,11 @@ class VenteScreen extends StatelessWidget {
                           borderSide: BorderSide.none,
                         ),
                       ),
-                      items: produitList.isNotEmpty
+                      items:
+                          // produitsController.produitsListSupAZero.isNotEmpty
+                          //     ? produitsController.produitsListSupAZero[0].produits!
+                          //           .map((produit)
+                          produitList.isNotEmpty
                           ? produitList.map((produit) {
                               return DropdownMenuItem<Produit>(
                                 value: produit,

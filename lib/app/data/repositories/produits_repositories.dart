@@ -24,13 +24,12 @@ class ProduitsRepositories {
     return ProduitsInfo.fromJson(response);
   }
 
-  Future<ProduitsInfo> listProduitsSupAZero() async {
-    var supAZero = 'supeAZero/';
-    final response = await _apiProvider.get('$produitsEndpoint$supAZero');
-    logger.i("Response: ${response}");
+  Future<Produit> listProduitsSupAZero() async {
+    final response = await _apiProvider.get(produitSupAZeroEndpoint);
+    logger.i("Response from Produits repositories supeAzero: ${response}");
     //final ventesResponse = VenteResponse.fromJson(response.data);
 
-    return ProduitsInfo.fromJson(response);
+    return Produit.fromJson(response);
   }
 
   Future createProduits(Map<String, dynamic> json) async {

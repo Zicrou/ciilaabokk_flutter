@@ -20,7 +20,7 @@ final logger = Logger();
 class ProduitsController extends GetxController {
   var isLoading = true.obs;
   var produitsList = <ProduitsInfo>[].obs;
-  // var produitsListSupAZero = <Produit>[].obs;
+  var produitsListSupAZero = <Produit>[].obs;
   //RxList<VenteInfo> listeVentes = <VenteInfo>[].obs;
   // Rx<VenteResponse?> venteResponse = Rx<VenteResponse?>(null);
   final _produitsRepositories = Get.find<ProduitsRepositories>();
@@ -32,6 +32,7 @@ class ProduitsController extends GetxController {
     super.onInit();
     //fetchVentes();
     fetchProduits();
+    // getProduitsSupAZero();
   }
 
   Future<void> fetchProduits() async {
@@ -51,23 +52,21 @@ class ProduitsController extends GetxController {
     }
   }
 
-  // Future<Produit> getProduitsSupAZero() async {
-  //   isLoading(true);
-  //   try {
-  //     // var ventes = await RemoteServices.fetchVentes();
-  //     var produits = await _produitsRepositories.listProduitsSupAZero();
-  //     logger.i("Liste produits from ProduitController: ${produits}");
+  Future<void> getProduitsSupAZero() async {
+    isLoading(true);
+    try {
+      // var produits = await _produitsRepositories.listProduitsSupAZero();
+      // logger.i("Liste produits from ProduitController supeAzero: ${produits}");
 
-  //     // produitsListSupAZero.assignAll([produits]);
+      // produitsListSupAZero.assignAll([produits]);
 
-  //     logger.i("Fetched produits: ${produitsListSupAZero.toString()}");
-  //     return produits;
-  //   } catch (e) {
-  //     throw "Error fetching produits > 0, ${e.toString()}";
-  //   } finally {
-  //     isLoading(false);
-  //   }
-  // }
+      // logger.i("Fetched produits: ${produitsListSupAZero.toString()}");
+    } catch (e) {
+      throw "Error fetching produits > 0, ${e.toString()}";
+    } finally {
+      isLoading(false);
+    }
+  }
 
   Future<void> deleteProduits(int id) async {
     isLoading(true);

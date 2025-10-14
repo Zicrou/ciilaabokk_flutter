@@ -6,6 +6,7 @@ import 'package:ciilaabokk/app/data/repositories/types_repositories.dart';
 import 'package:ciilaabokk/app/data/repositories/ventes_repository.dart';
 import 'package:ciilaabokk/app/data/services/auth_services.dart';
 import 'package:ciilaabokk/app/data/services/remote_services.dart';
+import 'package:ciilaabokk/app/modules/auths/produits/produits/produits_controller.dart';
 import 'package:ciilaabokk/app/modules/auths/ventes/ventes/ventes_controller.dart';
 import 'package:ciilaabokk/app/modules/auths/ventes/ventes/ventes_screen.dart';
 import 'package:ciilaabokk/app/utils/messages.dart';
@@ -22,6 +23,10 @@ class VenteController extends GetxController {
   final RemoteServices remoteService = Get.find<RemoteServices>();
   final GlobalKey<FormState> createVenteKeyForm = GlobalKey<FormState>();
   final GlobalKey<FormState> updateVenteKeyForm = GlobalKey<FormState>();
+  // final ProduitsController produitsController = Get.find<ProduitsController>();
+
+  // Reactive list of filtered products
+  // RxList<Produit> produitList = <Produit>[].obs;
 
   RxString userName = ''.obs;
   RxBool isLoading = false.obs;
@@ -36,19 +41,10 @@ class VenteController extends GetxController {
   final nombre = TextEditingController();
   var typesList = <Types>[].obs;
 
-  // var produitsList = <Produit>[].obs;
   var selectedType = Rx<Types?>(null);
   var selectedProduit = Rx<Produit?>(null);
-  // Add your login logic here
 
-  // var isDesignationValid = true.obs;
-  // var isPrixValid = true.obs;
-  // var isUserIdValid = true.obs;
-  // var isNombreValid = true.obs;
-  // var isTypesValid = true.obs;
   var ventes = [].obs; // Observable list to hold ventes
-
-  //final _isLoading = false.obs;
 
   VenteController() {
     final authProvider = Get.find<AuthProvider>();
@@ -58,6 +54,7 @@ class VenteController extends GetxController {
   @override
   void onInit() {
     super.onInit();
+    // _loadProduits();
     final args = Get.arguments;
 
     if (args == null) {
@@ -89,6 +86,28 @@ class VenteController extends GetxController {
   // }
 
   //void getTypes() async {}
+
+  // void _loadProduits() async {
+  //   // Wait for produitsController to have its data ready
+  //   await Future.delayed(Duration(seconds: 1));
+
+  //   if (produitsController.produitsList.isNotEmpty) {
+  //     // Clear old data first
+  //     produitList.clear();
+
+  //     // Get first produits group (adjust this to your structure)
+  //     var produits = produitsController.produitsList[0].produits;
+
+  //     // Filter products where nombre > 0
+  //     if (produits != null) {
+  //       for (var produit in produits) {
+  //         if (produit.nombre != null && produit.nombre! > 0) {
+  //           produitList.add(produit);
+  //         }
+  //       }
+  //     }
+  //   }
+  // }
 
   void createVente() async {
     // Implement the logic to create a vente
@@ -192,32 +211,4 @@ class VenteController extends GetxController {
       }
     }
   }
-
-  // Future<void> fetchTypes([Vente? vente]) async {
-  //   isLoading(true);
-  //   try {
-  //     // var ventes = await RemoteServices.fetchVentes();
-  //     var typesList = await typesRepositories.listTypes();
-  //     logger.i("Type from TypesController: ${typesList}");
-  //     if (vente != null && vente.types != null) {
-  //       final typeMatch = typesList.firstWhereOrNull(
-  //         (t) => t.name == vente.types?.name,
-  //       );
-  //       selectedType.value = typeMatch;
-  //     }
-  //   } catch (e) {
-  //     print("Error fetching types: $e");
-  //   } finally {
-  //     isLoading(false);
-  //   }
-  // }
-
-  // Pré-remplir les champs si vente existe
-  // void fillFields(Vente? vente) {
-  //   if (vente != null) {
-  //     designation.text = vente.designation ?? '';
-  //     prix.text = vente.prix.toString();
-  //     nombre.text = vente.nombre.toString();
-  //   }
-  // }
 }
