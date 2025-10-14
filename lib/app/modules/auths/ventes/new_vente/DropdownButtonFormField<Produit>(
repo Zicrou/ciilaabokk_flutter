@@ -1,0 +1,44 @@
+DropdownButtonFormField<Produit>(
+                        value: venteController.selectedProduit.value,
+                        decoration: InputDecoration(
+                          prefixIcon: Icon(
+                            Icons.category,
+                            color: Color.fromARGB(255, 0, 173, 253),
+                          ),
+                          labelText: " ${produit?.designation}",
+                          labelStyle: TextStyle(
+                            color: Color.fromARGB(255, 0, 173, 253),
+                          ),
+                          filled: true,
+
+                          fillColor: Colors.white,
+                          border: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(12),
+                            borderSide: BorderSide.none,
+                          ),
+
+                          focusedBorder: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(12),
+                            borderSide: BorderSide.none,
+                          ),
+                        ),
+
+                        items: [
+                          DropdownMenuItem<Produit>(
+                            value: produit,
+                            child: Text(
+                              produit.designation!,
+                              style: TextStyle(
+                                color: Color.fromARGB(255, 0, 173, 253),
+                              ),
+                            ),
+                          ),
+                        ],
+
+                        onChanged: (value) {
+                          venteController.selectedProduit.value = value!;
+                          logger.i(
+                            "Selected Type Vente Screen: ${venteController.selectedProduit.value!.id}",
+                          );
+                        },
+                      );

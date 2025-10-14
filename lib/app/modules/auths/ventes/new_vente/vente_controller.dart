@@ -28,20 +28,24 @@ class VenteController extends GetxController {
   final designation = TextEditingController();
   final prix = TextEditingController();
   late final user_id;
+  var produit;
+  var vente;
+  RxBool isProduct = false.obs;
   // Assuming user_id is an integer and you have a way to set it
   // Assuming user_id is an integer and you have a way to set it
   final nombre = TextEditingController();
   var typesList = <Types>[].obs;
+
   // var produitsList = <Produit>[].obs;
   var selectedType = Rx<Types?>(null);
   var selectedProduit = Rx<Produit?>(null);
   // Add your login logic here
 
-  var isDesignationValid = true.obs;
-  var isPrixValid = true.obs;
-  var isUserIdValid = true.obs;
-  var isNombreValid = true.obs;
-  var isTypesValid = true.obs;
+  // var isDesignationValid = true.obs;
+  // var isPrixValid = true.obs;
+  // var isUserIdValid = true.obs;
+  // var isNombreValid = true.obs;
+  // var isTypesValid = true.obs;
   var ventes = [].obs; // Observable list to hold ventes
 
   //final _isLoading = false.obs;
@@ -54,8 +58,17 @@ class VenteController extends GetxController {
   @override
   void onInit() {
     super.onInit();
-    //getTypes();
-    // Initialize any necessary data or state here
+    final args = Get.arguments;
+
+    if (args == null) {
+      // print({args['produit']});
+    } else if (args['produit'] != null || args['vente'] != null) {
+      produit = args['produit'];
+      vente = args['vente'];
+      if (produit != null) {
+        isProduct(true);
+      }
+    }
   }
 
   @override
@@ -180,24 +193,24 @@ class VenteController extends GetxController {
     }
   }
 
-  Future<void> fetchTypes([Vente? vente]) async {
-    isLoading(true);
-    try {
-      // var ventes = await RemoteServices.fetchVentes();
-      var typesList = await typesRepositories.listTypes();
-      logger.i("Type from TypesController: ${typesList}");
-      if (vente != null && vente.types != null) {
-        final typeMatch = typesList.firstWhereOrNull(
-          (t) => t.name == vente.types?.name,
-        );
-        selectedType.value = typeMatch;
-      }
-    } catch (e) {
-      print("Error fetching types: $e");
-    } finally {
-      isLoading(false);
-    }
-  }
+  // Future<void> fetchTypes([Vente? vente]) async {
+  //   isLoading(true);
+  //   try {
+  //     // var ventes = await RemoteServices.fetchVentes();
+  //     var typesList = await typesRepositories.listTypes();
+  //     logger.i("Type from TypesController: ${typesList}");
+  //     if (vente != null && vente.types != null) {
+  //       final typeMatch = typesList.firstWhereOrNull(
+  //         (t) => t.name == vente.types?.name,
+  //       );
+  //       selectedType.value = typeMatch;
+  //     }
+  //   } catch (e) {
+  //     print("Error fetching types: $e");
+  //   } finally {
+  //     isLoading(false);
+  //   }
+  // }
 
   // Pré-remplir les champs si vente existe
   // void fillFields(Vente? vente) {

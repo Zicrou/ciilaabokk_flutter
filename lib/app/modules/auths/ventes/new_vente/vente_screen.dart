@@ -22,15 +22,16 @@ class VenteScreen extends StatelessWidget {
   var title = "Nouvelle Vente";
   @override
   Widget build(BuildContext context) {
-    final args = Get.arguments;
-    var produit;
-    var vente;
-    if (args == null) {
-      // print({args['produit']});
-    } else if (args['produit'] != null || args['vente'] != null) {
-      produit = args['produit'];
-      vente = args['vente'];
-    }
+    // final args = Get.arguments;
+    // var produit;
+    // var vente;
+    // if (args == null) {
+    // print({args['produit']});
+    // } else if (args['produit'] != null || args['vente'] != null) {
+    // produit = args['produit'];
+    // vente = args['vente'];
+    //isProduct(true);
+    // }
     RxList<Produit?> produitList = <Produit>[].obs;
     Future.delayed(Duration(seconds: 1), () {
       if (produitsController.produitsList.isNotEmpty) {
@@ -51,17 +52,17 @@ class VenteScreen extends StatelessWidget {
     //   produitList.value = [produit];
     // }
 
-    logger.w("Le produit a modifier: ${produit}");
-    if (vente != null && vente.id != null && vente is Vente) {
+    logger.w("Le produit a modifier: ${venteController.produit}");
+    if (venteController.vente != null && venteController.vente is Vente) {
       title = "Modifier Vente";
-      if (vente.designation != null) {
-        venteController.designation.text = vente.designation!;
+      if (venteController.vente.designation != null) {
+        venteController.designation.text = venteController.vente.designation!;
       }
-      if (produit != null) {
-        venteController.selectedProduit.value = produit;
+      if (venteController.produit != null) {
+        venteController.selectedProduit.value = venteController.produit;
       }
-      venteController.prix.text = vente.prix.toString();
-      venteController.nombre.text = vente.nombre.toString();
+      venteController.prix.text = venteController.vente.prix.toString();
+      venteController.nombre.text = venteController.vente.nombre.toString();
       logger.i("Selected Type: ${venteController.selectedType.value}");
     }
 
@@ -83,7 +84,7 @@ class VenteScreen extends StatelessWidget {
         child: SingleChildScrollView(
           padding: EdgeInsets.all(24),
           child: Form(
-            key: vente?.id != null
+            key: venteController.vente?.id != null
                 ? venteController.updateVenteKeyForm
                 : venteController.createVenteKeyForm,
             child: Column(
@@ -101,60 +102,7 @@ class VenteScreen extends StatelessWidget {
                 SizedBox(height: 30),
 
                 Obx(() {
-                  if (vente != null && vente.produit != null) {
-                    print(
-                      "Vente id: ${vente.id} et produit id: ${vente.produit}",
-                    );
-                    if (produit != null) {
-                      return DropdownButtonFormField<Produit>(
-                        value: venteController.selectedProduit.value,
-                        decoration: InputDecoration(
-                          prefixIcon: Icon(
-                            Icons.category,
-                            color: Color.fromARGB(255, 0, 173, 253),
-                          ),
-                          labelText: " ${produit?.designation}",
-                          labelStyle: TextStyle(
-                            color: Color.fromARGB(255, 0, 173, 253),
-                          ),
-                          filled: true,
-
-                          fillColor: Colors.white,
-                          border: OutlineInputBorder(
-                            borderRadius: BorderRadius.circular(12),
-                            borderSide: BorderSide.none,
-                          ),
-
-                          focusedBorder: OutlineInputBorder(
-                            borderRadius: BorderRadius.circular(12),
-                            borderSide: BorderSide.none,
-                          ),
-                        ),
-
-                        items: [
-                          DropdownMenuItem<Produit>(
-                            value: produit,
-                            child: Text(
-                              produit.designation!,
-                              style: TextStyle(
-                                color: Color.fromARGB(255, 0, 173, 253),
-                              ),
-                            ),
-                          ),
-                        ],
-
-                        onChanged: (value) {
-                          venteController.selectedProduit.value = value!;
-                          logger.i(
-                            "Selected Type Vente Screen: ${venteController.selectedProduit.value!.id}",
-                          );
-                        },
-                      );
-                    } else {}
-                  } else if (vente != null &&
-                      vente.id != null &&
-                      vente.designation != null) {
-                  } else {
+                  if (venteController.vente == null) {
                     return DropdownButtonFormField<Produit>(
                       value: venteController.selectedProduit.value,
                       decoration: InputDecoration(
@@ -190,6 +138,52 @@ class VenteScreen extends StatelessWidget {
                               );
                             }).toList()
                           : [],
+
+                      onChanged: (value) {
+                        venteController.selectedProduit.value = value!;
+                        logger.i(
+                          "Selected Type Vente Screen: ${venteController.selectedProduit.value!.id}",
+                        );
+                      },
+                    );
+                  } else if (venteController.vente != null &&
+                      venteController.isProduct.value == true) {
+                    return DropdownButtonFormField<Produit>(
+                      value: venteController.selectedProduit.value,
+                      decoration: InputDecoration(
+                        prefixIcon: Icon(
+                          Icons.category,
+                          color: Color.fromARGB(255, 0, 173, 253),
+                        ),
+                        labelText: " ${venteController.produit?.designation}",
+                        labelStyle: TextStyle(
+                          color: Color.fromARGB(255, 0, 173, 253),
+                        ),
+                        filled: true,
+
+                        fillColor: Colors.white,
+                        border: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(12),
+                          borderSide: BorderSide.none,
+                        ),
+
+                        focusedBorder: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(12),
+                          borderSide: BorderSide.none,
+                        ),
+                      ),
+
+                      items: [
+                        DropdownMenuItem<Produit>(
+                          value: venteController.produit,
+                          child: Text(
+                            venteController.produit.designation!,
+                            style: TextStyle(
+                              color: Color.fromARGB(255, 0, 173, 253),
+                            ),
+                          ),
+                        ),
+                      ],
 
                       onChanged: (value) {
                         venteController.selectedProduit.value = value!;
@@ -260,8 +254,13 @@ class VenteScreen extends StatelessWidget {
                 // ),
                 // ),
                 SizedBox(height: 30),
+
                 // vente?.designation == null
                 //     ? SizedBox.shrink() :
+                // if(vente != null and produit != null){
+
+                // }
+                SizedBox(height: 30),
                 Visibility(
                   visible: venteController.selectedProduit.value == null,
                   child: TextFormField(
@@ -387,7 +386,7 @@ class VenteScreen extends StatelessWidget {
                         color: Color.fromARGB(255, 0, 173, 253),
                       ),
                       labelText:
-                          " ${vente?.types?.name ?? 'Sélectionner un type'}",
+                          " ${venteController.vente?.types?.name ?? 'Sélectionner un type'}",
                       labelStyle: TextStyle(
                         color: Color.fromARGB(255, 0, 173, 253),
                       ),
@@ -427,10 +426,12 @@ class VenteScreen extends StatelessWidget {
                   ),
                 ),
                 SizedBox(height: 20),
-                (vente?.id != null && vente is Vente)
+                (venteController.vente?.id != null)
                     ? ElevatedButton(
                         onPressed: () => {
-                          logger.w("ok pour modifier vente: ${vente.id}"),
+                          logger.w(
+                            "ok pour modifier vente: ${venteController.vente.id}",
+                          ),
                           // if (venteController.designation.text.isNotEmpty &&
                           //     venteController.selectedProduit.value != null) {
                           //   errorMessage(
@@ -452,7 +453,7 @@ class VenteScreen extends StatelessWidget {
                           //   return null;
                           // },
                           venteController.updateVente(
-                            vente,
+                            venteController.vente,
                           ), // Update the vente
                         }, //  venteController.updateVente(vente),
                         child: Text(
