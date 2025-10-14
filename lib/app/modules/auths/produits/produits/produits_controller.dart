@@ -20,7 +20,7 @@ final logger = Logger();
 class ProduitsController extends GetxController {
   var isLoading = true.obs;
   var produitsList = <ProduitsInfo>[].obs;
-  // var produitsListSupAZero = <Produit>[].obs;
+  var produitsListSupAZero = <Produit>[].obs;
   //RxList<VenteInfo> listeVentes = <VenteInfo>[].obs;
   // Rx<VenteResponse?> venteResponse = Rx<VenteResponse?>(null);
   final _produitsRepositories = Get.find<ProduitsRepositories>();
@@ -32,6 +32,7 @@ class ProduitsController extends GetxController {
     super.onInit();
     //fetchVentes();
     fetchProduits();
+    getProduitsSupAZero();
   }
 
   Future<void> fetchProduits() async {
@@ -51,23 +52,36 @@ class ProduitsController extends GetxController {
     }
   }
 
-  // Future<Produit> getProduitsSupAZero() async {
-  //   isLoading(true);
-  //   try {
-  //     // var ventes = await RemoteServices.fetchVentes();
-  //     var produits = await _produitsRepositories.listProduitsSupAZero();
-  //     logger.i("Liste produits from ProduitController: ${produits}");
+  Future<void> getProduitsSupAZero() async {
+    isLoading(true);
+    try {
+      // Wait for produitsController to have its data ready
+      await Future.delayed(Duration(seconds: 1));
 
-  //     // produitsListSupAZero.assignAll([produits]);
+      if (produitsList.isNotEmpty) {
+        // Clear old data first
+        produitsListSupAZero.clear();
 
-  //     logger.i("Fetched produits: ${produitsListSupAZero.toString()}");
-  //     return produits;
-  //   } catch (e) {
-  //     throw "Error fetching produits > 0, ${e.toString()}";
-  //   } finally {
-  //     isLoading(false);
-  //   }
-  // }
+        // Get first produits group (adjust this to your structure)
+        var produits = produitsList[0].produits;
+
+        // Filter products where nombre > 0
+        if (produits != null) {
+          for (var produit in produits) {
+            if (produit.nombre != null && produit.nombre! > 0) {
+              produitsListSupAZero.add(produit);
+            }
+          }
+        }
+      } else {
+        logger.w("La liste des produits est vide");
+      }
+    } catch (e) {
+      throw "Error fetching produits > 0, ${e.toString()}";
+    } finally {
+      isLoading(false);
+    }
+  }
 
   Future<void> deleteProduits(int id) async {
     isLoading(true);
