@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'dart:io';
 import 'dart:typed_data';
 
 import 'package:ciilaabokk/app/core/values/app_colors.dart';
@@ -155,6 +156,8 @@ class ProduitsScreen extends StatelessWidget {
                       // Image on top
 
                       var total = (p.montant!) * (p.nombre!);
+                      final baseUrl =
+                          'http://10.0.2.2:8000'; // For Android emulator
                       return Card(
                         //borderOnForeground: (p.nombre! <= 0) ? false : true,
                         color: getColorForNombre(p.nombre!),
@@ -168,22 +171,26 @@ class ProduitsScreen extends StatelessWidget {
                           children: [
                             // Image on top
                             // if
+                            // p.image = "/Users/abdouaziz/dev/Laravel/commercameLaravel/storage/app/public/pictures/produit/1760508302-68ef398e0ef98_1000000018.webp";
                             p.image != null
-                                ? Image.memory(
-                                    base64Decode(p.image as String),
-                                    width: 150,
-                                    height: 150,
+                                ? Image.network(
+                                    '$baseUrl${p.image}',
+                                    width: double.infinity,
+                                    height: 300,
                                     fit: BoxFit.cover,
                                   )
-                                : Container(
-                                    width: double.infinity,
-                                    height: 150,
-                                    color: Colors.grey[300],
-                                    child: const Icon(
-                                      Icons.image_not_supported,
-                                      size: 50,
-                                    ),
+                                : const Center(
+                                    child: Text("No image selected"),
                                   ),
+                            // : Container(
+                            //     width: double.infinity,
+                            //     height: 150,
+                            //     color: Colors.grey[300],
+                            //     child: const Icon(
+                            //       Icons.image_not_supported,
+                            //       size: 50,
+                            //     ),
+                            //   ),
                             const SizedBox(height: 8),
                             ListTile(
                               title: Text(

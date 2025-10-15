@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'dart:io';
 import 'package:ciilaabokk/app/data/models/depensesInfo.dart';
 import 'package:ciilaabokk/app/data/models/produit.dart';
 import 'package:ciilaabokk/app/data/models/produitsInfo.dart';
@@ -12,7 +13,7 @@ import 'package:ciilaabokk/app/modules/auths/produits/produits/produits_controll
 import 'package:ciilaabokk/app/modules/auths/produits/produits/produits_screen.dart';
 import 'package:ciilaabokk/app/utils/messages.dart';
 import 'package:dio/dio.dart';
-import 'package:get/get.dart';
+import 'package:get/get.dart' hide MultipartFile, FormData;
 import 'package:logger/logger.dart';
 
 final logger = Logger();
@@ -132,32 +133,56 @@ class RemoteServices {
     }
   }
 
-  Future<void> createProduitWithImage(dynamic payload) async {
+  Future<void> createProduitWithImage(
+    String designation,
+    int montant,
+    int nombre,
+    File image,
+  ) async {
     final userId = authProvider.user.user?.id;
     logger.w(userId);
     if (userId == null) {
       throw Exception("User ID is null — user is not logged in.");
     }
-
-    var body = {
-      "designation": payload['designation'],
-      "montant": payload['montant'],
+    final formData = FormData.fromMap({
+      "designation": designation,
+      "montant": montant,
       "user_id": userId,
-      'nombre': payload['nombre'],
-      'image': payload['image'],
-    };
-    var bodyToJson = jsonEncode(body);
+      'nombre': nombre,
+      'image': await MultipartFile.fromFile(
+        image.path,
+        filename: image.path.split('/').last,
+      ),
+    });
+    logger.i("FormData from params: ${formData.fields}");
+    var imageField = formData.files.firstWhere((f) => f.key == 'image');
+    print('Image field key: ${imageField.key}');
+    print('Image filename: ${imageField.value.filename}');
+    logger.i("FormDataImage from params: ${imageField.value.filename}");
+    // var body = {
+    //   "designation": designation,
+    //   "montant": montant,
+    //   "user_id": userId,
+    //   'nombre': nombre,
+    //   'image': await MultipartFile.fromFile(
+    //     image.path,
+    //     filename: image.path.split('/').last,
+    //   ),
+    // };
+    // var bodyToJson = jsonEncode(body);
     // print(bodyToJson);
     try {
       final token = authProvider.authToken;
       logger.i("Token from Authprovider: ${token}");
-      logger.i({
-        'designation': payload['designation'],
-        'montant': payload['montant'],
-        'nombre': payload['nombre'],
-        'user_id': userId,
-        'image': body['image'],
-      });
+      // logger.i({
+      //   "Body: "
+      //           "designation":
+      //       body['designation'],
+      //   'montant': body['montant'],
+      //   'nombre': body['nombre'],
+      //   'user_id': userId,
+      //   'image': body['image'],
+      // });
       // logger.w({
       //   'designation': body['designation'],
       //   'montant': body['montant'],
@@ -167,10 +192,11 @@ class RemoteServices {
       // });
       final response = await _dio.post(
         'http://10.0.2.2:8000/api/V1/produits',
-        data: bodyToJson,
+        data: formData,
         options: Options(
           headers: {
-            'Content-type': 'application/json',
+            // 'Content-type': 'application/json',
+            'Content-Type': 'multipart/form-data',
             'Accept': 'application/json',
             'Authorization': 'Bearer $token',
           },

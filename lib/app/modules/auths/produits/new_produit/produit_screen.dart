@@ -1,3 +1,6 @@
+import 'dart:convert';
+import 'dart:io';
+
 import 'package:ciilaabokk/app/data/models/produit.dart';
 import 'package:ciilaabokk/app/data/models/types.dart';
 import 'package:ciilaabokk/app/data/models/vente.dart';
@@ -10,6 +13,7 @@ import 'package:ciilaabokk/app/modules/auths/ventes/ventes/ventes_screen.dart';
 import 'package:ciilaabokk/app/utils/messages.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:image_picker/image_picker.dart';
 import 'package:logger/logger.dart';
 
 final logger = Logger();
@@ -28,6 +32,13 @@ class ProduitScreen extends StatelessWidget {
       controller.designation.text = produit.designation!;
       controller.montant.text = produit.montant.toString();
       controller.nombre.text = produit.nombre.toString();
+      controller.selectedImage.value = produit.image != null
+          ? File(produit.image!) // ✅ convert path → File
+          : null;
+      // final pickedFile = await ImagePicker().pickImage(source: ImageSource.gallery);
+      // if (produit.image != null) {
+      //   selectedImage = File(pickedFile.path); // ✅ convert path → File
+      // }
     }
 
     return Scaffold(
@@ -66,6 +77,8 @@ class ProduitScreen extends StatelessWidget {
                 SizedBox(height: 30),
                 Obx(() {
                   final image = controller.selectedImage.value;
+                  final baseUrl =
+                      'http://10.0.2.2:8000'; // For Android emulator
                   return Container(
                     height: 200,
                     width: double.infinity,
@@ -73,8 +86,23 @@ class ProduitScreen extends StatelessWidget {
                       border: Border.all(color: Colors.grey),
                       borderRadius: BorderRadius.circular(10),
                     ),
-                    child: image != null
-                        ? Image.file(image, fit: BoxFit.cover)
+                    child: produit.image != null
+                        ? Image.network(
+                            '$baseUrl${produit.image}',
+                            width: double.infinity,
+                            height: 300,
+                            fit: BoxFit.cover,
+                          )
+                        : //Image.file(image, fit: BoxFit.cover)
+                          controller.selectedImage.value != null
+                        ? Image.file(
+                            (controller.selectedImage.value != null)
+                                ? controller.selectedImage.value!
+                                : File(''),
+                            width: double.infinity,
+                            height: 300,
+                            fit: BoxFit.cover,
+                          )
                         : const Center(child: Text("No image selected")),
                   );
                 }),
@@ -236,7 +264,8 @@ class ProduitScreen extends StatelessWidget {
                       )
                     : ElevatedButton(
                         onPressed: () => {
-                          controller.createProduit(),
+                          controller
+                              .createProduitWithImage(), //createProduit(),
                         }, //  controller.createVente(),
                         child: Text(
                           "Créer Produit",
