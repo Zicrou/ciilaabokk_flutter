@@ -1,4 +1,6 @@
+import 'dart:convert';
 import 'dart:ffi';
+import 'dart:typed_data';
 
 import 'package:ciilaabokk/app/data/models/produit.dart';
 import 'package:ciilaabokk/app/data/models/produitsInfo.dart';
@@ -52,6 +54,7 @@ class ProduitsController extends GetxController {
     }
   }
 
+  //available products
   Future<void> getProduitsSupAZero() async {
     isLoading(true);
     try {

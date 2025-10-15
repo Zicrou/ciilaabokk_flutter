@@ -1,3 +1,6 @@
+import 'dart:convert';
+import 'dart:typed_data';
+
 import 'package:ciilaabokk/app/core/values/app_colors.dart';
 import 'package:ciilaabokk/app/data/models/login.dart';
 import 'package:ciilaabokk/app/data/models/user_info.dart';
@@ -149,6 +152,8 @@ class ProduitsScreen extends StatelessWidget {
 
                   return Column(
                     children: produit.produits!.map((p) {
+                      // Image on top
+
                       var total = (p.montant!) * (p.nombre!);
                       return Card(
                         //borderOnForeground: (p.nombre! <= 0) ? false : true,
@@ -157,70 +162,103 @@ class ProduitsScreen extends StatelessWidget {
                           horizontal: 16,
                           vertical: 8,
                         ),
-                        child: ListTile(
-                          title: Text(
-                            p.designation!,
-                            style: TextStyle(fontWeight: FontWeight.bold),
-                          ),
-                          subtitle: Text.rich(
-                            TextSpan(
-                              style: TextStyle(color: Colors.black),
-                              children: [
-                                TextSpan(text: 'Images produit: ${p.image}\n'),
-                                TextSpan(
-                                  text: 'Nombre: ${p.nombre}\n',
-                                  // style: TextStyle(
-                                  //   backgroundColor: (p.nombre! <= 0)
-                                  //       ? Colors.red
-                                  //       : AppColors.cardColor,
-                                  // ),
-                                ),
-                                TextSpan(text: 'Montant: ${p.montant} FCFA\n'),
-                                TextSpan(
-                                  text: '\nTotal:${total} FCFA',
-                                  style: TextStyle(fontWeight: FontWeight.bold),
-                                ),
-                              ],
-                            ),
-                          ),
-                          leading: CircleAvatar(
-                            radius: 40,
-                            backgroundColor:
-                                Colors.white, //fromARGB(255, 0, 173, 253),
-                            child: Text(
-                              p.image != null ? p.image.toString() : "Image",
-                              style: TextStyle(color: Colors.black),
-                            ),
-                          ),
-                          trailing: Row(
-                            mainAxisSize: MainAxisSize.min,
-                            children: [
-                              IconButton(
-                                icon: Icon(
-                                  Icons.edit,
-                                  color: Color.fromARGB(255, 4, 38, 255),
-                                ),
-                                onPressed: () {
-                                  logger.i("ok pour modifier la vente ${p.id}");
-                                  Get.to(() => ProduitScreen(), arguments: p);
-                                },
+                        elevation: 4,
+
+                        child: Column(
+                          children: [
+                            // Image on top
+                            // if
+                            p.image != null
+                                ? Image.memory(
+                                    base64Decode(p.image as String),
+                                    width: 150,
+                                    height: 150,
+                                    fit: BoxFit.cover,
+                                  )
+                                : Container(
+                                    width: double.infinity,
+                                    height: 150,
+                                    color: Colors.grey[300],
+                                    child: const Icon(
+                                      Icons.image_not_supported,
+                                      size: 50,
+                                    ),
+                                  ),
+                            const SizedBox(height: 8),
+                            ListTile(
+                              title: Text(
+                                p.designation!,
+                                style: TextStyle(fontWeight: FontWeight.bold),
                               ),
-                              IconButton(
-                                icon: Icon(
-                                  Icons.delete,
-                                  color: (p.nombre! <= 0)
-                                      ? Colors.white
-                                      : AppColors.errorColor,
+                              subtitle: Text.rich(
+                                TextSpan(
+                                  style: TextStyle(color: Colors.black),
+                                  children: [
+                                    TextSpan(
+                                      text: 'Nombre: ${p.nombre}\n',
+                                      // style: TextStyle(
+                                      //   backgroundColor: (p.nombre! <= 0)
+                                      //       ? Colors.red
+                                      //       : AppColors.cardColor,
+                                      // ),
+                                    ),
+                                    TextSpan(
+                                      text: 'Montant: ${p.montant} FCFA\n',
+                                    ),
+                                    TextSpan(
+                                      text: '\nTotal:${total} FCFA',
+                                      style: TextStyle(
+                                        fontWeight: FontWeight.bold,
+                                      ),
+                                    ),
+                                  ],
                                 ),
-                                onPressed: () {
-                                  logger.i(
-                                    "ok pour supprimer la vente ${p.id}",
-                                  );
-                                  controller.deleteProduits(p.id!);
-                                },
                               ),
-                            ],
-                          ),
+                              // leading: p.image != null
+                              //     ? Image.memory(
+                              //         base64Decode(p.image as String),
+                              //         width: 80,
+                              //         height: 80,
+                              //         fit: BoxFit.fill,
+                              //       )
+                              //     : Icon(Icons.image_not_supported),
+                              trailing: Row(
+                                mainAxisSize: MainAxisSize.min,
+                                children: [
+                                  IconButton(
+                                    icon: Icon(
+                                      Icons.edit,
+                                      color: Color.fromARGB(255, 4, 38, 255),
+                                    ),
+                                    onPressed: () {
+                                      logger.i(
+                                        "ok pour modifier la vente ${p.id}",
+                                      );
+                                      Get.to(
+                                        () => ProduitScreen(),
+                                        arguments: p,
+                                      );
+                                    },
+                                  ),
+                                  IconButton(
+                                    icon: Icon(
+                                      Icons.delete,
+                                      color: (p.nombre! <= 0)
+                                          ? Colors.white
+                                          : AppColors.errorColor,
+                                    ),
+                                    onPressed: () {
+                                      logger.i(
+                                        "ok pour supprimer la vente ${p.id}",
+                                      );
+                                      controller.deleteProduits(p.id!);
+                                    },
+                                  ),
+                                ],
+                              ),
+                            ),
+                            const SizedBox(height: 8),
+                          ],
                         ),
                       );
                     }).toList(),

@@ -7,6 +7,10 @@ import 'package:ciilaabokk/app/data/models/user_register.dart';
 import 'package:ciilaabokk/app/data/models/vente.dart';
 import 'package:ciilaabokk/app/data/models/ventes.dart' hide Vente;
 import 'package:ciilaabokk/app/data/providers/auth_providers.dart';
+import 'package:ciilaabokk/app/modules/auths/produits/new_produit/produit_controller.dart';
+import 'package:ciilaabokk/app/modules/auths/produits/produits/produits_controller.dart';
+import 'package:ciilaabokk/app/modules/auths/produits/produits/produits_screen.dart';
+import 'package:ciilaabokk/app/utils/messages.dart';
 import 'package:dio/dio.dart';
 import 'package:get/get.dart';
 import 'package:logger/logger.dart';
@@ -60,6 +64,137 @@ class RemoteServices {
         return produits;
       } else {
         throw Exception("Failed to load Produit with Dio");
+      }
+    } catch (e) {
+      throw Exception("Error fetching Produit: ${e.toString()}");
+    }
+  }
+
+  Future<void> createProduitWithBase64(dynamic payload) async {
+    final userId = authProvider.user.user?.id;
+    logger.w(userId);
+    if (userId == null) {
+      throw Exception("User ID is null — user is not logged in.");
+    }
+
+    var body = {
+      "designation": payload['designation'],
+      "montant": payload['montant'],
+      "user_id": userId,
+      'nombre': payload['nombre'],
+      'image': payload['image'],
+    };
+    var bodyToJson = jsonEncode(body);
+    print(bodyToJson);
+    try {
+      final token = authProvider.authToken;
+      logger.i("Token from Authprovider: ${token}");
+      logger.i({
+        'designation': body['designation'],
+        'montant': body['montant'],
+        'nombre': body['nombre'],
+        'user_id': userId,
+        'image': body['image'],
+      });
+      final response = await _dio.post(
+        'http://10.0.2.2:8000/api/V1/produits',
+        data: bodyToJson,
+        options: Options(
+          headers: {
+            'Content-type': 'application/json',
+            'Accept': 'application/json',
+            'Authorization': 'Bearer $token',
+          },
+        ),
+      );
+
+      logger.i("Response from remote service: ${response.data})");
+
+      if (response.statusCode == 200 && response.data != null) {
+        // Dio automatically parses JSON, so we use response.data
+        var produits = Produit.fromJson(response.data);
+        //ventesList.assignAll([ventes]);
+        logger.i(
+          "Response Produit from Remote Services: ${produits.toString()}",
+        );
+        logger.i("Produit: ${produits}");
+        goodMessage("Produit créé avec succès ✅");
+        Get.find<ProduitController>().clearImage();
+        await ProduitsController().fetchProduits();
+        Future.delayed(const Duration(seconds: 2), () {
+          Get.offAll(ProduitsScreen());
+        });
+      } else {
+        errorMessage("Erreur lors de l'envoi");
+      }
+    } catch (e) {
+      throw Exception("Error fetching Produit: ${e.toString()}");
+    }
+  }
+
+  Future<void> createProduitWithImage(dynamic payload) async {
+    final userId = authProvider.user.user?.id;
+    logger.w(userId);
+    if (userId == null) {
+      throw Exception("User ID is null — user is not logged in.");
+    }
+
+    var body = {
+      "designation": payload['designation'],
+      "montant": payload['montant'],
+      "user_id": userId,
+      'nombre': payload['nombre'],
+      'image': payload['image'],
+    };
+    var bodyToJson = jsonEncode(body);
+    // print(bodyToJson);
+    try {
+      final token = authProvider.authToken;
+      logger.i("Token from Authprovider: ${token}");
+      logger.i({
+        'designation': payload['designation'],
+        'montant': payload['montant'],
+        'nombre': payload['nombre'],
+        'user_id': userId,
+        'image': body['image'],
+      });
+      // logger.w({
+      //   'designation': body['designation'],
+      //   'montant': body['montant'],
+      //   'nombre': body['nombre'],
+      //   'user_id': userId,
+      //   'image': body['image'],
+      // });
+      final response = await _dio.post(
+        'http://10.0.2.2:8000/api/V1/produits',
+        data: bodyToJson,
+        options: Options(
+          headers: {
+            'Content-type': 'application/json',
+            'Accept': 'application/json',
+            'Authorization': 'Bearer $token',
+          },
+        ),
+      );
+
+      logger.i("Response from remote service: ${response.data})");
+
+      if (response.statusCode == 200 && response.data != null) {
+        // Dio automatically parses JSON, so we use response.data
+        var produits = Produit.fromJson(response.data);
+        //ventesList.assignAll([ventes]);
+        logger.i(
+          "Response Produit from Remote Services: ${produits.toString()}",
+        );
+        logger.i("Produit: ${produits}");
+        goodMessage("Produit créé avec succès ✅");
+        Get.find<ProduitController>().clearImage();
+        await ProduitsController().fetchProduits();
+        Future.delayed(const Duration(seconds: 2), () {
+          Get.offAll(ProduitsScreen());
+        });
+      } else {
+        errorMessage("Erreur lors de l'envoi");
       }
     } catch (e) {
       throw Exception("Error fetching Produit: ${e.toString()}");

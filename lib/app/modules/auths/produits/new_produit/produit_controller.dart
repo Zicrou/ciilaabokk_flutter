@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:ciilaabokk/app/data/models/produit.dart';
 import 'package:ciilaabokk/app/data/models/vente.dart';
 import 'package:ciilaabokk/app/data/providers/auth_providers.dart';
@@ -9,7 +11,9 @@ import 'package:ciilaabokk/app/modules/auths/produits/produits/produits_screen.d
 import 'package:ciilaabokk/app/utils/messages.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:image_picker/image_picker.dart';
 import 'package:logger/web.dart';
+import 'dart:convert';
 
 final logger = Logger();
 
@@ -22,6 +26,10 @@ class ProduitController extends GetxController {
   final GlobalKey<FormState> createProduitKeyForm = GlobalKey<FormState>();
   final GlobalKey<FormState> updateProduitKeyForm = GlobalKey<FormState>();
 
+  final ImagePicker _picker = ImagePicker();
+
+  // Reactive variable for the selected image file
+  Rxn<File> selectedImage = Rxn<File>();
   // RxString userName = ''.obs;
   RxBool isLoading = false.obs;
   final designation = TextEditingController();
@@ -59,54 +67,118 @@ class ProduitController extends GetxController {
   //   nombre.dispose();
   //   super.dispose();
   // }
+  // Pick image from gallery
+  Future<void> pickImageFromGallery() async {
+    final pickedFile = await _picker.pickImage(source: ImageSource.gallery);
+    if (pickedFile != null) {
+      selectedImage.value = File(pickedFile.path);
+    }
+  }
 
-  void createProduit() async {
-    // Implement the logic to create a vente
-    // You can access the controllers like this:
+  // Pick image from camera
+  Future<void> pickImageFromCamera() async {
+    final pickedFile = await _picker.pickImage(source: ImageSource.camera);
+    if (pickedFile != null) {
+      selectedImage.value = File(pickedFile.path);
+    }
+  }
+
+  /// Convert selected image to Base64
+  Future<String?> getImageBase64() async {
+    if (selectedImage.value == null) return null;
+    final bytes = await selectedImage.value!.readAsBytes();
+    return base64Encode(bytes);
+  }
+
+  // Optional: clear the image
+  void clearImage() {
+    selectedImage.value = null;
+  }
+
+  void createProduitWithImage() async {
     if (createProduitKeyForm.currentState!.validate()) {
       createProduitKeyForm.currentState!.save();
+
       logger.w(
         "Creating Produits from form: Designation: ${designation.text.trim()}, Montant: ${montant.text.trim()}, Nombre: ${nombre.text.trim()}, User_id: ${user_id}",
       );
       logger.i("User_id : ${user_id}");
       isLoading(true);
+      final image = await selectedImage.value;
       try {
-        var produit = Produit();
-        produit.designation = designation.text.trim();
-        produit.montant = int.parse(montant.text.trim());
-        produit.nombre = int.parse(nombre.text.trim());
-        produit.userId = user_id;
-        logger.i(
-          "Creating produit with: ${produit.designation}, ${produit.montant}, ${produit.userId}, ${produit.nombre}}",
-        );
+        // Build JSON payload
+        final payload = {
+          'designation': designation.text.trim(),
+          'montant': int.parse(montant.text.trim()),
+          'nombre': int.parse(nombre.text.trim()),
+          'user_id': user_id,
+          'image': image,
+        };
+        logger.i("Payload: ${payload}");
+        // 📨 Send request through your repository
+        // Send JSON via your API provider
+        //final response = await produitsRepositories.createProduitWithBase64(payload)
+        await remoteService.createProduitWithImage(payload);
+        // if (response != null) {
+        //   goodMessage("Produit créé avec succès ✅");
+        //   clearImage();
 
-        logger.i("Creating Vente with Json: ${produit.toJson()}");
+        //   await ProduitsController().fetchProduits();
 
-        var res = await produitsRepositories.createProduits(produit.toJson());
-
-        // var designationV = designation.text.trim();
-        // var montantV = int.parse(montant.text.trim());
-        // var nombreV = int.parse(nombre.text.trim());
-        // var res = await remoteService.createProduit(
-        //   designationV,
-        //   montantV,
-        //   nombreV,
-        // );
-
-        logger.i("Res: ${res}");
-        if (res != null) {
-          goodMessage("Produit créer avec succés");
-
-          await ProduitsController().fetchProduits();
-
-          Future.delayed(Duration(seconds: 2), () {
-            Get.offAll(ProduitsScreen());
-          });
-        } else {
-          errorMessage("Erreur");
-        }
+        //   Future.delayed(const Duration(seconds: 2), () {
+        //     Get.offAll(ProduitsScreen());
+        //   });
+        // } else {
+        //   errorMessage("Erreur, échec de l’envoi (aucune réponse)");
+        // }
       } catch (e) {
-        throw "Erreur: ${e.toString()}";
+        errorMessage("Erreur: ${e.toString()}");
+        print("error creating produit: $e.toString()");
+      } finally {
+        isLoading(false);
+      }
+    }
+  }
+
+  void createProduit() async {
+    if (createProduitKeyForm.currentState!.validate()) {
+      createProduitKeyForm.currentState!.save();
+
+      logger.w(
+        "Creating Produits from form: Designation: ${designation.text.trim()}, Montant: ${montant.text.trim()}, Nombre: ${nombre.text.trim()}, User_id: ${user_id}",
+      );
+      logger.i("User_id : ${user_id}");
+      isLoading(true);
+      final imageBase64 = await getImageBase64();
+      try {
+        // Build JSON payload
+        final payload = {
+          'designation': designation.text.trim(),
+          'montant': int.parse(montant.text.trim()),
+          'nombre': int.parse(nombre.text.trim()),
+          'user_id': user_id,
+          'image': imageBase64,
+        };
+        logger.i("Payload: ${payload}");
+        // 📨 Send request through your repository
+        // Send JSON via your API provider
+        //final response = await produitsRepositories.createProduitWithBase64(payload)
+        await remoteService.createProduitWithBase64(payload);
+        // if (response != null) {
+        //   goodMessage("Produit créé avec succès ✅");
+        //   clearImage();
+
+        //   await ProduitsController().fetchProduits();
+
+        //   Future.delayed(const Duration(seconds: 2), () {
+        //     Get.offAll(ProduitsScreen());
+        //   });
+        // } else {
+        //   errorMessage("Erreur, échec de l’envoi (aucune réponse)");
+        // }
+      } catch (e) {
+        errorMessage("Erreur: ${e.toString()}");
+        print("error creating produit: $e.toString()");
       } finally {
         isLoading(false);
       }

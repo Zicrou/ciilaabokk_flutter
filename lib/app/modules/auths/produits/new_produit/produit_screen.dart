@@ -64,6 +64,41 @@ class ProduitScreen extends StatelessWidget {
                   textAlign: TextAlign.center,
                 ),
                 SizedBox(height: 30),
+                Obx(() {
+                  final image = controller.selectedImage.value;
+                  return Container(
+                    height: 200,
+                    width: double.infinity,
+                    decoration: BoxDecoration(
+                      border: Border.all(color: Colors.grey),
+                      borderRadius: BorderRadius.circular(10),
+                    ),
+                    child: image != null
+                        ? Image.file(image, fit: BoxFit.cover)
+                        : const Center(child: Text("No image selected")),
+                  );
+                }),
+                const SizedBox(height: 20),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                  children: [
+                    ElevatedButton.icon(
+                      onPressed: controller.pickImageFromGallery,
+                      icon: const Icon(Icons.photo),
+                      label: const Text("Gallery"),
+                    ),
+                    ElevatedButton.icon(
+                      onPressed: controller.pickImageFromCamera,
+                      icon: const Icon(Icons.camera_alt),
+                      label: const Text("Camera"),
+                    ),
+                    IconButton(
+                      onPressed: controller.clearImage,
+                      icon: const Icon(Icons.delete, color: Colors.red),
+                    ),
+                  ],
+                ),
+                SizedBox(height: 20),
                 TextFormField(
                   controller: controller.designation,
                   validator: (value) {
