@@ -1,4 +1,4 @@
-import 'package:ciilaabokk/app/modules/auths/login/login_controller.dart';
+import 'package:ciilaabokk/app/modules/login/login_controller.dart';
 
 class Depenses {
   int? id;

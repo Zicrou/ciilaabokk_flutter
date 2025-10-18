@@ -10,7 +10,7 @@ import 'package:ciilaabokk/app/data/services/auth_services.dart';
 import 'package:ciilaabokk/app/data/services/remote_services.dart';
 import 'package:ciilaabokk/app/data/services/vente_services.dart';
 import 'package:ciilaabokk/app/utils/messages.dart';
-import 'package:ciilaabokk/controller/auth_controller.dart';
+import 'package:ciilaabokk/app/modules/auths/auth_controller.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:get/state_manager.dart';

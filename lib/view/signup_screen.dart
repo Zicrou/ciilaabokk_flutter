@@ -1,5 +1,5 @@
-import 'package:ciilaabokk/controller/auth_controller.dart';
-import 'package:ciilaabokk/app/modules/auths/login/login_screen.dart';
+import 'package:ciilaabokk/app/modules/auths/auth_controller.dart';
+import 'package:ciilaabokk/app/modules/login/login_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 

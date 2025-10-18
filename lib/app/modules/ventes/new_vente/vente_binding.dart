@@ -1,9 +1,9 @@
 import 'package:ciilaabokk/app/data/repositories/types_repositories.dart';
 import 'package:ciilaabokk/app/data/services/remote_services.dart';
-import 'package:ciilaabokk/app/modules/auths/produits/produits/produits_controller.dart';
-import 'package:ciilaabokk/app/modules/auths/types/types_controller.dart';
-import 'package:ciilaabokk/app/modules/auths/ventes/new_vente/vente_controller.dart';
-import 'package:ciilaabokk/app/modules/auths/ventes/ventes/ventes_controller.dart';
+import 'package:ciilaabokk/app/modules/produits/produits/produits_controller.dart';
+import 'package:ciilaabokk/app/modules/types/types_controller.dart';
+import 'package:ciilaabokk/app/modules/ventes/new_vente/vente_controller.dart';
+import 'package:ciilaabokk/app/modules/ventes/ventes/ventes_controller.dart';
 import 'package:get/get.dart';
 
 class VenteBinding extends Bindings {

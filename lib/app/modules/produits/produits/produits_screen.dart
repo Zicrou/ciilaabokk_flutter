@@ -9,15 +9,15 @@ import 'package:ciilaabokk/app/data/models/vente.dart';
 import 'package:ciilaabokk/app/data/models/vente_info.dart';
 import 'package:ciilaabokk/app/data/providers/auth_providers.dart';
 import 'package:ciilaabokk/app/data/repositories/auth_repositories.dart';
-import 'package:ciilaabokk/app/modules/auths/depenses/depenses/depenses_screen.dart';
-import 'package:ciilaabokk/app/modules/auths/login/login_screen.dart';
-import 'package:ciilaabokk/app/modules/auths/produits/new_produit/produit_screen.dart';
-import 'package:ciilaabokk/app/modules/auths/produits/produits/produits_controller.dart';
-import 'package:ciilaabokk/app/modules/auths/ventes/new_vente/vente_controller.dart';
-import 'package:ciilaabokk/app/modules/auths/ventes/new_vente/vente_screen.dart';
-import 'package:ciilaabokk/app/modules/auths/ventes/ventes/ventes_controller.dart';
-import 'package:ciilaabokk/app/modules/auths/ventes/ventes/ventes_screen.dart';
-import 'package:ciilaabokk/controller/auth_controller.dart';
+import 'package:ciilaabokk/app/modules/depenses/depenses/depenses_screen.dart';
+import 'package:ciilaabokk/app/modules/login/login_screen.dart';
+import 'package:ciilaabokk/app/modules/produits/new_produit/produit_screen.dart';
+import 'package:ciilaabokk/app/modules/produits/produits/produits_controller.dart';
+import 'package:ciilaabokk/app/modules/ventes/new_vente/vente_controller.dart';
+import 'package:ciilaabokk/app/modules/ventes/new_vente/vente_screen.dart';
+import 'package:ciilaabokk/app/modules/ventes/ventes/ventes_controller.dart';
+import 'package:ciilaabokk/app/modules/ventes/ventes/ventes_screen.dart';
+import 'package:ciilaabokk/app/modules/auths/auth_controller.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:get/get.dart';
@@ -156,8 +156,8 @@ class ProduitsScreen extends StatelessWidget {
                       // Image on top
 
                       var total = (p.montant!) * (p.nombre!);
-                      final baseUrl =
-                          'http://10.0.2.2:8000'; // For Android emulator
+                      // final baseUrl =
+                      //     'http://10.0.2.2:8000'; // For Android emulator
                       return Card(
                         //borderOnForeground: (p.nombre! <= 0) ? false : true,
                         color: getColorForNombre(p.nombre!),
@@ -174,7 +174,7 @@ class ProduitsScreen extends StatelessWidget {
                             // p.image = "/Users/abdouaziz/dev/Laravel/commercameLaravel/storage/app/public/pictures/produit/1760508302-68ef398e0ef98_1000000018.webp";
                             p.image != null
                                 ? Image.network(
-                                    '$baseUrl${p.image}',
+                                    p.image ?? '',
                                     width: double.infinity,
                                     height: 300,
                                     fit: BoxFit.cover,
@@ -239,7 +239,7 @@ class ProduitsScreen extends StatelessWidget {
                                     ),
                                     onPressed: () {
                                       logger.i(
-                                        "ok pour modifier la vente ${p.id}",
+                                        "ok pour modifier le produit ${p.id}",
                                       );
                                       Get.to(
                                         () => ProduitScreen(),
@@ -256,7 +256,7 @@ class ProduitsScreen extends StatelessWidget {
                                     ),
                                     onPressed: () {
                                       logger.i(
-                                        "ok pour supprimer la vente ${p.id}",
+                                        "ok pour supprimer le produit ${p.id}",
                                       );
                                       controller.deleteProduits(p.id!);
                                     },

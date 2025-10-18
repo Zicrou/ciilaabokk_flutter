@@ -10,13 +10,12 @@ import 'package:ciilaabokk/app/data/repositories/auth_repositories.dart'
 import 'package:ciilaabokk/app/data/services/auth_services.dart' hide logger;
 import 'package:ciilaabokk/app/data/services/remote_services.dart' hide logger;
 import 'package:ciilaabokk/app/initial_bindings.dart';
-import 'package:ciilaabokk/app/modules/auths/login/login_screen.dart'
+import 'package:ciilaabokk/app/modules/login/login_screen.dart' hide logger;
+import 'package:ciilaabokk/app/modules/ventes/new_vente/vente_screen.dart'
     hide logger;
-import 'package:ciilaabokk/app/modules/auths/ventes/new_vente/vente_screen.dart'
+import 'package:ciilaabokk/app/modules/ventes/ventes/ventes_controller.dart'
     hide logger;
-import 'package:ciilaabokk/app/modules/auths/ventes/ventes/ventes_controller.dart'
-    hide logger;
-import 'package:ciilaabokk/app/modules/auths/ventes/ventes/ventes_screen.dart'
+import 'package:ciilaabokk/app/modules/ventes/ventes/ventes_screen.dart'
     hide logger;
 import 'package:ciilaabokk/app/utils/messages.dart';
 import 'package:dio/dio.dart';
@@ -53,6 +52,7 @@ class AuthController extends GetxController {
         // Call the post Api method to send data
         var userInfo = await authServices.login(phoneNumber, password);
         logger.i("Response Auth Controller: ${userInfo}");
+
         phoneNumberController.clear();
         passwordController.clear();
 

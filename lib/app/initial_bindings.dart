@@ -10,15 +10,15 @@ import 'package:ciilaabokk/app/data/repositories/types_repositories.dart';
 import 'package:ciilaabokk/app/data/repositories/ventes_repository.dart';
 import 'package:ciilaabokk/app/data/services/auth_services.dart';
 import 'package:ciilaabokk/app/data/services/remote_services.dart';
-import 'package:ciilaabokk/app/modules/auths/depenses/depenses/depenses_controller.dart';
-import 'package:ciilaabokk/app/modules/auths/depenses/new_depense/depense_controller.dart';
-import 'package:ciilaabokk/app/modules/auths/journaux/journaux/journal_controller.dart';
-import 'package:ciilaabokk/app/modules/auths/login/login_controller.dart';
-import 'package:ciilaabokk/app/modules/auths/produits/produits/produits_controller.dart';
-import 'package:ciilaabokk/app/modules/auths/types/types_controller.dart';
-import 'package:ciilaabokk/app/modules/auths/ventes/new_vente/vente_controller.dart';
-import 'package:ciilaabokk/app/modules/auths/ventes/ventes/ventes_controller.dart';
-import 'package:ciilaabokk/controller/auth_controller.dart';
+import 'package:ciilaabokk/app/modules/depenses/depenses/depenses_controller.dart';
+import 'package:ciilaabokk/app/modules/depenses/new_depense/depense_controller.dart';
+// import 'package:ciilaabokk/app/modules/journaux/journal_controller.dart';
+import 'package:ciilaabokk/app/modules/login/login_controller.dart';
+import 'package:ciilaabokk/app/modules/produits/produits/produits_controller.dart';
+import 'package:ciilaabokk/app/modules/types/types_controller.dart';
+import 'package:ciilaabokk/app/modules/ventes/new_vente/vente_controller.dart';
+import 'package:ciilaabokk/app/modules/ventes/ventes/ventes_controller.dart';
+import 'package:ciilaabokk/app/modules/auths/auth_controller.dart';
 import 'package:get/get.dart';
 
 class AppInitialBindings extends Bindings {
@@ -45,6 +45,6 @@ class AppInitialBindings extends Bindings {
     Get.put(() => DepenseController());
     Get.lazyPut(() => DepensesController());
     Get.put(() => TypesController());
-    Get.lazyPut(() => JournalController());
+    // Get.lazyPut(() => JournalController());
   }
 }

@@ -1,4 +1,4 @@
-import 'package:ciilaabokk/app/modules/auths/ventes/ventes/product_controller.dart';
+import 'package:ciilaabokk/app/modules/ventes/ventes/product_controller.dart';
 import 'package:ciilaabokk/view/product_tile.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';

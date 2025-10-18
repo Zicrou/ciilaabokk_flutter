@@ -1,9 +1,9 @@
 import 'package:ciilaabokk/app/data/models/depenses.dart';
 import 'package:ciilaabokk/app/data/providers/auth_providers.dart';
-import 'package:ciilaabokk/app/modules/auths/depenses/depenses/depenses_screen.dart';
-import 'package:ciilaabokk/app/modules/auths/depenses/new_depense/depense_controller.dart';
-import 'package:ciilaabokk/app/modules/auths/ventes/ventes/ventes_screen.dart';
-import 'package:ciilaabokk/controller/auth_controller.dart';
+import 'package:ciilaabokk/app/modules/depenses/depenses/depenses_screen.dart';
+import 'package:ciilaabokk/app/modules/depenses/new_depense/depense_controller.dart';
+import 'package:ciilaabokk/app/modules/ventes/ventes/ventes_screen.dart';
+import 'package:ciilaabokk/app/modules/auths/auth_controller.dart';
 import 'package:ciilaabokk/view/signup_screen.dart';
 import 'package:flutter/material.dart';
 
