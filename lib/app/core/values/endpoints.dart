@@ -15,3 +15,4 @@ const typesListEndpoint = '$baseUrl/types/';
 const produitsEndpoint = '$baseUrl/produits/';
 const journauxEndpoints = '$baseUrl/journal/';
 const produitSupAZeroEndpoint = '$baseUrl/produits/supeAzero';
+const teamEndpoints = '$baseUrl/team/';

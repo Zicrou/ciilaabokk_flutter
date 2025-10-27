@@ -3,6 +3,7 @@ import 'package:ciilaabokk/app/data/models/types.dart';
 import 'package:ciilaabokk/app/data/models/user.dart';
 import 'package:ciilaabokk/app/data/models/vente.dart';
 import 'package:ciilaabokk/app/data/providers/auth_providers.dart';
+import 'package:ciilaabokk/app/data/repositories/profils_repositories.dart';
 import 'package:ciilaabokk/app/data/repositories/types_repositories.dart';
 import 'package:ciilaabokk/app/data/repositories/ventes_repository.dart';
 import 'package:ciilaabokk/app/data/services/auth_services.dart';
@@ -20,7 +21,8 @@ import 'package:logger/web.dart';
 final logger = Logger();
 
 class ProfilController extends GetxController {
-  // final AuthServices authServices = Get.find<AuthServices>();
+  final ProfilsRepositories _profilsRepositories =
+      Get.find<ProfilsRepositories>();
   final RemoteServices remoteServices = Get.find<RemoteServices>();
   final GlobalKey<FormState> ajouterMembreKeyForm = GlobalKey<FormState>();
   // final GlobalKey<FormState> updateVenteKeyForm = GlobalKey<FormState>();
@@ -49,8 +51,8 @@ class ProfilController extends GetxController {
   Future<void> fetchMembres() async {
     isLoading(true);
     try {
-      // var ventes = await RemoteServices.fetchVentes();
-      var membres = await remoteServices.fetchMembres();
+      var membres = await _profilsRepositories.fetchMembres();
+      // var membres = await remoteServices.fetchMembres();
       logger.i("Membres : ${membres}");
       //listeVentes = await _authServices.getAllVentes();
 
@@ -98,7 +100,5 @@ class ProfilController extends GetxController {
     }
   }
 
-  Future<dynamic> deleteMembre(id) async {
-    return 'ok';
-  }
+  Future<void> deleteMembre(id) async {}
 }

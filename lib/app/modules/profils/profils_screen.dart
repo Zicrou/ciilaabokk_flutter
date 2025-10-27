@@ -133,6 +133,64 @@ class ProfilsScreen extends StatelessWidget {
                             arguments: {"user": membre.id},
                           );
                         },
+                        trailing: Row(
+                          mainAxisSize: MainAxisSize.min,
+                          children: [
+                            // IconButton(
+                            //   icon: Icon(
+                            //     Icons.edit,
+                            //     color: Color.fromARGB(255, 4, 38, 255),
+                            //   ),
+                            //   onPressed: () async {
+                            //     controller.isLoading(true);
+                            //     // if (produitController.isLoading.value ==
+                            //     //     true) {
+                            //     //   CircularProgressIndicator;
+                            //     // }
+
+                            //     var produitFromVenteList;
+                            //     try {
+                            //       if (v.produit == null) {
+                            //         produitFromVenteList = null;
+                            //       } else {
+                            //         produitFromVenteList =
+                            //             await produitController.getProduit(
+                            //               v.produit.id,
+                            //             );
+                            //         logger.w(
+                            //           "Produit: ${produitFromVenteList == null}",
+                            //         );
+                            //       }
+
+                            //       logger.i(
+                            //         "ok pour modifier la vente ${v} et Produit ${produitFromVenteList}",
+                            //       );
+                            //       Get.to(
+                            //         () => VenteScreen(),
+                            //         arguments: {
+                            //           "vente": v,
+                            //           "produit": produitFromVenteList,
+                            //         },
+                            //       );
+                            //     } catch (e) {
+                            //       throw errorMessage("${e.toString()}");
+                            //     } finally {
+                            //       produitController.isLoading(false);
+                            //     }
+                            //     // verifier si le produit de la vente existe dans produitList;
+                            //   },
+                            // ),
+                            IconButton(
+                              icon: Icon(Icons.delete, color: Colors.red),
+                              onPressed: () {
+                                logger.i(
+                                  "ok pour supprimer le membre ${membre.name}",
+                                );
+                                controller.deleteMembre(membre.id!);
+                              },
+                            ),
+                          ],
+                        ),
                       ),
                     );
                   },
