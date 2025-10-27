@@ -89,6 +89,7 @@ class ProduitsController extends GetxController {
   Future<void> deleteProduits(int id) async {
     isLoading(true);
     try {
+      // var idProduit = int.parse(id.toString());
       var response = await _produitsRepositories.deleteProduits(id);
       if (response['errMessage'] != null) {
         errorMessage(response['errMessage']);

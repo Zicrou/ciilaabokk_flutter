@@ -1,25 +1,12 @@
-import 'dart:convert';
-import 'dart:io';
-import 'dart:typed_data';
-
 import 'package:ciilaabokk/app/core/values/app_colors.dart';
-import 'package:ciilaabokk/app/data/models/login.dart';
-import 'package:ciilaabokk/app/data/models/user_info.dart';
-import 'package:ciilaabokk/app/data/models/vente.dart';
-import 'package:ciilaabokk/app/data/models/vente_info.dart';
-import 'package:ciilaabokk/app/data/providers/auth_providers.dart';
-import 'package:ciilaabokk/app/data/repositories/auth_repositories.dart';
+import 'package:ciilaabokk/app/modules/journaux/journaux/journal_screen.dart';
 import 'package:ciilaabokk/app/modules/depenses/depenses/depenses_screen.dart';
 import 'package:ciilaabokk/app/modules/login/login_screen.dart';
 import 'package:ciilaabokk/app/modules/produits/new_produit/produit_screen.dart';
 import 'package:ciilaabokk/app/modules/produits/produits/produits_controller.dart';
-import 'package:ciilaabokk/app/modules/ventes/new_vente/vente_controller.dart';
-import 'package:ciilaabokk/app/modules/ventes/new_vente/vente_screen.dart';
-import 'package:ciilaabokk/app/modules/ventes/ventes/ventes_controller.dart';
+import 'package:ciilaabokk/app/modules/profils/profils_screen.dart';
 import 'package:ciilaabokk/app/modules/ventes/ventes/ventes_screen.dart';
-import 'package:ciilaabokk/app/modules/auths/auth_controller.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
 import 'package:get/get.dart';
 import 'package:logger/web.dart';
 
@@ -48,6 +35,61 @@ class ProduitsScreen extends StatelessWidget {
 
         onPressed: () => Get.offAll(() => ProduitScreen()),
         child: Center(child: Icon(Icons.add, size: 30, color: Colors.white)),
+      ),
+      drawer: Drawer(
+        child: ListView(
+          padding: EdgeInsets.zero,
+          children: [
+            DrawerHeader(
+              decoration: BoxDecoration(
+                color: Color.fromARGB(255, 0, 173, 253),
+              ),
+              margin: EdgeInsets.zero,
+              padding: EdgeInsets.symmetric(horizontal: 20, vertical: 10),
+              child: Align(
+                alignment: Alignment.centerLeft,
+                child: Text(
+                  "Menu",
+                  style: TextStyle(
+                    color: Colors.white,
+                    fontSize: 22,
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+              ),
+            ),
+            ListTile(
+              title: Text("Profils"),
+              onTap: () {
+                Get.offAll(ProfilsScreen());
+              },
+            ),
+            ListTile(
+              title: Text("Ventes"),
+              onTap: () {
+                Get.offAll(VentesScreen());
+              },
+            ),
+            ListTile(
+              title: Text("Dépenses"),
+              onTap: () {
+                Get.offAll(DepensesScreen());
+              },
+            ),
+            ListTile(
+              title: Text("Produits"),
+              onTap: () {
+                Get.offAll(ProduitsScreen());
+              },
+            ),
+            ListTile(
+              title: Text("Journal"),
+              onTap: () {
+                Get.offAll(JournalScreen());
+              },
+            ),
+          ],
+        ),
       ),
       appBar: AppBar(
         title: Text(
@@ -104,21 +146,7 @@ class ProduitsScreen extends StatelessWidget {
             child: Padding(
               padding: const EdgeInsets.all(4),
               child: Row(
-                children: [
-                  Text("${controller.authProvider.user.user?.name}"),
-                  TextButton(
-                    onPressed: () {
-                      Get.offAll(DepensesScreen());
-                    },
-                    child: Text("Dépenses"),
-                  ),
-                  TextButton(
-                    onPressed: () {
-                      Get.offAll(VentesScreen());
-                    },
-                    child: Text("Ventes"),
-                  ),
-                ],
+                children: [Text("${controller.authProvider.user.user?.name}")],
               ),
             ),
           ),

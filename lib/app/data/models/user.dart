@@ -5,11 +5,13 @@ class User {
   String? deletedAt;
   String? createdAt;
   String? updatedAt;
+  int? team_id;
 
   User({
     this.id,
     this.name,
     this.phoneNumber,
+    this.team_id,
     this.deletedAt,
     this.createdAt,
     this.updatedAt,
@@ -19,6 +21,7 @@ class User {
     id = json['id'];
     name = json['name'];
     phoneNumber = json['phone_number'];
+    team_id = json['team_id'];
     deletedAt = json['deleted_at'];
     createdAt = json['created_at'];
     updatedAt = json['updated_at'];
@@ -37,6 +40,6 @@ class User {
 
   @override
   String toString() {
-    return "Id: ${id}, Name: ${name}, Phone number: ${phoneNumber}, DeletedAt: ${deletedAt}, CreatedAt: ${createdAt}, UpdatedAt: ${updatedAt}";
+    return "Id: ${id}, Name: ${name}, Phone number: ${phoneNumber}, Team id: ${team_id}, DeletedAt: ${deletedAt}, CreatedAt: ${createdAt}, UpdatedAt: ${updatedAt}";
   }
 }

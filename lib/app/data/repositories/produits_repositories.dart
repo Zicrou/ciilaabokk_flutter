@@ -81,11 +81,12 @@ class ProduitsRepositories {
     }
   }
 
-  Future deleteProduits(int id) async {
+  Future deleteProduits(int id_produit) async {
     try {
-      logger.i("Id from Repositories: ${id}");
-      final res = await _apiProvider.delete('$produitsEndpoint$id');
-      logger.i('$produitsEndpoint$id');
+      var idProduit = int.parse(id_produit.toString());
+      logger.i("Id from Repositories: ${idProduit}");
+      final res = await _apiProvider.delete('$produitsEndpoint$idProduit');
+      logger.i('$produitsEndpoint$idProduit');
       logger.w(
         "Produits Repositories: Delete Produit response: ${res['errMessage']}",
       );

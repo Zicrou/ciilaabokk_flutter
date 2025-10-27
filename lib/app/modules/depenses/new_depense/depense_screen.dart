@@ -138,7 +138,7 @@ class DepenseScreen extends StatelessWidget {
                           controller.updateDepense(depense), // Update the vente
                         }, //  venteController.updateVente(vente),
                         child: Text(
-                          "Modifier vente",
+                          "Modifier dépense",
                           style: TextStyle(fontSize: 18),
                         ),
                         style: ElevatedButton.styleFrom(

@@ -3,6 +3,7 @@ import 'dart:io';
 import 'package:ciilaabokk/app/data/models/depensesInfo.dart';
 import 'package:ciilaabokk/app/data/models/produit.dart';
 import 'package:ciilaabokk/app/data/models/produitsInfo.dart';
+import 'package:ciilaabokk/app/data/models/user.dart';
 import 'package:ciilaabokk/app/data/models/user_info.dart';
 import 'package:ciilaabokk/app/data/models/user_register.dart';
 import 'package:ciilaabokk/app/data/models/vente.dart';
@@ -68,6 +69,92 @@ class RemoteServices {
       }
     } catch (e) {
       throw Exception("Error fetching Produit: ${e.toString()}");
+    }
+  }
+
+  Future<dynamic> addUserToTeam(String numberPhone) async {
+    final userId = authProvider.user.user;
+    dynamic response = '';
+    logger.w(userId);
+    if (userId == null) {
+      throw Exception("User ID is null — user is not logged in.");
+    }
+    var body = {"name": "Team ${userId.name}", "phone_number": numberPhone};
+    var bodyToJson = jsonEncode(body);
+    print(bodyToJson);
+    try {
+      final token = authProvider.authToken;
+      logger.i("Token from Authprovider: ${token}");
+      response = await _dio.post(
+        'http://10.0.2.2:8000/api/V1/team/add-member',
+        data: body,
+        options: Options(
+          headers: {
+            'Content-type': 'application/json',
+            'Accept': 'application/json',
+            'Authorization': 'Bearer $token',
+          },
+        ),
+      );
+
+      logger.i("Response from remote service: ${response})");
+      if (response.data['status'] == 404) {
+        return response.data;
+      }
+      logger.i("Response.data from remote service: ${response.data})");
+      if (response.data['status'] == 201 && response.data != null) {
+        // Dio automatically parses JSON, so we use response.data
+        var user = User.fromJson(response.data['user']);
+        //ventesList.assignAll([ventes]);
+        logger.i("Response User from Remote Services: ${user.toString()}");
+        logger.i("User: ${user}");
+        var message = response.data['message'];
+        var status = response.data['status'];
+
+        return {'user': user, 'message': message, 'status': status};
+      } else {
+        throw Exception("User not found");
+      }
+    } on DioException {
+      throw ("Response from dio: ${response}");
+    } catch (e) {
+      throw Exception("Error adding User to a team: ${e.toString()}");
+    }
+  }
+
+  Future<List<User>> fetchMembres() async {
+    try {
+      final token = authProvider.authToken;
+      logger.i("Token from Authprovider: ${token}");
+      final response = await _dio.get(
+        'http://10.0.2.2:8000/api/V1/team/members',
+        options: Options(
+          headers: {
+            'Content-type': 'application/json',
+            'Accept': 'application/json',
+            'Authorization': 'Bearer $token',
+          },
+        ),
+      );
+      logger.i("Team's users: ${response.data}");
+      final List data = response.data['users'];
+      logger.i("Users from Team: ${data}");
+
+      return data.map((item) => User.fromJson(item)).toList();
+      // var usersJson = response.data['users'];
+      // if (usersJson is List) {
+      //   var users = usersJson.map((u) => User.fromJson(u)).toList();
+      //   logger.i("Users from Team: ${users}");
+      //   return users;
+      // } else if (usersJson != null) {
+      //   var user = User.fromJson(usersJson);
+      //   logger.i("Users from Team: ${user}");
+      //   return [user];
+      // } else {
+      //   return <User>[];
+      // }
+    } catch (e) {
+      throw Exception("Error fetching membres: $e");
     }
   }
 
@@ -513,7 +600,7 @@ class RemoteServices {
         throw Exception("Failed to load ventes with Dio");
       }
     } catch (e) {
-      throw Exception("Error fetching ventes: $e");
+      throw Exception("Error fetching depenses: $e");
     }
   }
   // Using HTTP

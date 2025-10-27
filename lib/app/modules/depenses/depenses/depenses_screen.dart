@@ -3,9 +3,12 @@ import 'package:ciilaabokk/app/data/models/user_info.dart';
 import 'package:ciilaabokk/app/data/models/vente.dart';
 import 'package:ciilaabokk/app/data/providers/auth_providers.dart';
 import 'package:ciilaabokk/app/data/repositories/auth_repositories.dart';
+import 'package:ciilaabokk/app/modules/journaux/journaux/journal_screen.dart';
 import 'package:ciilaabokk/app/modules/depenses/depenses/depenses_controller.dart';
 import 'package:ciilaabokk/app/modules/depenses/new_depense/depense_screen.dart';
 import 'package:ciilaabokk/app/modules/login/login_screen.dart';
+import 'package:ciilaabokk/app/modules/produits/produits/produits_screen.dart';
+import 'package:ciilaabokk/app/modules/profils/profils_screen.dart';
 import 'package:ciilaabokk/app/modules/ventes/new_vente/vente_controller.dart';
 import 'package:ciilaabokk/app/modules/ventes/new_vente/vente_screen.dart';
 import 'package:ciilaabokk/app/modules/ventes/ventes/ventes_controller.dart';
@@ -35,10 +38,64 @@ class DepensesScreen extends StatelessWidget {
         onPressed: () => Get.to(() => DepenseScreen()),
         child: Center(child: Icon(Icons.add, size: 30, color: Colors.white)),
       ),
-
+      drawer: Drawer(
+        child: ListView(
+          padding: EdgeInsets.zero,
+          children: [
+            DrawerHeader(
+              decoration: BoxDecoration(
+                color: Color.fromARGB(255, 0, 173, 253),
+              ),
+              margin: EdgeInsets.zero,
+              padding: EdgeInsets.symmetric(horizontal: 20, vertical: 10),
+              child: Align(
+                alignment: Alignment.centerLeft,
+                child: Text(
+                  "Menu",
+                  style: TextStyle(
+                    color: Colors.white,
+                    fontSize: 22,
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+              ),
+            ),
+            ListTile(
+              title: Text("Profils"),
+              onTap: () {
+                Get.offAll(ProfilsScreen());
+              },
+            ),
+            ListTile(
+              title: Text("Ventes"),
+              onTap: () {
+                Get.offAll(VentesScreen());
+              },
+            ),
+            ListTile(
+              title: Text("Dépenses"),
+              onTap: () {
+                Get.offAll(DepensesScreen());
+              },
+            ),
+            ListTile(
+              title: Text("Produits"),
+              onTap: () {
+                Get.offAll(ProduitsScreen());
+              },
+            ),
+            ListTile(
+              title: Text("Journal"),
+              onTap: () {
+                Get.offAll(JournalScreen());
+              },
+            ),
+          ],
+        ),
+      ),
       appBar: AppBar(
         title: Text(
-          "${controller.depensesProvider.user.user?.name ?? 'Liste des dépenses'}",
+          "${controller.depensesProvider.user.user?.name ?? 'Dépenses'}",
           style: TextStyle(
             fontSize: 32,
             fontFamily: 'avenir',
@@ -46,6 +103,7 @@ class DepensesScreen extends StatelessWidget {
             color: Color.fromARGB(255, 0, 173, 253),
           ),
         ),
+
         backgroundColor: Color.fromARGB(255, 255, 255, 255),
         actions: [
           IconButton(
@@ -85,13 +143,6 @@ class DepensesScreen extends StatelessWidget {
       backgroundColor: Color(0xFFF5F5F5),
       body: Column(
         children: [
-          Container(
-            margin: EdgeInsets.all(5),
-            child: TextButton(
-              onPressed: () => Get.offAll(VentesScreen()),
-              child: Text("Go to ventes"),
-            ),
-          ),
           Container(
             margin: EdgeInsets.all(16),
             child: Padding(

@@ -75,37 +75,25 @@ class ProduitScreen extends StatelessWidget {
                   textAlign: TextAlign.center,
                 ),
                 SizedBox(height: 30),
-                Obx(() {
-                  final image = controller.selectedImage.value;
-                  final baseUrl =
-                      'http://10.0.2.2:8000'; // For Android emulator
-                  return Container(
-                    height: 200,
-                    width: double.infinity,
-                    decoration: BoxDecoration(
-                      border: Border.all(color: Colors.grey),
-                      borderRadius: BorderRadius.circular(10),
-                    ),
-                    child: produit.image != null
-                        ? Image.network(
-                            '$baseUrl${produit.image}',
-                            width: double.infinity,
-                            height: 300,
-                            fit: BoxFit.cover,
-                          )
-                        : //Image.file(image, fit: BoxFit.cover)
-                          controller.selectedImage.value != null
-                        ? Image.file(
-                            (controller.selectedImage.value != null)
-                                ? controller.selectedImage.value!
-                                : File(''),
-                            width: double.infinity,
-                            height: 300,
-                            fit: BoxFit.cover,
-                          )
-                        : const Center(child: Text("No image selected")),
-                  );
-                }),
+                // Obx(() {
+                // final image = controller.selectedImage.value;
+                Container(
+                  height: 200,
+                  width: double.infinity,
+                  decoration: BoxDecoration(
+                    border: Border.all(color: Colors.grey),
+                    borderRadius: BorderRadius.circular(10),
+                  ),
+                  child: produit.image != null
+                      ? Image.network(
+                          produit.image!,
+                          width: double.infinity,
+                          height: 300,
+                          fit: BoxFit.cover,
+                        )
+                      : const Center(child: Text("Pas d'image")),
+                ),
+                // }),
                 const SizedBox(height: 20),
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceEvenly,

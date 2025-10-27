@@ -18,4 +18,14 @@ class JournauxRepositories {
 
     return JournalResponse.fromJson(response);
   }
+
+  Future<dynamic> listUserJournal(user) async {
+    final endpoint = '${journauxEndpoints}user/${user}';
+    logger.i("User Journal Endpoint: ${endpoint}");
+    final response = await _apiProvider.get(endpoint);
+    logger.i("Response from Journaux repositories: ${response}");
+    //final ventesResponse = VenteResponse.fromJson(response.data);
+
+    return JournalResponse.fromJson(response);
+  }
 }

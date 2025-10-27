@@ -6,6 +6,7 @@ import 'package:ciilaabokk/app/data/repositories/types_repositories.dart';
 import 'package:ciilaabokk/app/data/repositories/ventes_repository.dart';
 import 'package:ciilaabokk/app/data/services/auth_services.dart';
 import 'package:ciilaabokk/app/data/services/remote_services.dart';
+import 'package:ciilaabokk/app/modules/produits/new_produit/produit_controller.dart';
 import 'package:ciilaabokk/app/modules/produits/produits/produits_controller.dart';
 import 'package:ciilaabokk/app/modules/ventes/ventes/ventes_controller.dart';
 import 'package:ciilaabokk/app/modules/ventes/ventes/ventes_screen.dart';
@@ -121,10 +122,18 @@ class VenteController extends GetxController {
       vente.prix = int.parse(prix.text.trim());
       vente.nombre = int.parse(nombre.text.trim());
       vente.types = int.parse(selectedType.value!.id.toString());
+
       if (selectedProduit.value == null) {
         vente.produit = null;
       } else {
         vente.produit = int.parse(selectedProduit.value!.id.toString());
+        Produit produit = await ProduitController().getProduit(vente.produit!);
+        logger.i("Verifier si le nombre du produit est suffisant: ${produit}");
+        if (produit.nombre != null && produit.nombre! < vente.nombre!) {
+          errorMessage("Le nombre du produit est insuffisant");
+          isLoading(false);
+          return;
+        }
       }
       vente.userId = user_id;
       logger.i(

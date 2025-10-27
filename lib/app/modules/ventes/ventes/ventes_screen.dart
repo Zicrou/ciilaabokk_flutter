@@ -4,12 +4,13 @@ import 'package:ciilaabokk/app/data/models/vente.dart';
 import 'package:ciilaabokk/app/data/models/vente_info.dart';
 import 'package:ciilaabokk/app/data/providers/auth_providers.dart';
 import 'package:ciilaabokk/app/data/repositories/auth_repositories.dart';
+import 'package:ciilaabokk/app/modules/journaux/journaux/journal_screen.dart';
 import 'package:ciilaabokk/app/modules/depenses/depenses/depenses_screen.dart';
-import 'package:ciilaabokk/app/modules/journaux/journal_screen.dart';
 import 'package:ciilaabokk/app/modules/login/login_screen.dart';
 import 'package:ciilaabokk/app/modules/produits/new_produit/produit_controller.dart';
 import 'package:ciilaabokk/app/modules/produits/produits/produits_controller.dart';
 import 'package:ciilaabokk/app/modules/produits/produits/produits_screen.dart';
+import 'package:ciilaabokk/app/modules/profils/profils_screen.dart';
 import 'package:ciilaabokk/app/modules/ventes/new_vente/vente_controller.dart';
 import 'package:ciilaabokk/app/modules/ventes/new_vente/vente_screen.dart';
 import 'package:ciilaabokk/app/modules/ventes/ventes/ventes_controller.dart';
@@ -41,6 +42,62 @@ class VentesScreen extends StatelessWidget {
         onPressed: () => Get.offAll(() => VenteScreen()),
         child: Center(child: Icon(Icons.add, size: 30, color: Colors.white)),
       ),
+      drawer: Drawer(
+        child: ListView(
+          padding: EdgeInsets.zero,
+          children: [
+            DrawerHeader(
+              decoration: BoxDecoration(
+                color: Color.fromARGB(255, 0, 173, 253),
+              ),
+              margin: EdgeInsets.zero,
+              padding: EdgeInsets.symmetric(horizontal: 20, vertical: 10),
+              child: Align(
+                alignment: Alignment.centerLeft,
+                child: Text(
+                  "Menu",
+                  style: TextStyle(
+                    color: Colors.white,
+                    fontSize: 22,
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+              ),
+            ),
+            ListTile(
+              title: Text("Profils"),
+              onTap: () {
+                Get.offAll(ProfilsScreen());
+              },
+            ),
+            ListTile(
+              title: Text("Ventes"),
+              onTap: () {
+                Get.offAll(VentesScreen());
+              },
+            ),
+            ListTile(
+              title: Text("Dépenses"),
+              onTap: () {
+                Get.offAll(DepensesScreen());
+              },
+            ),
+            ListTile(
+              title: Text("Produits"),
+              onTap: () {
+                Get.offAll(ProduitsScreen());
+              },
+            ),
+            ListTile(
+              title: Text("Journal"),
+              onTap: () {
+                Get.offAll(JournalScreen());
+              },
+            ),
+          ],
+        ),
+      ),
+
       appBar: AppBar(
         title: Text(
           "Liste des ventes",
@@ -51,6 +108,7 @@ class VentesScreen extends StatelessWidget {
             color: Color.fromARGB(255, 0, 173, 253),
           ),
         ),
+
         backgroundColor: Color.fromARGB(255, 255, 255, 255),
         actions: [
           IconButton(
@@ -96,27 +154,7 @@ class VentesScreen extends StatelessWidget {
             child: Padding(
               padding: const EdgeInsets.all(4),
               child: Row(
-                children: [
-                  Text("${controller.authProvider.user.user?.name}"),
-                  TextButton(
-                    onPressed: () {
-                      Get.offAll(DepensesScreen());
-                    },
-                    child: Text("Dépenses"),
-                  ),
-                  TextButton(
-                    onPressed: () {
-                      Get.offAll(JournalScreen());
-                    },
-                    child: Text("Journal"),
-                  ),
-                  TextButton(
-                    onPressed: () {
-                      Get.offAll(ProduitsScreen());
-                    },
-                    child: Text("Produits"),
-                  ),
-                ],
+                children: [Text("${controller.authProvider.user.user?.name}")],
               ),
             ),
           ),
