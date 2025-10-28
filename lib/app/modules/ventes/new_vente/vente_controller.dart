@@ -116,33 +116,37 @@ class VenteController extends GetxController {
     if (createVenteKeyForm.currentState!.validate()) {
       createVenteKeyForm.currentState!.save();
 
-      isLoading(true);
-      var vente = Vente();
-      vente.designation = designation.text.trim();
-      vente.prix = int.parse(prix.text.trim());
-      vente.nombre = int.parse(nombre.text.trim());
-      vente.types = int.parse(selectedType.value!.id.toString());
-
-      if (selectedProduit.value == null) {
-        vente.produit = null;
-      } else {
-        vente.produit = int.parse(selectedProduit.value!.id.toString());
-        Produit produit = await ProduitController().getProduit(vente.produit!);
-        logger.i("Verifier si le nombre du produit est suffisant: ${produit}");
-        if (produit.nombre != null && produit.nombre! < vente.nombre!) {
-          errorMessage("Le nombre du produit est insuffisant");
-          isLoading(false);
-          return;
-        }
-      }
-      vente.userId = user_id;
-      logger.i(
-        "Creating Vente with: ProduitID: ${vente.produit} ${vente.designation}, ${vente.prix}, ${vente.userId}, ${vente.nombre}, Type: ${vente.types}",
-      );
-      logger.i("Creating Vente with Json: ${vente.toJson()}");
-      var res = await ventesRepository.createVente(vente.toJson());
-      logger.i("Res: ${res}");
       try {
+        isLoading(true);
+        var vente = Vente();
+        vente.designation = designation.text.trim();
+        vente.prix = int.parse(prix.text.trim());
+        vente.nombre = int.parse(nombre.text.trim());
+        vente.types = int.parse(selectedType.value!.id.toString());
+
+        if (selectedProduit.value == null) {
+          vente.produit = null;
+        } else {
+          vente.produit = int.parse(selectedProduit.value!.id.toString());
+          Produit produit = await ProduitController().getProduit(
+            vente.produit!,
+          );
+          logger.i(
+            "Verifier si le nombre du produit est suffisant: ${produit}",
+          );
+          if (produit.nombre != null && produit.nombre! < vente.nombre!) {
+            errorMessage("Le nombre du produit est insuffisant");
+            isLoading(false);
+            return;
+          }
+        }
+        vente.userId = user_id;
+        logger.i(
+          "Creating Vente with: ProduitID: ${vente.produit} ${vente.designation}, ${vente.prix}, ${vente.userId}, ${vente.nombre}, Type: ${vente.types}",
+        );
+        logger.i("Creating Vente with Json: ${vente.toJson()}");
+        var res = await ventesRepository.createVente(vente.toJson());
+        logger.i("Res: ${res}");
         if (res != null) {
           if (res['status'] == null) {
             errorMessage("Erreur: ${res['message']}");

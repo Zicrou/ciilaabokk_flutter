@@ -18,7 +18,7 @@ import 'dart:convert';
 final logger = Logger();
 
 class ProduitController extends GetxController {
-  final AuthServices authServices = Get.find<AuthServices>();
+  // final AuthServices authServices = Get.find<AuthServices>();
   final ProduitsRepositories produitsRepositories =
       Get.find<ProduitsRepositories>();
 
@@ -110,25 +110,22 @@ class ProduitController extends GetxController {
         "Creating Produits from form: Designation: ${designation.text.trim()}, Montant: ${montant.text.trim()}, Nombre: ${nombre.text.trim()}, User_id: ${user_id}",
       );
       logger.i("User_id : ${user_id}");
-      isLoading(true);
       final image = await selectedImage.value;
       try {
+        isLoading(true);
         // Build JSON payload
-
-        // 📨 Send request through your repository
-        // Send JSON via your API provider
-        //final response = await produitsRepositories.createProduitWithBase64(payload)
-        await remoteService.createProduitWithImage(
+        final response = await produitsRepositories.createProduitWithImage(
           designation.text.trim(),
           int.parse(montant.text.trim()),
           int.parse(nombre.text.trim()),
           image!,
         );
+
         // if (response != null) {
         //   goodMessage("Produit créé avec succès ✅");
         //   clearImage();
 
-        // await ProduitsController().fetchProduits();
+        //   await ProduitsController().fetchProduits();
 
         //   Future.delayed(const Duration(seconds: 2), () {
         //     Get.offAll(ProduitsScreen());
