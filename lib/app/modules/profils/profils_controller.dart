@@ -1,3 +1,4 @@
+import 'package:ciilaabokk/app/data/models/membre.dart';
 import 'package:ciilaabokk/app/data/models/produit.dart';
 import 'package:ciilaabokk/app/data/models/types.dart';
 import 'package:ciilaabokk/app/data/models/user.dart';
@@ -26,15 +27,15 @@ class ProfilController extends GetxController {
   final RemoteServices remoteServices = Get.find<RemoteServices>();
   final GlobalKey<FormState> ajouterMembreKeyForm = GlobalKey<FormState>();
   // final GlobalKey<FormState> updateVenteKeyForm = GlobalKey<FormState>();
-  var listMembres = <User>[].obs;
-  late final user_id;
+  var listMembres = <Membres>[].obs;
+  late final user;
 
   // Assuming user_id is an integer and you have a way to set it
   final phone_number = TextEditingController();
   RxBool isLoading = false.obs;
   ProfilController() {
     final authProvider = Get.find<AuthProvider>();
-    user_id = authProvider.user?.user;
+    user = authProvider.user?.user;
   }
 
   @override
@@ -54,8 +55,7 @@ class ProfilController extends GetxController {
       var membres = await _profilsRepositories.fetchMembres();
       // var membres = await remoteServices.fetchMembres();
       logger.i("Membres : ${membres}");
-      //listeVentes = await _authServices.getAllVentes();
-
+      //listeVentes = await _authServices.getAllVentes();=]['-,.]
       listMembres.value = membres;
 
       logger.i("Fetched membres: ${listMembres.toString()}");
@@ -77,7 +77,12 @@ class ProfilController extends GetxController {
       logger.i("Adding a member with this number phone: ${phoneNumber}");
 
       try {
-        var res = await remoteServices.addUserToTeam(phoneNumber);
+        final Membres membre = Membres();
+        membre.phoneNumber = phone_number.text.trim();
+        // membre.name = user.name;
+        logger.i("Membre: ${membre.toJson()}");
+        var res = await _profilsRepositories.addUserToTeam(membre.toJson());
+        // var res = await remoteServices.addUserToTeam(phoneNumber);
         logger.i("Res: ${res}");
         if (res != null) {
           if (res['status'] == 404) {
@@ -86,6 +91,7 @@ class ProfilController extends GetxController {
           } else {
             goodMessage("Membre ajouté avec succés");
           }
+          await fetchMembres();
           Future.delayed(Duration(seconds: 1), () {
             Get.offAll(ProfilsScreen());
           });
@@ -100,5 +106,22 @@ class ProfilController extends GetxController {
     }
   }
 
-  Future<void> deleteMembre(id) async {}
+  Future<void> deleteMembre(int id) async {
+    try {
+      var idMembre = int.parse(id.toString());
+      final response = await _profilsRepositories.deleteMembre(idMembre);
+      logger.i("Response from Profil controller ${response}");
+
+      listMembres.value = response;
+      return;
+      // if (response['status'] == 200) {
+      //   final list = response.body['users'] as List;
+      //   listMembres.value = list.map((e) => User.fromJson(e)).toList();
+      // } else {
+      //   throw Exception("Failed to remove user from team");
+      // }
+    } catch (e) {
+      print("Error removing User from a team: $e");
+    }
+  }
 }

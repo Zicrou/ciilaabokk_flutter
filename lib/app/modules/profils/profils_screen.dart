@@ -119,6 +119,7 @@ class ProfilsScreen extends StatelessWidget {
                   itemCount: controller.listMembres.length,
                   itemBuilder: (_, index) {
                     final membre = controller.listMembres[index];
+                    logger.i("Membre from screen: ${membre}");
                     return Card(
                       margin: EdgeInsets.symmetric(horizontal: 16, vertical: 8),
                       child: ListTile(

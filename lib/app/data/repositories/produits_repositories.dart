@@ -47,7 +47,7 @@ class ProduitsRepositories {
     try {
       // logger.i("Json from Repositories: ${json}");
       final res = await _apiProvider.post(produitsEndpoint, formData);
-      logger.w('DepensesRepositories: Create depense response: $res');
+      logger.w('ProduitsRepositories: Create depense response: $res');
       return res;
     } on BadRequestException {
       rethrow;

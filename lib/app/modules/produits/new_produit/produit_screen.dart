@@ -21,19 +21,19 @@ final logger = Logger();
 // ignore: must_be_immutable
 class ProduitScreen extends StatelessWidget {
   final ProduitController controller = Get.put(ProduitController());
-  final Produit produit = Get.arguments ?? Produit();
+  // final Produit produit = Get.arguments ?? Produit();
   var stl = ''.obs;
 
   var title = "Nouveau Produit";
   @override
   Widget build(BuildContext context) {
-    if (produit.id != null && produit is Produit) {
+    if (controller.produit.id != null && controller.produit is Produit) {
       title = "Modifier Produit";
-      controller.designation.text = produit.designation!;
-      controller.montant.text = produit.montant.toString();
-      controller.nombre.text = produit.nombre.toString();
-      controller.selectedImage.value = produit.image != null
-          ? File(produit.image!) // ✅ convert path → File
+      controller.designation.text = controller.produit.designation!;
+      controller.montant.text = controller.produit.montant.toString();
+      controller.nombre.text = controller.produit.nombre.toString();
+      controller.selectedImage.value = controller.produit.image != null
+          ? File(controller.produit.image!) // ✅ convert path → File
           : null;
       // final pickedFile = await ImagePicker().pickImage(source: ImageSource.gallery);
       // if (produit.image != null) {
@@ -59,7 +59,7 @@ class ProduitScreen extends StatelessWidget {
         child: SingleChildScrollView(
           padding: EdgeInsets.all(24),
           child: Form(
-            key: produit.id != null
+            key: controller.produit.id != null
                 ? controller.updateProduitKeyForm
                 : controller.createProduitKeyForm,
             child: Column(
@@ -75,26 +75,28 @@ class ProduitScreen extends StatelessWidget {
                   textAlign: TextAlign.center,
                 ),
                 SizedBox(height: 30),
+                Obx(() {
+                  final image = controller.selectedImage.value.obs;
+                  return Container(
+                    height: 200,
+                    width: double.infinity,
+                    decoration: BoxDecoration(
+                      border: Border.all(color: Colors.grey),
+                      borderRadius: BorderRadius.circular(10),
+                    ),
+                    child: controller.produit.image != null
+                        ? Image.network(
+                            controller.produit.image!,
+                            width: double.infinity,
+                            height: 300,
+                            fit: BoxFit.cover,
+                          )
+                        : const Center(child: Text("Pas d'image")),
+                  );
+                }),
+                const SizedBox(height: 20),
                 // Obx(() {
                 // final image = controller.selectedImage.value;
-                Container(
-                  height: 200,
-                  width: double.infinity,
-                  decoration: BoxDecoration(
-                    border: Border.all(color: Colors.grey),
-                    borderRadius: BorderRadius.circular(10),
-                  ),
-                  child: produit.image != null
-                      ? Image.network(
-                          produit.image!,
-                          width: double.infinity,
-                          height: 300,
-                          fit: BoxFit.cover,
-                        )
-                      : const Center(child: Text("Pas d'image")),
-                ),
-                // }),
-                const SizedBox(height: 20),
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                   children: [
@@ -109,11 +111,14 @@ class ProduitScreen extends StatelessWidget {
                       label: const Text("Camera"),
                     ),
                     IconButton(
-                      onPressed: controller.clearImage,
+                      onPressed: () {
+                        controller.clearImage();
+                      },
                       icon: const Icon(Icons.delete, color: Colors.red),
                     ),
                   ],
                 ),
+                // }),
                 SizedBox(height: 20),
                 TextFormField(
                   controller: controller.designation,
@@ -200,7 +205,7 @@ class ProduitScreen extends StatelessWidget {
                     if (!RegExp(r'^[0-9]+$').hasMatch(value)) {
                       return 'Nombre uniquement';
                     }
-                    if (int.parse(value) <= 0) {
+                    if (int.parse(value) < 0) {
                       return "Le nombre n'est pas valide";
                     }
                     return null;
@@ -232,10 +237,12 @@ class ProduitScreen extends StatelessWidget {
                 ),
 
                 SizedBox(height: 20),
-                (produit.id != null && produit is Produit)
+                (controller.produit.id != null && controller.produit is Produit)
                     ? ElevatedButton(
                         onPressed: () => {
-                          controller.updateProduit(produit), // Update the vente
+                          controller.updateProduit(
+                            controller.produit,
+                          ), // Update the vente
                         }, //  controller.updateVente(vente),
                         child: Text(
                           "Modifier le produit",

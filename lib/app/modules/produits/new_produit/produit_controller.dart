@@ -27,9 +27,10 @@ class ProduitController extends GetxController {
   final GlobalKey<FormState> updateProduitKeyForm = GlobalKey<FormState>();
 
   final ImagePicker _picker = ImagePicker();
-
+  // Rxn<File> _picked = Rxn<File>();
   // Reactive variable for the selected image file
   Rxn<File> selectedImage = Rxn<File>();
+  late final Produit produit;
   // RxString userName = ''.obs;
   RxBool isLoading = false.obs;
   final designation = TextEditingController();
@@ -47,6 +48,7 @@ class ProduitController extends GetxController {
 
   @override
   void onInit() {
+    produit = Get.arguments ?? Produit();
     super.onInit();
     //getTypes();
     // Initialize any necessary data or state here
@@ -92,6 +94,11 @@ class ProduitController extends GetxController {
 
   // Optional: clear the image
   void clearImage() {
+    logger.i("Clearing image");
+    if (selectedImage.value.obs != null) {
+      selectedImage.value = null;
+      produit.image = null;
+    }
     selectedImage.value = null;
   }
 
@@ -121,7 +128,7 @@ class ProduitController extends GetxController {
         //   goodMessage("Produit créé avec succès ✅");
         //   clearImage();
 
-        //   await ProduitsController().fetchProduits();
+        // await ProduitsController().fetchProduits();
 
         //   Future.delayed(const Duration(seconds: 2), () {
         //     Get.offAll(ProduitsScreen());

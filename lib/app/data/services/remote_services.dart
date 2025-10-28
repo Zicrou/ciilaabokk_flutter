@@ -1,6 +1,7 @@
 import 'dart:convert';
 import 'dart:io';
 import 'package:ciilaabokk/app/data/models/depensesInfo.dart';
+import 'package:ciilaabokk/app/data/models/membre.dart';
 import 'package:ciilaabokk/app/data/models/produit.dart';
 import 'package:ciilaabokk/app/data/models/produitsInfo.dart';
 import 'package:ciilaabokk/app/data/models/user.dart';
@@ -104,7 +105,7 @@ class RemoteServices {
       logger.i("Response.data from remote service: ${response.data})");
       if (response.data['status'] == 201 && response.data != null) {
         // Dio automatically parses JSON, so we use response.data
-        var user = User.fromJson(response.data['user']);
+        var user = Membres.fromJson(response.data['user']);
         //ventesList.assignAll([ventes]);
         logger.i("Response User from Remote Services: ${user.toString()}");
         logger.i("User: ${user}");
@@ -155,6 +156,34 @@ class RemoteServices {
       // }
     } catch (e) {
       throw Exception("Error fetching membres: $e");
+    }
+  }
+
+  Future<List<Membres>> deleteMembre(id) async {
+    try {
+      final token = authProvider.authToken;
+      // final user = authProvider.user.user;
+      logger.i("Token from Authprovider: ${token}");
+
+      var response = await _dio.delete(
+        'http://10.0.2.2:8000/api/V1/team/members/${id}',
+        options: Options(
+          headers: {
+            'Content-type': 'application/json',
+            'Accept': 'application/json',
+            'Authorization': 'Bearer $token',
+          },
+        ),
+      );
+      logger.i("Response from remote service: ${response}");
+
+      final list = response.data['users'] as List;
+      List<Membres> users = list.map((e) => Membres.fromJson(e)).toList();
+      logger.i("user: ${users}");
+      return users;
+    } catch (e) {
+      // Ensure the function doesn't complete normally without returning a value.
+      throw Exception("Error removing User from a team: $e");
     }
   }
 
