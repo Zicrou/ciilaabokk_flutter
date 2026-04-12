@@ -259,8 +259,7 @@ class ProduitScreen extends StatelessWidget {
                       )
                     : ElevatedButton(
                         onPressed: () => {
-                          controller
-                              .createProduitWithImage(), //createProduit(),
+                          controller.createProduit(), //createProduit(),
                         }, //  controller.createVente(),
                         child: Text(
                           "Créer Produit",
