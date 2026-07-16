@@ -173,7 +173,7 @@ class ProduitController extends GetxController {
         logger.i("Payload: ${payload}");
         // 📨 Send request through your repository
         // Send JSON via your API provider
-        //final response = await produitsRepositories.createProduitWithBase64(payload)
+        // final response = await produitsRepositories.createProduitWithBase64(payload)
         await remoteService.createProduitWithBase64(payload);
         // if (response != null) {
         //   goodMessage("Produit créé avec succès ✅");

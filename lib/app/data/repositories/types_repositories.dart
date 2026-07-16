@@ -14,7 +14,8 @@ class TypesRepositories {
     logger.i(
       "Response from Repositories: ${response['types'].cast<Map<String, dynamic>>()}",
     );
-    // logger.i("Check Response ${{response['types'] is Map}}");
+
+    // The return type is List dynamic
     return (response['types'] as List)
         .map((type) => Types.fromJson(type as Map<String, dynamic>))
         .toList();

@@ -23,8 +23,6 @@ class ProduitsController extends GetxController {
   var isLoading = true.obs;
   var produitsList = <ProduitsInfo>[].obs;
   var produitsListSupAZero = <Produit>[].obs;
-  //RxList<VenteInfo> listeVentes = <VenteInfo>[].obs;
-  // Rx<VenteResponse?> venteResponse = Rx<VenteResponse?>(null);
   final _produitsRepositories = Get.find<ProduitsRepositories>();
   final authProvider = Get.find<AuthProvider>();
   final authControler = Get.find<AuthController>();

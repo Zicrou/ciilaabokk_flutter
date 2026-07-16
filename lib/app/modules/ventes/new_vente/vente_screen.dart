@@ -125,7 +125,6 @@ class VenteScreen extends StatelessWidget {
                               );
                             }).toList()
                           : [],
-
                       onChanged: (value) {
                         venteController.selectedProduit.value = value!;
                         logger.i(
