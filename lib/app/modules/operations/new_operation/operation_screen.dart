@@ -18,6 +18,7 @@ final logger = Logger();
 class OperationScreen extends StatelessWidget {
   final OperationController operationController = Get.put(
     OperationController(),
+    tag: 'operation-form',
   );
   final TypesController typesController = Get.put(TypesController());
   final ProduitsController produitsController = Get.put(ProduitsController());

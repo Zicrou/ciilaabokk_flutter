@@ -18,7 +18,8 @@ import 'package:logger/web.dart';
 final logger = Logger();
 
 class OperationController extends GetxController {
-  final OperationsRepository operationsRepository = Get.find<OperationsRepository>();
+  final OperationsRepository operationsRepository =
+      Get.find<OperationsRepository>();
   final AuthServices authServices = Get.find<AuthServices>();
   final TypesRepositories typesRepositories = Get.find<TypesRepositories>();
   final RemoteServices remoteService = Get.find<RemoteServices>();
@@ -122,20 +123,18 @@ class OperationController extends GetxController {
         isLoading(true);
         var operation = Operation();
         operation.designation = designation.text.trim();
-        operation.prix = Decimal.parse(prix.text.trim());
+        operation.prix = Decimal.parse(prix.text.trim().replaceAll(',', '.'));
         operation.nombre = int.parse(nombre.text.trim());
-        operation.types = int.parse(selectedType.value!.id.toString());
-
+        operation.types = selectedType.value!.id.toString();
+        logger.i("Opération type: ${operation.types}");
         if (selectedProduit.value == null) {
           operation.produit = null;
         } else {
-          operation.produit = int.parse(selectedProduit.value!.id.toString());
+          operation.produit = selectedProduit.value!.id.toString();
           Produit produit = await ProduitController().getProduit(
             operation.produit!,
           );
-          logger.i(
-            "Verifier si le nombre du produit est suffisant: $produit",
-          );
+          logger.i("Verifier si le nombre du produit est suffisant: $produit");
           if (produit.nombre != null && produit.nombre! < operation.nombre!) {
             errorMessage("Le nombre du produit est insuffisant");
             isLoading(false);
@@ -146,19 +145,23 @@ class OperationController extends GetxController {
         logger.i(
           "Création d'opération avec ProduitID: ${operation.produit} ${operation.designation}, ${operation.prix}, ${operation.userId}, ${operation.nombre}, Type: ${operation.types}",
         );
-        logger.i("Le json de la création de l'opération: ${operation.toJson()}");
-        var res = await operationsRepository.createOperation(operation.toJson());
+        logger.i(
+          "Le json de la création de l'opération: ${operation.toJson()}",
+        );
+        var res = await operationsRepository.createOperation(
+          operation.toJson(),
+        );
         logger.i("Res: $res");
         if (res != null) {
-          if (res['status'] == null) {
+          if (res['message'] == "L\'opération a été créée") {
+            goodMessage("Opérqtion créée avec succés");
+          } else {
             errorMessage("Erreur: ${res['message']}");
             return;
-          } else {
-            goodMessage("Vente créée avec succés");
           }
-          
+
           // Appel de la liste des opérations
-          _operationsController.fetchOperations();
+          await _operationsController.fetchOperations();
 
           Future.delayed(Duration(seconds: 2), () {
             Get.offAll(OperationsScreen());
@@ -181,11 +184,12 @@ class OperationController extends GetxController {
       updateOperationKeyForm.currentState!.save();
       logger.w("Operation from form: ${operationDepuisForm}");
       try {
-      isLoading(true);
+        isLoading(true);
         var operation = Operation();
-        operation.id = operationDepuisForm.id; // Assuming operation has an id field
+        operation.id =
+            operationDepuisForm.id; // Assuming operation has an id field
         operation.designation = designation.text.trim();
-        operation.prix = Decimal.parse(prix.text.trim());
+        operation.prix = Decimal.parse(prix.text.trim().replaceAll(',', '.'));
         operation.nombre = int.parse(nombre.text.trim());
         operation.userId = user_id ?? operationDepuisForm.userId;
         operation.produit = (operationDepuisForm.produit != null)
@@ -196,8 +200,9 @@ class OperationController extends GetxController {
         if (selectedType.value != null) {
           operation.types = selectedType.value!.id.toString();
         } else {
-          operation.types =
-              operationDepuisForm.types.id; // Keep the existing type if none selected
+          operation.types = operationDepuisForm
+              .types
+              .id; // Keep the existing type if none selected
         }
         logger.i("Opération from form: $operationDepuisForm");
 
@@ -226,13 +231,15 @@ class OperationController extends GetxController {
       }
     }
   }
+
   // Delete Operation
   Future<void> deleteOperation(String id) async {
     try {
       isLoading(true);
       await operationsRepository.deleteOperation(id);
       logger.i("Opération with Id $id deleted successfully.");
-      _operationsController.fetchOperations(); // Refresh the list after deletion
+      _operationsController
+          .fetchOperations(); // Refresh the list after deletion
       goodMessage("Opération supprimée avec succés");
     } catch (e) {
       errorMessage("Erreur");

@@ -73,7 +73,7 @@ class Operation {
     // data['deleted_at'] = this.deletedAt;
     data['user_id'] = this.userId;
     logger.i("Types from toJson: ${types}");
-    data['type_id'] = this.types; // Assuming types is a single object
+    data['types'] = this.types; // Assuming types is a single object
     // data['created_at'] = this.createdAt;
     // data['updated_at'] = this.updatedAt;
     return data;
