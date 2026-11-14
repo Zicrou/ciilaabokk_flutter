@@ -1,7 +1,7 @@
 import 'package:ciilaabokk/app/data/models/types.dart';
-import 'package:ciilaabokk/app/data/models/vente.dart' show Vente;
+import 'package:ciilaabokk/app/data/models/operation.dart' show Vente;
 import 'package:ciilaabokk/app/data/repositories/types_repositories.dart';
-import 'package:ciilaabokk/app/data/repositories/ventes_repository.dart';
+import 'package:ciilaabokk/app/data/repositories/operations_repository.dart';
 import 'package:get/get.dart';
 import 'package:logger/logger.dart';
 

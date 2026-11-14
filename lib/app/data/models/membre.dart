@@ -1,12 +1,12 @@
 class Membres {
-  int? id;
+  String? id;
   String? name;
   String? status;
   String? phoneNumber;
   String? deletedAt;
   String? createdAt;
   String? updatedAt;
-  int? team_id;
+  String? team_id;
 
   Membres({
     this.id,

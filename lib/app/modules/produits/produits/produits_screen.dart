@@ -5,7 +5,8 @@ import 'package:ciilaabokk/app/modules/login/login_screen.dart';
 import 'package:ciilaabokk/app/modules/produits/new_produit/produit_screen.dart';
 import 'package:ciilaabokk/app/modules/produits/produits/produits_controller.dart';
 import 'package:ciilaabokk/app/modules/profils/profils_screen.dart';
-import 'package:ciilaabokk/app/modules/ventes/ventes/ventes_screen.dart';
+import 'package:ciilaabokk/app/modules/operations/operations/operations_screen.dart';
+import 'package:decimal/decimal.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:logger/web.dart';
@@ -61,13 +62,13 @@ class ProduitsScreen extends StatelessWidget {
             ListTile(
               title: Text("Profils"),
               onTap: () {
-                Get.offAll(ProfilsScreen());
+                // Get.offAll(ProfilsScreen());
               },
             ),
             ListTile(
-              title: Text("Ventes"),
+              title: Text("Opérations"),
               onTap: () {
-                Get.offAll(VentesScreen());
+                Get.offAll(OperationsScreen());
               },
             ),
             ListTile(
@@ -85,7 +86,7 @@ class ProduitsScreen extends StatelessWidget {
             ListTile(
               title: Text("Journal"),
               onTap: () {
-                Get.offAll(JournalScreen());
+                // Get.offAll(JournalScreen());
               },
             ),
           ],
@@ -183,12 +184,12 @@ class ProduitsScreen extends StatelessWidget {
                     children: produit.produits!.map((p) {
                       // Image on top
 
-                      var total = (p.montant!) * (p.nombre!);
+                      var total = p.montant! * Decimal.fromInt(p.nombre ?? 0);
                       // final baseUrl =
                       //     'http://10.0.2.2:8000'; // For Android emulator
                       return Card(
                         //borderOnForeground: (p.nombre! <= 0) ? false : true,
-                        color: getColorForNombre(p.nombre!),
+                        color: getColorForNombre(p.nombre ?? 0),
                         margin: EdgeInsets.symmetric(
                           horizontal: 16,
                           vertical: 8,

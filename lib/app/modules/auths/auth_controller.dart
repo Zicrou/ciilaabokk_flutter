@@ -1,7 +1,5 @@
 import 'dart:convert';
 
-import 'package:ciilaabokk/app/core/exceptions/network_exceptions.dart';
-import 'package:ciilaabokk/app/data/models/login.dart';
 import 'package:ciilaabokk/app/data/models/user.dart';
 import 'package:ciilaabokk/app/data/models/user_info.dart';
 import 'package:ciilaabokk/app/data/providers/auth_providers.dart';
@@ -11,13 +9,14 @@ import 'package:ciilaabokk/app/data/services/auth_services.dart' hide logger;
 import 'package:ciilaabokk/app/data/services/remote_services.dart' hide logger;
 import 'package:ciilaabokk/app/initial_bindings.dart';
 import 'package:ciilaabokk/app/modules/login/login_screen.dart' hide logger;
-import 'package:ciilaabokk/app/modules/ventes/new_vente/vente_screen.dart'
+import 'package:ciilaabokk/app/modules/operations/new_operation/operation_screen.dart'
     hide logger;
-import 'package:ciilaabokk/app/modules/ventes/ventes/ventes_controller.dart'
+import 'package:ciilaabokk/app/modules/operations/operations/operations_controller.dart'
     hide logger;
-import 'package:ciilaabokk/app/modules/ventes/ventes/ventes_screen.dart'
+import 'package:ciilaabokk/app/modules/operations/operations/operations_screen.dart'
     hide logger;
 import 'package:ciilaabokk/app/utils/messages.dart';
+import 'package:ciilaabokk/main.dart' hide logger;
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
@@ -34,10 +33,14 @@ class AuthController extends GetxController {
   var phoneNumberController = TextEditingController();
   var passwordController = TextEditingController();
   var nameController = TextEditingController();
+  var loginController = TextEditingController();
+  var emailController = TextEditingController();
 
   var isPhoneNumberValid = true.obs;
   var isPasswordValid = true.obs;
   var isNameValid = true.obs;
+  var isLoginValid = true.obs;
+  var isEmailValid = true.obs;
 
   void login() async {
     logger.i("LoginFormKey: ${loginFormKey}");
@@ -46,19 +49,19 @@ class AuthController extends GetxController {
       _isLoading.value = true;
       if (loginFormKey.currentState!.validate()) {
         loginFormKey.currentState!.save();
-        String phoneNumber = phoneNumberController.text.trim();
+        String login = loginController.text.trim();
         String password = passwordController.text.trim();
 
         // Call the post Api method to send data
-        var userInfo = await authServices.login(phoneNumber, password);
+        var userInfo = await authServices.login(login, password);
         logger.i("Response Auth Controller: ${userInfo}");
 
-        phoneNumberController.clear();
+        loginController.clear();
         passwordController.clear();
 
         authProvider.user = userInfo;
         //authProvider.user.token;
-        Get.offAll(() => VentesScreen());
+        Get.offAll(() => OperationsScreen());
         goodMessage("Connexion avec succés");
       }
     } catch (e) {
@@ -73,12 +76,14 @@ class AuthController extends GetxController {
     String phoneNumber = phoneNumberController.text.trim();
     String password = passwordController.text.trim();
     String name = nameController.text.trim();
+    String email = emailController.text.trim();
     try {
       if (signupFormKey.currentState!.validate()) {
         //signupFormKey.currentState!.save();
         logger.i("Signin in signinFormKey : ${signupFormKey}");
         _isLoading.value = true;
-        var userRegistred = authServices.signin(name, phoneNumber, password);
+        // var userRepositury = AuthRepositories().signin(name, email, phoneNumber, password);
+        var userRegistred = authServices.signin(name, email, phoneNumber, password);
         authProvider.userRegister = await userRegistred;
         Get.offAll(() => LoginScreen());
         goodMessage("Succés: Inscription");

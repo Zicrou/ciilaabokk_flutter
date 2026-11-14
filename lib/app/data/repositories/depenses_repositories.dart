@@ -18,7 +18,7 @@ class DepensesRepositories {
   Future createDepense(Map<String, dynamic> json) async {
     try {
       logger.i("Json from Repositories: ${json}");
-      final res = await _apiProvider.post(createDepenses, json);
+      final res = await _apiProvider.post(depensesEndpoint, json);
       logger.w('DepensesRepositories: Create depense response: $res');
       return res;
     } on BadRequestException {
@@ -27,17 +27,17 @@ class DepensesRepositories {
   }
 
   Future<DepensesInfo> listeDepenses() async {
-    final response = await _apiProvider.get(depensesListEndpoint);
+    final response = await _apiProvider.get(depensesEndpoint);
     logger.i("Response: ${response}");
     //final ventesResponse = VenteResponse.fromJson(response.data);
     return DepensesInfo.fromJson(response);
   }
 
-  Future updateDepense(int id, Map<String, dynamic> json) async {
+  Future updateDepense(String id, Map<String, dynamic> json) async {
     var res;
     try {
-      logger.i("Json from Repositories: $updateDepenses$id'");
-      res = await _apiProvider.put('$updateDepenses$id', json);
+      logger.i("Json from Repositories: $depensesEndpoint$id'");
+      res = await _apiProvider.put('$depensesEndpoint$id', json);
       logger.i('Update Depense response: ${res == null}');
       if (res == null) {
         res = null;
@@ -53,11 +53,11 @@ class DepensesRepositories {
     }
   }
 
-  Future deleteDepenses(int id) async {
+  Future deleteDepenses(String id) async {
     try {
       logger.i("Id from Repositories: ${id}");
-      final res = await _apiProvider.delete('$depenseDeleteEndpoint$id');
-      logger.i('$depenseDeleteEndpoint$id');
+      final res = await _apiProvider.delete('$depensesEndpoint$id');
+      logger.i('$depensesEndpoint$id');
       logger.w('Depenses Repositories: Delete Depense response: $res');
       return res;
     } on BadRequestException {

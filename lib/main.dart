@@ -1,22 +1,7 @@
-import 'package:ciilaabokk/app/data/providers/api_providers.dart';
-import 'package:ciilaabokk/app/data/providers/auth_providers.dart';
-import 'package:ciilaabokk/app/data/providers/storage_providers.dart';
-import 'package:ciilaabokk/app/data/repositories/auth_repositories.dart';
-import 'package:ciilaabokk/app/data/services/auth_services.dart';
 import 'package:ciilaabokk/app/initial_bindings.dart';
-import 'package:ciilaabokk/app/modules/login/login_controller.dart';
 import 'package:ciilaabokk/app/modules/login/login_screen.dart';
-import 'package:ciilaabokk/app/modules/ventes/new_vente/vente_controller.dart';
-import 'package:ciilaabokk/app/modules/ventes/ventes/ventes_controller.dart';
-import 'package:ciilaabokk/app/modules/ventes/ventes/ventes_screen.dart';
-import 'package:ciilaabokk/app/modules/auths/auth_controller.dart';
-// import 'package:ciilaabokk/app/modules/auths/login/login_screen.dart';
-// import 'package:ciilaabokk/app/modules/auths/ventes/ventes/ventes_screen.dart';
-import 'package:ciilaabokk/view/homePage.dart';
-import 'package:ciilaabokk/view/signup_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:get_storage/get_storage.dart';
 import 'package:logger/web.dart';
 
 // import 'app/modules/auths/ventes/new_vente/vente_screen.dart';

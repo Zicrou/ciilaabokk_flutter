@@ -1,19 +1,20 @@
 import 'package:ciilaabokk/app/data/models/depenses.dart';
 import 'package:ciilaabokk/app/data/models/depensesInfo.dart';
 import 'package:ciilaabokk/app/data/models/user_info.dart';
-import 'package:ciilaabokk/app/data/models/vente.dart';
+import 'package:ciilaabokk/app/data/models/operation.dart';
 import 'package:ciilaabokk/app/data/providers/auth_providers.dart';
 import 'package:ciilaabokk/app/data/providers/depenses_provider.dart';
 import 'package:ciilaabokk/app/data/repositories/depenses_repositories.dart';
-import 'package:ciilaabokk/app/data/repositories/ventes_repository.dart';
+import 'package:ciilaabokk/app/data/repositories/operations_repository.dart';
 import 'package:ciilaabokk/app/data/services/auth_services.dart';
 import 'package:ciilaabokk/app/data/services/remote_services.dart';
 import 'package:ciilaabokk/app/modules/depenses/depenses/depenses_controller.dart';
 import 'package:ciilaabokk/app/modules/depenses/depenses/depenses_screen.dart';
 import 'package:ciilaabokk/app/modules/depenses/new_depense/depense_screen.dart';
-import 'package:ciilaabokk/app/modules/ventes/ventes/ventes_controller.dart';
-import 'package:ciilaabokk/app/modules/ventes/ventes/ventes_screen.dart';
+import 'package:ciilaabokk/app/modules/operations/operations/operations_controller.dart';
+import 'package:ciilaabokk/app/modules/operations/operations/operations_screen.dart';
 import 'package:ciilaabokk/app/utils/messages.dart';
+import 'package:decimal/decimal.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:logger/web.dart';
@@ -53,7 +54,7 @@ class DepenseController extends GetxController {
         var response;
         var depense = Depenses();
         depense.libelle = libelle.text.trim();
-        depense.montant = int.tryParse(montant.text.trim());
+        depense.montant = Decimal.parse(montant.text.trim());
         depense.userId = user_id;
         logger.i("Libelle from DepenseController: ${depense.toString()}");
         response = await depensesRepositories.createDepense(depense.toJson());
@@ -92,7 +93,7 @@ class DepenseController extends GetxController {
       try {
         depense.id = depense.id; // Ensure the ID is set for update
         depense.libelle = libelle.text.trim();
-        depense.montant = int.tryParse(montant.text.trim());
+        depense.montant = Decimal.parse(montant.text.trim());
         depense.userId = user_id;
         logger.i("depense from DepenseController: ${depense.toJson()}");
 

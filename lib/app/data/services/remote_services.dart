@@ -7,8 +7,8 @@ import 'package:ciilaabokk/app/data/models/produitsInfo.dart';
 import 'package:ciilaabokk/app/data/models/user.dart';
 import 'package:ciilaabokk/app/data/models/user_info.dart';
 import 'package:ciilaabokk/app/data/models/user_register.dart';
-import 'package:ciilaabokk/app/data/models/vente.dart';
-import 'package:ciilaabokk/app/data/models/ventes.dart' hide Vente;
+import 'package:ciilaabokk/app/data/models/operation.dart';
+import 'package:ciilaabokk/app/data/models/operations_response.dart' hide Vente;
 import 'package:ciilaabokk/app/data/providers/auth_providers.dart';
 import 'package:ciilaabokk/app/modules/produits/new_produit/produit_controller.dart';
 import 'package:ciilaabokk/app/modules/produits/produits/produits_controller.dart';
@@ -43,7 +43,7 @@ class RemoteServices {
       final token = authProvider.authToken;
       logger.i("Token from Authprovider: ${token}");
       final response = await _dio.post(
-        'http://10.0.2.2:8000/api/V1/produits',
+        'http://10.0.2.2:8000/api/v1/produits',
         data: body,
         options: Options(
           headers: {
@@ -87,7 +87,7 @@ class RemoteServices {
       final token = authProvider.authToken;
       logger.i("Token from Authprovider: ${token}");
       response = await _dio.post(
-        'http://10.0.2.2:8000/api/V1/team/add-member',
+        'http://10.0.2.2:8000/api/v1/team/add-member',
         data: body,
         options: Options(
           headers: {
@@ -128,7 +128,7 @@ class RemoteServices {
       final token = authProvider.authToken;
       logger.i("Token from Authprovider: ${token}");
       final response = await _dio.get(
-        'http://10.0.2.2:8000/api/V1/team/members',
+        'http://10.0.2.2:8000/api/v1/team/members',
         options: Options(
           headers: {
             'Content-type': 'application/json',
@@ -166,7 +166,7 @@ class RemoteServices {
       logger.i("Token from Authprovider: ${token}");
 
       var response = await _dio.delete(
-        'http://10.0.2.2:8000/api/V1/team/members/${id}',
+        'http://10.0.2.2:8000/api/v1/team/members/${id}',
         options: Options(
           headers: {
             'Content-type': 'application/json',
@@ -214,7 +214,7 @@ class RemoteServices {
         'image': body['image'],
       });
       final response = await _dio.post(
-        'http://10.0.2.2:8000/api/V1/produits',
+        'http://10.0.2.2:8000/api/v1/produits',
         data: bodyToJson,
         options: Options(
           headers: {
@@ -307,7 +307,7 @@ class RemoteServices {
       //   'image': body['image'],
       // });
       final response = await _dio.post(
-        'http://10.0.2.2:8000/api/V1/produits',
+        'http://10.0.2.2:8000/api/v1/produits',
         data: formData,
         options: Options(
           headers: {
@@ -367,7 +367,7 @@ class RemoteServices {
       final token = authProvider.authToken;
       logger.i("Token from Authprovider: ${token}");
       final response = await _dio.put(
-        'http://10.0.2.2:8000/api/V1/produits/${produitId}',
+        'http://10.0.2.2:8000/api/v1/produits/${produitId}',
         data: body,
         options: Options(
           headers: {
@@ -396,19 +396,19 @@ class RemoteServices {
     }
   }
 
-  Future<Vente> updateVente(int id, Vente vente) async {
+  Future<Operation> updateOperation(String id, Operation operation) async {
     final userId = authProvider.user.user?.id;
     logger.w(userId);
     if (userId == null) {
       throw Exception("User ID is null — user is not logged in.");
     }
     var body = {
-      "designation": vente.designation,
-      "prix": int.parse(vente.prix.toString()),
+      "designation": operation.designation,
+      "prix": int.parse(operation.prix.toString()),
       "user_id": userId,
-      "nombre": int.parse(vente.nombre.toString()),
+      "nombre": int.parse(operation.nombre.toString()),
       "type_id":
-          vente.types, // Assuming types is a list and you want the first type
+          operation.types, // Assuming types is a list and you want the first type
     };
     // var bodyToJson = jsonEncode(body);
     logger.i("Body from params: ${body}");
@@ -417,7 +417,7 @@ class RemoteServices {
       final token = authProvider.authToken;
       logger.i("Token from Authprovider: ${token}");
       final response = await _dio.put(
-        'http://10.0.2.2:8000/api/V1/ventes/${id}',
+        'http://10.0.2.2:8000/api/v1/ventes/${id}',
         data: body,
         options: Options(
           headers: {
@@ -432,12 +432,12 @@ class RemoteServices {
 
       if (response.statusCode == 200 && response.data != null) {
         // Dio automatically parses JSON, so we use response.data
-        var venteUpdated = Vente.fromJson(response.data);
+        var operationUpdate = Operation.fromJson(response.data);
         logger.i(
-          "Response Produit from Remote Services: ${venteUpdated.toString()}",
+          "Response Produit from Remote Services: ${operationUpdate.toString()}",
         );
-        logger.i("Produit: ${venteUpdated}");
-        return vente;
+        logger.i("Produit: ${operationUpdate}");
+        return operation;
       } else {
         throw Exception("Failed to load produit with Dio");
       }
@@ -459,7 +459,7 @@ class RemoteServices {
       final token = authProvider.authToken;
       logger.i("Token from Authprovider: ${token}");
       final response = await _dio.post(
-        'http://10.0.2.2:8000/api/V1/depenses',
+        'http://10.0.2.2:8000/api/v1/depenses',
         data: body,
         options: Options(
           headers: {
@@ -491,7 +491,7 @@ class RemoteServices {
 
   Future<dynamic> login(String phone, String password) async {
     try {
-      final response = await _dio.post('http://10.0.2.2:8000/api/V1/login');
+      final response = await _dio.post('http://10.0.2.2:8000/api/v1/login');
       logger.i("Response from remote service: ${response.data})");
       if (response.statusCode == 200 && response.data != null) {
         // Dio automatically parses JSON, so we use response.data
@@ -528,7 +528,7 @@ class RemoteServices {
   //     final token = authProvider.authToken;
   //     logger.i("Token from Authprovider: ${token}");
   //     final response = await _dio.post(
-  //       'http://10.0.2.2:8000/api/V1/ventes',
+  //       'http://10.0.2.2:8000/api/v1/ventes',
   //       data: body,
   //       options: Options(
   //         headers: {
@@ -565,7 +565,7 @@ class RemoteServices {
 
       var bodyToJson = jsonEncode(body);
       final response = await _dio.post(
-        'http://10.0.2.2:8000/api/V1/register',
+        'http://10.0.2.2:8000/api/v1/register',
         data: body,
         options: Options(
           headers: {
@@ -589,16 +589,16 @@ class RemoteServices {
     }
   }
 
-  static Future<VenteResponse> fetchVentes() async {
+  static Future<OperationResponse> fetchVentes() async {
     try {
-      final response = await _dio.get('http://10.0.2.2:8000/api/V1/ventes');
+      final response = await _dio.get('http://10.0.2.2:8000/api/v1/ventes');
       if (response.statusCode == 200 && response.data != null) {
         // Dio automatically parses JSON, so we use response.data
-        return VenteResponse.fromJson(response.data);
+        return OperationResponse.fromJson(response.data);
         // if venteFromJson expects raw JSON string
-        // OR: return VenteResponse.fromJson(response.data); // if you have fromJson constructor
+        // OR: return OperationResponse.fromJson(response.data); // if you have fromJson constructor
       } else {
-        throw Exception("Failed to load ventes with Dio");
+        throw Exception("Failed to load operation with Dio");
       }
     } catch (e) {
       throw Exception("Error fetching ventes: $e");
@@ -610,7 +610,7 @@ class RemoteServices {
       final token = Get.find<AuthProvider>().authToken;
       logger.i("Token from RemoteServices in  Authprovider: ${token}");
       final response = await _dio.get(
-        'http://10.0.2.2:8000/api/V1/depenses',
+        'http://10.0.2.2:8000/api/v1/depenses',
         options: Options(
           headers: {
             'Content-type': 'application/json',
@@ -653,7 +653,7 @@ class RemoteServices {
 
   // static Future<VenteResponse> fetchVentes() async {
   //   var response = await client.get(
-  //     Uri.parse('http://10.0.2.2:8000/api/V1/ventes'),
+  //     Uri.parse('http://10.0.2.2:8000/api/v1/ventes'),
   //   );
 
   //   if (response.statusCode == 200 && response.body.isNotEmpty) {

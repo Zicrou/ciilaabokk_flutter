@@ -1,11 +1,13 @@
-import 'package:ciilaabokk/app/modules/login/login_controller.dart';
+import 'package:decimal/decimal.dart';
+import 'package:logger/web.dart';
 
+final Logger logger = Logger();
 class Depenses {
-  int? id;
+  String? id;
   String? libelle;
-  int? montant;
+  Decimal? montant;
   String? deletedAt;
-  int? userId;
+  String? userId;
   String? createdAt;
   String? updatedAt;
 

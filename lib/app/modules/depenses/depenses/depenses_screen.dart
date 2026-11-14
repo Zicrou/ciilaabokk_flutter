@@ -1,19 +1,10 @@
-import 'package:ciilaabokk/app/data/models/login.dart';
-import 'package:ciilaabokk/app/data/models/user_info.dart';
-import 'package:ciilaabokk/app/data/models/vente.dart';
-import 'package:ciilaabokk/app/data/providers/auth_providers.dart';
-import 'package:ciilaabokk/app/data/repositories/auth_repositories.dart';
 import 'package:ciilaabokk/app/modules/journaux/journaux/journal_screen.dart';
 import 'package:ciilaabokk/app/modules/depenses/depenses/depenses_controller.dart';
 import 'package:ciilaabokk/app/modules/depenses/new_depense/depense_screen.dart';
 import 'package:ciilaabokk/app/modules/login/login_screen.dart';
 import 'package:ciilaabokk/app/modules/produits/produits/produits_screen.dart';
 import 'package:ciilaabokk/app/modules/profils/profils_screen.dart';
-import 'package:ciilaabokk/app/modules/ventes/new_vente/vente_controller.dart';
-import 'package:ciilaabokk/app/modules/ventes/new_vente/vente_screen.dart';
-import 'package:ciilaabokk/app/modules/ventes/ventes/ventes_controller.dart';
-import 'package:ciilaabokk/app/modules/ventes/ventes/ventes_screen.dart';
-import 'package:ciilaabokk/app/modules/auths/auth_controller.dart';
+import 'package:ciilaabokk/app/modules/operations/operations/operations_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:get/get.dart';
@@ -63,13 +54,13 @@ class DepensesScreen extends StatelessWidget {
             ListTile(
               title: Text("Profils"),
               onTap: () {
-                Get.offAll(ProfilsScreen());
+                // Get.offAll(ProfilsScreen());
               },
             ),
             ListTile(
-              title: Text("Ventes"),
+              title: Text("Opération"),
               onTap: () {
-                Get.offAll(VentesScreen());
+                Get.offAll(OperationsScreen());
               },
             ),
             ListTile(
@@ -87,7 +78,7 @@ class DepensesScreen extends StatelessWidget {
             ListTile(
               title: Text("Journal"),
               onTap: () {
-                Get.offAll(JournalScreen());
+                // Get.offAll(JournalScreen());
               },
             ),
           ],

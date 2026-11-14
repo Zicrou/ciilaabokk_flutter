@@ -4,21 +4,24 @@
 
 import 'dart:convert';
 
-VenteResponse venteFromJson(String str) =>
-    VenteResponse.fromJson(json.decode(str));
+import 'package:ciilaabokk/app/data/models/operation.dart';
+import 'package:decimal/decimal.dart';
+
+OperationResponse venteFromJson(String str) =>
+    OperationResponse.fromJson(json.decode(str));
 String venteToJson(Vente data) => json.encode(data.toJson());
 
-class VenteResponse {
-  List<Vente> ventes;
+class OperationResponse {
+  List<Operation> operations;
   List<dynamic> input;
-  int totalOfTheDay;
-  int totalVenteOfTheDay;
-  int totalReparationOfTheDay;
-  int depenseTotal;
+  Decimal totalOfTheDay;
+  Decimal totalVenteOfTheDay;
+  Decimal totalReparationOfTheDay;
+  Decimal depenseTotal;
   String status;
 
-  VenteResponse({
-    required this.ventes,
+  OperationResponse({
+    required this.operations,
     required this.input,
     required this.totalOfTheDay,
     required this.totalVenteOfTheDay,
@@ -27,8 +30,8 @@ class VenteResponse {
     required this.status,
   });
 
-  factory VenteResponse.fromJson(Map<String, dynamic> json) => VenteResponse(
-    ventes: List<Vente>.from(json["ventes"].map((x) => Vente.fromJson(x))),
+  factory OperationResponse.fromJson(Map<String, dynamic> json) => OperationResponse(
+    operations: List<Operation>.from(json["operations"].map((x) => Operation.fromJson(x))),
     input: json["input"],
     totalOfTheDay: json["totalOfTheDay"],
     totalVenteOfTheDay: json["totalVenteOfTheDay"],
@@ -38,7 +41,7 @@ class VenteResponse {
   );
 
   Map<String, dynamic> toJson() => {
-    "ventes": List<dynamic>.from(ventes.map((x) => x.toJson())),
+    "operations": List<dynamic>.from(operations.map((x) => x.toJson())),
     "input": List<dynamic>.from(input),
     "totalOfTheDay": totalOfTheDay,
     "totalVenteOfTheDay": totalVenteOfTheDay,
@@ -49,7 +52,7 @@ class VenteResponse {
 
   @override
   String toString() {
-    return 'VenteResponse{ventes: $ventes, input: $input, totalOfTheDay: $totalOfTheDay, totalVenteOfTheDay: $totalVenteOfTheDay, totalReparationOfTheDay: $totalReparationOfTheDay, depenseTotal: $depenseTotal, status: $status}';
+    return 'OperationResponse{operations: $operations, input: $input, totalOfTheDay: $totalOfTheDay, totalVenteOfTheDay: $totalVenteOfTheDay, totalReparationOfTheDay: $totalReparationOfTheDay, depenseTotal: $depenseTotal, status: $status}';
   }
 }
 

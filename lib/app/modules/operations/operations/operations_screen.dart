@@ -1,7 +1,7 @@
 import 'package:ciilaabokk/app/data/models/login.dart';
 import 'package:ciilaabokk/app/data/models/user_info.dart';
-import 'package:ciilaabokk/app/data/models/vente.dart';
-import 'package:ciilaabokk/app/data/models/vente_info.dart';
+import 'package:ciilaabokk/app/data/models/operation.dart';
+import 'package:ciilaabokk/app/data/models/operation_info.dart';
 import 'package:ciilaabokk/app/data/providers/auth_providers.dart';
 import 'package:ciilaabokk/app/data/repositories/auth_repositories.dart';
 import 'package:ciilaabokk/app/modules/journaux/journaux/journal_screen.dart';
@@ -11,11 +11,12 @@ import 'package:ciilaabokk/app/modules/produits/new_produit/produit_controller.d
 import 'package:ciilaabokk/app/modules/produits/produits/produits_controller.dart';
 import 'package:ciilaabokk/app/modules/produits/produits/produits_screen.dart';
 import 'package:ciilaabokk/app/modules/profils/profils_screen.dart';
-import 'package:ciilaabokk/app/modules/ventes/new_vente/vente_controller.dart';
-import 'package:ciilaabokk/app/modules/ventes/new_vente/vente_screen.dart';
-import 'package:ciilaabokk/app/modules/ventes/ventes/ventes_controller.dart';
+import 'package:ciilaabokk/app/modules/operations/new_operation/operation_controller.dart';
+import 'package:ciilaabokk/app/modules/operations/new_operation/operation_screen.dart';
+import 'package:ciilaabokk/app/modules/operations/operations/operations_controller.dart';
 import 'package:ciilaabokk/app/utils/messages.dart';
 import 'package:ciilaabokk/app/modules/auths/auth_controller.dart';
+import 'package:decimal/decimal.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:get/get.dart';
@@ -24,9 +25,11 @@ import 'package:logger/web.dart';
 // ...existing code...
 final logger = Logger();
 
-class VentesScreen extends StatelessWidget {
-  final VentesController controller = Get.put(VentesController());
+class OperationsScreen extends StatelessWidget {
+  final OperationsController controller = Get.put(OperationsController());
   final ProduitController produitController = Get.put(ProduitController());
+  final OperationController _operationController = Get.put(OperationController());
+  
   // final Vente vente;
   // const VentesScreen(this.vente, {Key? key}) : super(key: key);
   //final UserInfo userInfo = Get.arguments;
@@ -39,7 +42,7 @@ class VentesScreen extends StatelessWidget {
       floatingActionButton: FloatingActionButton(
         backgroundColor: Color.fromARGB(255, 0, 173, 253),
 
-        onPressed: () => Get.offAll(() => VenteScreen()),
+        onPressed: () => Get.offAll(() => OperationScreen()),
         child: Center(child: Icon(Icons.add, size: 30, color: Colors.white)),
       ),
       drawer: Drawer(
@@ -67,13 +70,13 @@ class VentesScreen extends StatelessWidget {
             ListTile(
               title: Text("Profils"),
               onTap: () {
-                Get.offAll(ProfilsScreen());
+                // Get.offAll(ProfilsScreen());
               },
             ),
             ListTile(
-              title: Text("Ventes"),
+              title: Text("Opération"),
               onTap: () {
-                Get.offAll(VentesScreen());
+                Get.offAll(OperationsScreen());
               },
             ),
             ListTile(
@@ -91,7 +94,7 @@ class VentesScreen extends StatelessWidget {
             ListTile(
               title: Text("Journal"),
               onTap: () {
-                Get.offAll(JournalScreen());
+                // Get.offAll(JournalScreen());
               },
             ),
           ],
@@ -100,7 +103,7 @@ class VentesScreen extends StatelessWidget {
 
       appBar: AppBar(
         title: Text(
-          "Liste des ventes",
+          "Liste des opération",
           style: TextStyle(
             fontSize: 32,
             fontFamily: 'avenir',
@@ -133,7 +136,7 @@ class VentesScreen extends StatelessWidget {
                         child: Text("Se déconnecter"),
                         onPressed: () async {
                           Navigator.of(context).pop(); // Close the dialog
-                          await controller.authControler.logout();
+                          await controller.authController.logout();
                           Get.to(() => LoginScreen());
                         },
                       ),
@@ -161,7 +164,7 @@ class VentesScreen extends StatelessWidget {
           SizedBox(height: 2),
 
           Obx(() {
-            if (controller.ventesList.isEmpty) {
+            if (controller.operationsList.isEmpty) {
               return SizedBox.shrink();
             }
             return Card(
@@ -169,7 +172,7 @@ class VentesScreen extends StatelessWidget {
               margin: EdgeInsets.symmetric(horizontal: 16, vertical: 8),
               child: ListTile(
                 title: Text(
-                  "Total journée: ${controller.ventesList[0].totalOfTheDay}FCFA",
+                  "Total journée: ${controller.operationsList[0].totalOfTheDay}FCFA",
                   style: TextStyle(fontWeight: FontWeight.bold),
                 ),
                 subtitle: Text.rich(
@@ -178,15 +181,15 @@ class VentesScreen extends StatelessWidget {
                     children: [
                       TextSpan(
                         text:
-                            'Vente total: ${controller.ventesList[0].totalVenteOfTheDay}FCFA\n',
+                            'Vente total: ${controller.operationsList[0].totalVenteOfTheDay}FCFA\n',
                       ),
                       TextSpan(
                         text:
-                            'Réparation: ${controller.ventesList[0].totalReparationOfTheDay} FCFA\n',
+                            'Réparation: ${controller.operationsList[0].totalReparationOfTheDay} FCFA\n',
                       ),
                       TextSpan(
                         text:
-                            'Dépense total:${controller.ventesList[0].depenseTotal} FCFA',
+                            'Dépense total:${controller.operationsList[0].depenseTotal} FCFA',
                       ),
                     ],
                   ),
@@ -202,12 +205,17 @@ class VentesScreen extends StatelessWidget {
               }
               // Default widget if none of the above conditions are met
               return ListView.builder(
-                itemCount: controller.ventesList.length,
+                itemCount: controller.operationsList.length,
                 itemBuilder: (context, index) {
-                  final vente = controller.ventesList[index];
+                  final operation = controller.operationsList[index];
+                  logger.i("Opértion from operations_screen: $operation ");
                   return Column(
-                    children: vente.ventes.map((v) {
-                      var total = (v.prix!) * (v.nombre!);
+                    children: operation.operations.map((o) {
+                      final total =
+                          (Decimal.tryParse(o.prix?.toString() ?? '0') ??
+                            Decimal.zero) *
+                            (Decimal.tryParse(o.nombre?.toString() ?? '0') ??
+                              Decimal.zero);
                       return Card(
                         margin: EdgeInsets.symmetric(
                           horizontal: 16,
@@ -215,20 +223,20 @@ class VentesScreen extends StatelessWidget {
                         ),
                         child: ListTile(
                           title: Text(
-                            v.designation?.isNotEmpty == true
-                                ? v.designation!
-                                : 'Produit ID: ${v.produit.designation}',
+                            o.designation?.isNotEmpty == true
+                                ? o.designation!
+                                : 'Produit ID: ${o.produit.designation}',
                             style: TextStyle(fontWeight: FontWeight.bold),
                           ),
                           subtitle: Text.rich(
                             TextSpan(
                               style: TextStyle(color: Colors.black),
                               children: [
-                                TextSpan(text: 'Type: ${v.types.name}\n'),
-                                TextSpan(text: 'Nombre: ${v.nombre}\n'),
-                                TextSpan(text: 'Prix: ${v.prix} FCFA\n'),
+                                TextSpan(text: 'Type: ${o.types.name}\n'),
+                                TextSpan(text: 'Nombre: ${o.nombre}\n'),
+                                TextSpan(text: 'Prix: ${o.prix} FCFA\n'),
                                 TextSpan(
-                                  text: '\nTotal:${total} FCFA',
+                                  text: '\nTotal:${total.toString()} FCFA',
                                   style: TextStyle(fontWeight: FontWeight.bold),
                                 ),
                               ],
@@ -237,7 +245,7 @@ class VentesScreen extends StatelessWidget {
                           leading: CircleAvatar(
                             backgroundColor: Color.fromARGB(255, 0, 173, 253),
                             child: Text(
-                              v.nombre.toString(),
+                              o.nombre.toString(),
                               style: TextStyle(color: Colors.white),
                             ),
                           ),
@@ -256,28 +264,29 @@ class VentesScreen extends StatelessWidget {
                                   //   CircularProgressIndicator;
                                   // }
 
-                                  var produitFromVenteList;
+                                  var produitFromOperationList;
                                   try {
-                                    if (v.produit == null) {
-                                      produitFromVenteList = null;
-                                    } else {
-                                      produitFromVenteList =
-                                          await produitController.getProduit(
-                                            v.produit.id,
-                                          );
-                                      logger.w(
-                                        "Produit: ${produitFromVenteList == null}",
-                                      );
-                                    }
+                                    // if (o.produit == null) {
+                                      // produitFromOperationList = null;
+                                    // } else {
+                                      logger.i("Produit from list d'opération(o): ${o.produit}, pourquoi le rechercher alors avec getProduit()");
+                                      // produitFromOperationList =
+                                      //     await produitController.getProduit(
+                                      //       o.produit.id,
+                                      //     );
+                                      // logger.w(
+                                      //   "Produit: ${produitFromOperationList == null}",
+                                      // );
+                                    // }
 
                                     logger.i(
-                                      "ok pour modifier la vente ${v} et Produit ${produitFromVenteList}",
+                                      "ok pour modifier l'opération ${o} avec Produit ${produitFromOperationList}",
                                     );
                                     Get.to(
-                                      () => VenteScreen(),
+                                      () => OperationScreen(),
                                       arguments: {
-                                        "vente": v,
-                                        "produit": produitFromVenteList,
+                                        "Opération": o,
+                                        "produit": o.produit,
                                       },
                                     );
                                   } catch (e) {
@@ -292,9 +301,9 @@ class VentesScreen extends StatelessWidget {
                                 icon: Icon(Icons.delete, color: Colors.red),
                                 onPressed: () {
                                   logger.i(
-                                    "ok pour supprimer la vente ${v.id}",
+                                    "ok pour supprimer l'opération ${o.id}",
                                   );
-                                  controller.deleteVente(v.id!);
+                                  _operationController.deleteOperation(o.id!);
                                 },
                               ),
                             ],

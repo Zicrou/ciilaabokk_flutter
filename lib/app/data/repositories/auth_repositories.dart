@@ -3,8 +3,8 @@ import 'package:ciilaabokk/app/core/values/endpoints.dart';
 import 'package:ciilaabokk/app/data/models/login.dart';
 import 'package:ciilaabokk/app/data/models/user_info.dart';
 import 'package:ciilaabokk/app/data/models/user_register.dart';
-import 'package:ciilaabokk/app/data/models/vente_info.dart';
-import 'package:ciilaabokk/app/data/models/ventes.dart';
+import 'package:ciilaabokk/app/data/models/operation_info.dart';
+import 'package:ciilaabokk/app/data/models/operations_response.dart';
 import 'package:ciilaabokk/app/data/providers/api_providers.dart';
 import 'package:ciilaabokk/app/data/providers/auth_providers.dart';
 import 'package:dio/dio.dart';
@@ -19,34 +19,30 @@ class AuthRepositories {
   final _authProvider = Get.find<AuthProvider>();
   final _apiProvider = Get.find<ApiProvider>();
 
-  Future<UserInfo> login(String phone, String password) async {
+  Future<UserInfo> login(String login, String password) async {
     try {
       logger.i(
-        'Auth Repositories: login with phone => $phone and password => $password',
+        'Auth Repositories: login with login => $login and password => $password',
       );
       final response = await _apiProvider.postN(
         loginEndpoint,
-        {'phone_number': phone, 'password': password},
+        {'login': login, 'password': password},
         //options: Options(headers: {'Content-type': 'application/json'}),
       );
       if (response == null) {
         return response;
       }
-      // logger.w('Login response: $response');
-      // logger.w('Login response data: $response.data');
-
-      // var userRegister = UserRegister();
-      // userRegister = UserRegister.fromJson((response));
+      logger.i("Response from AuthRepositories: $response['team']");
+      logger.i("Serializing the response with userinfo");
       var userInfo = UserInfo();
       userInfo = UserInfo.fromJson((response));
+      logger.i("Serializing done, ${userInfo.toString()}");
 
       if (userInfo.token == null) {
         throw Exception("Login failed: token is null in response");
       }
       _authProvider.isAuthenticated = true;
       _authProvider.authToken = userInfo.token!;
-      // logger.i('authToken: ${_authProvider.authToken}');
-      // logger.i("userInfo from Repositories: ${userInfo.toString()}");
       return userInfo;
     } on BadRequestException {
       rethrow;
@@ -55,18 +51,14 @@ class AuthRepositories {
 
   Future<UserRegister> signin(
     String name,
+    String email,
     String phone,
     String password,
   ) async {
     try {
-      logger.i(
-        'Auth Repositories: login with phone => $phone and password => $password',
-      );
-      final response = await _apiProvider.postN(
-        registerEndPoint,
-        {'name': name, 'phone_number': phone, 'password': password},
-        //options: Options(headers: {'Content-type': 'application/json'}),
-      );
+      logger.i('Auth Repositories: SignUp with name $name email $email phone => $phone and password => $password');
+      final response = await _apiProvider.postN(registerEndPoint, {'name': name, 'email': email, 'phone': phone, 'password': password},);
+      logger.i("Response from AuthRepository: $response");
       // logger.w('Login response: $response');
       // logger.w('Login response data: $response.data');
 
@@ -76,12 +68,12 @@ class AuthRepositories {
       userRegister = UserRegister.fromJson((response));
 
       if (userRegister.token == null) {
-        throw Exception("Login failed: token is null in response");
+        throw Exception("SignUp failed: token is null in response");
       }
       _authProvider.isAuthenticated = true;
       _authProvider.authToken = userRegister.token!;
-      // logger.i('authToken: ${_authProvider.authToken}');
-      // logger.i("userRegister from Repositories: ${userRegister.toString()}");
+      logger.i('authToken: ${_authProvider.authToken}');
+      logger.i("userRegister from Repositories: ${userRegister.toString()}");
       return userRegister;
     } on BadRequestException {
       rethrow;
@@ -109,16 +101,16 @@ class AuthRepositories {
     }
   }
 
-  Future createVente(Map<String, dynamic> json) async {
-    try {
-      logger.i("Json from Repositories: ${json}");
-      final res = await _apiProvider.post(createVenteEndpoint, json);
-      logger.w('AuthRepositories: Create Vente response: $res');
-      return res;
-    } on BadRequestException {
-      rethrow;
-    }
-  }
+  // Future createVente(Map<String, dynamic> json) async {
+  //   try {
+  //     logger.i("Json from Repositories: ${json}");
+  //     final res = await _apiProvider.post(createVenteEndpoint, json);
+  //     logger.w('AuthRepositories: Create Vente response: $res');
+  //     return res;
+  //   } on BadRequestException {
+  //     rethrow;
+  //   }
+  // }
 
   // Future<List<dynamic>> fetchVentes() async {
   //   try {

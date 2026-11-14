@@ -1,7 +1,7 @@
 import 'dart:io';
 
 import 'package:ciilaabokk/app/data/models/produit.dart';
-import 'package:ciilaabokk/app/data/models/vente.dart';
+import 'package:ciilaabokk/app/data/models/operation.dart';
 import 'package:ciilaabokk/app/data/providers/auth_providers.dart';
 import 'package:ciilaabokk/app/data/repositories/produits_repositories.dart';
 import 'package:ciilaabokk/app/data/services/auth_services.dart';
@@ -9,6 +9,7 @@ import 'package:ciilaabokk/app/data/services/remote_services.dart';
 import 'package:ciilaabokk/app/modules/produits/produits/produits_controller.dart';
 import 'package:ciilaabokk/app/modules/produits/produits/produits_screen.dart';
 import 'package:ciilaabokk/app/utils/messages.dart';
+import 'package:decimal/decimal.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:image_picker/image_picker.dart';
@@ -223,7 +224,7 @@ class ProduitController extends GetxController {
         var produit = Produit();
         produit.id = produitFromForm.id; // Assuming produit has an id field
         produit.designation = designation.text.trim();
-        produit.montant = int.parse(montant.text.trim());
+        produit.montant = Decimal.parse(montant.text.trim());
         produit.nombre = int.parse(nombre.text.trim());
         produit.userId = user_id ?? produitFromForm.userId;
 

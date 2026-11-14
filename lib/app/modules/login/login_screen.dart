@@ -1,7 +1,7 @@
 import 'package:ciilaabokk/app/data/providers/auth_providers.dart';
-import 'package:ciilaabokk/app/modules/ventes/ventes/ventes_screen.dart';
+import 'package:ciilaabokk/app/modules/operations/operations/operations_screen.dart';
 import 'package:ciilaabokk/app/modules/auths/auth_controller.dart';
-import 'package:ciilaabokk/view/signup_screen.dart';
+import 'package:ciilaabokk/app/modules/sign%20up/signup_screen.dart';
 import 'package:flutter/material.dart';
 
 import 'package:get/get.dart';
@@ -32,27 +32,32 @@ class LoginScreen extends GetView<AuthController> {
                   textAlign: TextAlign.center,
                 ),
                 SizedBox(height: 30),
-                Obx(
-                  () => TextFormField(
+                TextFormField(
                     validator: (value) {
-                      if (value!.isEmpty) {
+                       final email = value?.trim() ?? '';
+                      if (email.isEmpty) {
                         return "Svp veuillez remplir le champs";
+                      }
+                      if (!RegExp(
+                        r'^[^@\s]+@[^@\s]+\.[^@\s]+$',
+                      ).hasMatch(email)) {
+                        return "Veuillez saisir une adresse email valide";
                       }
                       return null;
                     },
-                    controller: controller.phoneNumberController,
+                    controller: controller.loginController,
                     decoration: InputDecoration(
                       prefixIcon: Icon(
                         Icons.email,
                         color: Color.fromARGB(255, 10, 151, 217),
                       ),
-                      labelText: "Numéro de téléphone",
+                      labelText: "Login",
                       labelStyle: TextStyle(
                         color: Color.fromARGB(255, 0, 173, 253),
                       ),
-                      errorText: controller.isPhoneNumberValid.value
+                      errorText: controller.isLoginValid.value
                           ? null
-                          : "Numéro de téléphone invalide",
+                          : "Login invalide",
                       filled: true,
                       fillColor: Colors.white,
                       border: OutlineInputBorder(
@@ -64,12 +69,11 @@ class LoginScreen extends GetView<AuthController> {
                         borderSide: BorderSide.none,
                       ),
                     ),
-                    keyboardType: TextInputType.phone,
+                    keyboardType: TextInputType.text,
                   ),
-                ),
+                
                 SizedBox(height: 20),
-                Obx(
-                  () => TextFormField(
+                TextFormField(
                     validator: (value) {
                       if (value!.isEmpty) {
                         return "Svp veuillez remplir le champs";
@@ -102,7 +106,7 @@ class LoginScreen extends GetView<AuthController> {
                     ),
                     obscureText: true,
                   ),
-                ),
+                // ),
                 SizedBox(height: 20),
                 Obx(
                   () => controller.isLoading

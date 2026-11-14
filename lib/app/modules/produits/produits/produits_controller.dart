@@ -4,10 +4,10 @@ import 'dart:typed_data';
 
 import 'package:ciilaabokk/app/data/models/produit.dart';
 import 'package:ciilaabokk/app/data/models/produitsInfo.dart';
-import 'package:ciilaabokk/app/data/models/vente_info.dart';
+import 'package:ciilaabokk/app/data/models/operation_info.dart';
 import 'package:ciilaabokk/app/data/providers/auth_providers.dart';
 import 'package:ciilaabokk/app/data/repositories/produits_repositories.dart';
-import 'package:ciilaabokk/app/data/repositories/ventes_repository.dart';
+import 'package:ciilaabokk/app/data/repositories/operations_repository.dart';
 import 'package:ciilaabokk/app/data/services/auth_services.dart';
 import 'package:ciilaabokk/app/data/services/remote_services.dart';
 import 'package:ciilaabokk/app/data/services/vente_services.dart';
@@ -84,7 +84,7 @@ class ProduitsController extends GetxController {
     }
   }
 
-  Future<void> deleteProduits(int id) async {
+  Future<void> deleteProduits(String id) async {
     isLoading(true);
     try {
       // var idProduit = int.parse(id.toString());

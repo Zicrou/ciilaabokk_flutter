@@ -3,25 +3,26 @@ import 'dart:convert';
 import 'package:ciilaabokk/app/data/models/produit.dart';
 import 'package:ciilaabokk/app/data/models/types.dart';
 import 'package:ciilaabokk/app/data/services/remote_services.dart';
+import 'package:decimal/decimal.dart';
 import 'package:get/get.dart';
 
-Vente venteFromJson(String str) => Vente.fromJson(json.decode(str));
+Operation OperationFromJson(String str) => Operation.fromJson(json.decode(str));
 
-class Vente {
-  int? id;
+class Operation {
+  String? id;
   String? designation;
   int? nombre;
-  int? prix;
+  Decimal? prix;
   String? image;
   dynamic produit;
   dynamic deletedAt;
-  int? userId;
+  String? userId;
   String? createdAt;
   String? updatedAt;
   dynamic types;
   //RxList<Types> types = <Types>[].obs;
 
-  Vente({
+  Operation({
     this.id,
     this.designation,
     this.nombre,
@@ -35,11 +36,11 @@ class Vente {
     this.types,
   });
 
-  Vente.fromJson(Map<String, dynamic> json) {
+  Operation.fromJson(Map<String, dynamic> json) {
     id = json['id'];
     designation = json['designation'];
     nombre = json['nombre'];
-    prix = json['prix']; //!= null ? (json['prix'] as num).toDouble() : 0.0;
+    prix = Decimal.tryParse(json['prix']); //!= null ? (json['prix'] as num).toDouble() : 0.0;
     image = json['image'];
     produit = json['produit'] != null
         ? Produit.fromJson(json['produit'])
@@ -73,6 +74,6 @@ class Vente {
 
   @override
   String toString() {
-    return 'Vente{id: $id, designation: $designation, nombre: $nombre, prix: $prix, image: $image, produitId: ${produit}, Type: ${types}, deletedAt: $deletedAt, userId: $userId, createdAt: $createdAt, updatedAt: $updatedAt}';
+    return 'Operation{id: $id, designation: $designation, nombre: $nombre, prix: $prix, image: $image, produitId: ${produit}, Type: ${types}, deletedAt: $deletedAt, userId: $userId, createdAt: $createdAt, updatedAt: $updatedAt}';
   }
 }

@@ -3,13 +3,13 @@ import 'dart:io';
 
 import 'package:ciilaabokk/app/data/models/produit.dart';
 import 'package:ciilaabokk/app/data/models/types.dart';
-import 'package:ciilaabokk/app/data/models/vente.dart';
+import 'package:ciilaabokk/app/data/models/operation.dart';
 import 'package:ciilaabokk/app/modules/produits/new_produit/produit_controller.dart';
 import 'package:ciilaabokk/app/modules/produits/produits/produits_controller.dart';
 import 'package:ciilaabokk/app/modules/produits/produits/produits_screen.dart';
 import 'package:ciilaabokk/app/modules/types/types_controller.dart';
-import 'package:ciilaabokk/app/modules/ventes/new_vente/vente_controller.dart';
-import 'package:ciilaabokk/app/modules/ventes/ventes/ventes_screen.dart';
+import 'package:ciilaabokk/app/modules/operations/new_operation/operation_controller.dart';
+import 'package:ciilaabokk/app/modules/operations/operations/operations_screen.dart';
 import 'package:ciilaabokk/app/utils/messages.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';

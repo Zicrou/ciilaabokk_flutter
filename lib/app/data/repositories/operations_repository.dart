@@ -1,6 +1,6 @@
 import 'package:ciilaabokk/app/core/exceptions/network_exceptions.dart';
 import 'package:ciilaabokk/app/core/values/endpoints.dart';
-import 'package:ciilaabokk/app/data/models/vente_info.dart';
+import 'package:ciilaabokk/app/data/models/operation_info.dart';
 import 'package:ciilaabokk/app/data/providers/api_providers.dart';
 import 'package:ciilaabokk/app/utils/messages.dart';
 import 'package:get/get.dart';
@@ -8,15 +8,15 @@ import 'package:logger/logger.dart';
 
 final logger = Logger();
 
-class VentesRepository {
+class OperationsRepository {
   final _apiProvider = Get.find<ApiProvider>();
 
-  Future createVente(Map<String, dynamic> json) async {
+  Future createOperation(Map<String, dynamic> json) async {
     try {
       logger.i("Json from Repositories: ${json}");
-      final res = await _apiProvider.post(createVenteEndpoint, json);
+      final res = await _apiProvider.post(operationsEndpoint, json);
       logger.w(
-        'AuthRepositories: Create Vente response message: ${res}', //res['message']
+        'AuthRepositories: Création d\'opération, response message: ${res}', //res['message']
       );
       return res;
     } on BadRequestException {
@@ -24,12 +24,12 @@ class VentesRepository {
     }
   }
 
-  Future<dynamic> updateVente(int id, Map<String, dynamic> json) async {
+  Future<dynamic> updateOperation(int id, Map<String, dynamic> json) async {
     try {
-      logger.i("Id from Repositories: ${id}");
-      final res = await _apiProvider.put('$venteUpdateEndpoint$id', json);
-      logger.i('$venteUpdateEndpoint$id');
-      logger.w('AuthRepositories Update Vente response: $res');
+      logger.i("Id from Repositories: $id, endPoint: $operationsEndpoint$id");
+      final res = await _apiProvider.put('$operationsEndpoint$id', json);
+      logger.i('$operationsEndpoint$id');
+      logger.w('OperationRepositories modification Opération, response: $res');
       return res;
     } on FetchDataException {
       errorMessage("Erreur");
@@ -38,12 +38,12 @@ class VentesRepository {
     }
   }
 
-  Future deleteVente(int id) async {
+  Future deleteOperation(String id) async {
     try {
-      logger.i("Id from Repositories: ${id}");
-      final res = await _apiProvider.delete('$venteDeleteEndpoint$id');
-      logger.i('$venteDeleteEndpoint$id');
-      logger.w('AuthRepositories: Delete Vente response: $res');
+      logger.i("Id from Repositories: ${id}, endPoint: $operationsEndpoint$id");
+      final res = await _apiProvider.delete('$operationsEndpoint$id');
+      logger.i('$operationsEndpoint$id');
+      logger.w('OperationRepositories: Suppression de l\'opération, response: $res');
       return res;
     } on BadRequestException {
       rethrow;
@@ -71,10 +71,9 @@ class VentesRepository {
   //   }
   // }
 
-  Future<VenteInfo> listVentes() async {
-    final response = await _apiProvider.get(venteListEndpoint);
-    logger.i("Response: ${response}");
-    //final ventesResponse = VenteResponse.fromJson(response.data);
-    return VenteInfo.fromJson(response);
+  Future<OperationInfo> listOperations() async {
+    final response = await _apiProvider.get("$operationsEndpoint");
+    logger.i("Response: $response");
+    return OperationInfo.fromJson(response);
   }
 }

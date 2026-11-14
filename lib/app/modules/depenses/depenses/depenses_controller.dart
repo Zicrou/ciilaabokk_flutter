@@ -1,17 +1,9 @@
 import 'package:ciilaabokk/app/data/models/depensesInfo.dart';
 import 'package:ciilaabokk/app/data/models/user_info.dart';
-import 'package:ciilaabokk/app/data/models/vente_info.dart';
-import 'package:ciilaabokk/app/data/models/ventes.dart';
-import 'package:ciilaabokk/app/data/providers/auth_providers.dart';
 import 'package:ciilaabokk/app/data/providers/depenses_provider.dart';
 import 'package:ciilaabokk/app/data/repositories/depenses_repositories.dart';
-import 'package:ciilaabokk/app/data/repositories/ventes_repository.dart';
-import 'package:ciilaabokk/app/data/services/auth_services.dart';
-import 'package:ciilaabokk/app/data/services/remote_services.dart';
-import 'package:ciilaabokk/app/data/services/vente_services.dart';
 import 'package:ciilaabokk/app/utils/messages.dart';
 import 'package:ciilaabokk/app/modules/auths/auth_controller.dart';
-import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:get/state_manager.dart';
 import 'package:logger/logger.dart';
@@ -55,7 +47,7 @@ class DepensesController extends GetxController {
     }
   }
 
-  Future<void> deleteDepense(int id) async {
+  Future<void> deleteDepense(String id) async {
     isLoading(true);
     try {
       var response = await _depensesRepositories.deleteDepenses(id);

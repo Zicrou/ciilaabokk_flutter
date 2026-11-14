@@ -10,7 +10,7 @@ class TypesRepositories {
   final _apiProvider = Get.find<ApiProvider>();
 
   Future listTypes() async {
-    final response = await _apiProvider.get(typesListEndpoint);
+    final response = await _apiProvider.get(typesEndpoint);
     logger.i(
       "Response from Repositories: ${response['types'].cast<Map<String, dynamic>>()}",
     );

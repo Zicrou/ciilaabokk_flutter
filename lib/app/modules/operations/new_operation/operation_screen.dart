@@ -1,12 +1,13 @@
 import 'package:ciilaabokk/app/data/models/produit.dart';
 import 'package:ciilaabokk/app/data/models/produitsInfo.dart';
 import 'package:ciilaabokk/app/data/models/types.dart';
-import 'package:ciilaabokk/app/data/models/vente.dart';
+import 'package:ciilaabokk/app/data/models/operation.dart';
 import 'package:ciilaabokk/app/modules/produits/produits/produits_controller.dart';
 import 'package:ciilaabokk/app/modules/types/types_controller.dart';
-import 'package:ciilaabokk/app/modules/ventes/new_vente/vente_controller.dart';
-import 'package:ciilaabokk/app/modules/ventes/ventes/ventes_screen.dart';
+import 'package:ciilaabokk/app/modules/operations/new_operation/operation_controller.dart';
+import 'package:ciilaabokk/app/modules/operations/operations/operations_screen.dart';
 import 'package:ciilaabokk/app/utils/messages.dart';
+import 'package:decimal/decimal.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:logger/logger.dart';
@@ -14,12 +15,12 @@ import 'package:logger/logger.dart';
 final logger = Logger();
 
 // ignore: must_be_immutable
-class VenteScreen extends StatelessWidget {
-  final VenteController venteController = Get.put(VenteController());
+class OperationScreen extends StatelessWidget {
+  final OperationController operationController = Get.put(OperationController());
   final TypesController typesController = Get.put(TypesController());
   final ProduitsController produitsController = Get.put(ProduitsController());
 
-  var title = "Nouvelle Vente";
+  var title = "Nouvelle Opération";
   @override
   Widget build(BuildContext context) {
     // Create a list of Produit with nombre > 0
@@ -34,18 +35,18 @@ class VenteScreen extends StatelessWidget {
     //   }
     // });
 
-    logger.w("Le produit a modifier: ${venteController.produit}");
-    if (venteController.vente != null && venteController.vente is Vente) {
-      title = "Modifier Vente";
-      if (venteController.vente.designation != null) {
-        venteController.designation.text = venteController.vente.designation!;
+    logger.w("Le produit a modifier: ${operationController.produit}");
+    if (operationController.operation != null && operationController.operation is Operation) {
+      title = "Modifier l'opération";
+      if (operationController.operation.designation != null) {
+        operationController.designation.text = operationController.operation.designation!;
       }
-      if (venteController.produit != null) {
-        venteController.selectedProduit.value = venteController.produit;
+      if (operationController.produit != null) {
+        operationController.selectedProduit.value = operationController.produit;
       }
-      venteController.prix.text = venteController.vente.prix.toString();
-      venteController.nombre.text = venteController.vente.nombre.toString();
-      logger.i("Selected Type: ${venteController.selectedType.value}");
+      operationController.prix.text = operationController.operation.prix.toString();
+      operationController.nombre.text = operationController.operation.nombre.toString();
+      logger.i("Selected Type: ${operationController.selectedType.value}");
     }
 
     return Scaffold(
@@ -66,14 +67,14 @@ class VenteScreen extends StatelessWidget {
         child: SingleChildScrollView(
           padding: EdgeInsets.all(24),
           child: Form(
-            key: venteController.vente?.id != null
-                ? venteController.updateVenteKeyForm
-                : venteController.createVenteKeyForm,
+            key: operationController.operation?.id != null
+                ? operationController.updateOperationKeyForm
+                : operationController.createOperationKeyForm,
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.stretch,
               children: [
                 Text(
-                  "Vente",
+                  "Opération",
                   style: TextStyle(
                     fontSize: 32,
                     fontWeight: FontWeight.bold,
@@ -82,11 +83,10 @@ class VenteScreen extends StatelessWidget {
                   textAlign: TextAlign.center,
                 ),
                 SizedBox(height: 30),
-
                 Obx(() {
-                  if (venteController.vente == null) {
+                  if (operationController.operation == null) {
                     return DropdownButtonFormField<Produit>(
-                      value: venteController.selectedProduit.value,
+                      value: operationController.selectedProduit.value,
                       decoration: InputDecoration(
                         prefixIcon: Icon(
                           Icons.category,
@@ -126,22 +126,22 @@ class VenteScreen extends StatelessWidget {
                             }).toList()
                           : [],
                       onChanged: (value) {
-                        venteController.selectedProduit.value = value!;
+                        operationController.selectedProduit.value = value!;
                         logger.i(
-                          "Selected Type Vente Screen: ${venteController.selectedProduit.value!.id}",
+                          "Selected produit opération Screen: ${operationController.selectedProduit.value!.id}",
                         );
                       },
                     );
-                  } else if (venteController.vente != null &&
-                      venteController.isProduct.value == true) {
+                  } else if (operationController.operation != null &&
+                      operationController.isProduit.value == true) {
                     return DropdownButtonFormField<Produit>(
-                      value: venteController.selectedProduit.value,
+                      value: operationController.selectedProduit.value,
                       decoration: InputDecoration(
                         prefixIcon: Icon(
                           Icons.category,
                           color: Color.fromARGB(255, 0, 173, 253),
                         ),
-                        labelText: " ${venteController.produit?.designation}",
+                        labelText: " ${operationController.produit?.designation}",
                         labelStyle: TextStyle(
                           color: Color.fromARGB(255, 0, 173, 253),
                         ),
@@ -161,9 +161,9 @@ class VenteScreen extends StatelessWidget {
 
                       items: [
                         DropdownMenuItem<Produit>(
-                          value: venteController.produit,
+                          value: operationController.produit,
                           child: Text(
-                            venteController.produit.designation!,
+                            operationController.produit.designation!,
                             style: TextStyle(
                               color: Color.fromARGB(255, 0, 173, 253),
                             ),
@@ -172,9 +172,9 @@ class VenteScreen extends StatelessWidget {
                       ],
 
                       onChanged: (value) {
-                        venteController.selectedProduit.value = value!;
+                        operationController.selectedProduit.value = value!;
                         logger.i(
-                          "Selected Type Vente Screen: ${venteController.selectedProduit.value!.id}",
+                          "Selected produit opération Screen: ${operationController.selectedProduit.value!.id}",
                         );
                       },
                     );
@@ -185,7 +185,7 @@ class VenteScreen extends StatelessWidget {
                 // return "Pas de produit rattaché";
                 // Obx(
                 // () => DropdownButtonFormField<Produit>(
-                //   value: venteController.selectedProduit.value,
+                //   value: operationController.selectedProduit.value,
                 //   decoration: InputDecoration(
                 //     prefixIcon: Icon(
                 //       Icons.category,
@@ -230,11 +230,11 @@ class VenteScreen extends StatelessWidget {
 
                 //   // value: vente.types != null
                 //   //     ? vente.types
-                //   //     : venteController.selectedType.value,
+                //   //     : operationController.selectedType.value,
                 //   onChanged: (value) {
-                //     venteController.selectedProduit.value = value!;
+                //     operationController.selectedProduit.value = value!;
                 //     logger.i(
-                //       "Selected Type Vente Screen: ${venteController.selectedProduit.value!.id}",
+                //       "Selected Type Vente Screen: ${operationController.selectedProduit.value!.id}",
                 //     );
                 //   },
                 // ),
@@ -248,9 +248,9 @@ class VenteScreen extends StatelessWidget {
                 // }
                 SizedBox(height: 30),
                 Visibility(
-                  visible: venteController.selectedProduit.value == null,
+                  visible: operationController.selectedProduit.value == null,
                   child: TextFormField(
-                    controller: venteController.designation,
+                    controller: operationController.designation,
                     decoration: InputDecoration(
                       prefixIcon: Icon(
                         Icons.label,
@@ -261,7 +261,7 @@ class VenteScreen extends StatelessWidget {
                       labelStyle: TextStyle(
                         color: Color.fromARGB(255, 0, 173, 253),
                       ),
-                      // errorText: venteController.isDesignationValid.value
+                      // errorText: operationController.isDesignationValid.value
                       //     ? null
                       //     : "Désignation invalide",
                       filled: true,
@@ -280,7 +280,7 @@ class VenteScreen extends StatelessWidget {
                 ),
                 SizedBox(height: 20),
                 TextFormField(
-                  controller: venteController.prix,
+                  controller: operationController.prix,
                   validator: (value) {
                     if (value!.isEmpty) {
                       return "Svp veuillez remplir le champs";
@@ -303,7 +303,7 @@ class VenteScreen extends StatelessWidget {
                     labelStyle: TextStyle(
                       color: Color.fromARGB(255, 0, 173, 253),
                     ),
-                    // errorText: venteController.isPrixValid.value
+                    // errorText: operationController.isPrixValid.value
                     //     ? null
                     //     : "Prix invalide",
                     filled: true,
@@ -322,7 +322,7 @@ class VenteScreen extends StatelessWidget {
                 ),
                 SizedBox(height: 20),
                 TextFormField(
-                  controller: venteController.nombre,
+                  controller: operationController.nombre,
                   validator: (value) {
                     if (value!.isEmpty) {
                       return "Svp veuillez remplir le champs";
@@ -330,7 +330,7 @@ class VenteScreen extends StatelessWidget {
                     if (!RegExp(r'^[0-9]+$').hasMatch(value)) {
                       return 'Nombre uniquement';
                     }
-                    if (int.parse(venteController.nombre.text) <= 0) {
+                    if (int.parse(operationController.nombre.text) <= 0) {
                       errorMessage("Le nombre n'est pas valide");
                       return null;
                     }
@@ -344,7 +344,7 @@ class VenteScreen extends StatelessWidget {
                     labelStyle: TextStyle(
                       color: Color.fromARGB(255, 0, 173, 253),
                     ),
-                    // errorText: venteController.isNombreValid.value
+                    // errorText: operationController.isNombreValid.value
                     //     ? null
                     //     : "Nombre invalide",
                     filled: true,
@@ -363,7 +363,7 @@ class VenteScreen extends StatelessWidget {
                 SizedBox(height: 20),
                 Obx(
                   () => DropdownButtonFormField<Types>(
-                    value: venteController
+                    value: operationController
                         .selectedType
                         .value, //Check if type is selected  on create
                     decoration: InputDecoration(
@@ -372,7 +372,7 @@ class VenteScreen extends StatelessWidget {
                         color: Color.fromARGB(255, 0, 173, 253),
                       ),
                       labelText:
-                          " ${venteController.vente?.types?.name ?? 'Sélectionner un type'}",
+                          " ${operationController.operation?.types?.name ?? 'Sélectionner un type'}",
                       labelStyle: TextStyle(
                         color: Color.fromARGB(255, 0, 173, 253),
                       ),
@@ -402,48 +402,28 @@ class VenteScreen extends StatelessWidget {
 
                     // value: vente.types != null
                     //     ? vente.types
-                    //     : venteController.selectedType.value,
+                    //     : operationController.selectedType.value,
                     onChanged: (value) {
-                      venteController.selectedType.value = value!;
+                      operationController.selectedType.value = value!;
                       logger.i(
-                        "Selected Type Vente Screen: ${venteController.selectedType.value!.id}",
+                        "Selected Type Vente Screen: ${operationController.selectedType.value!.id}",
                       );
                     },
                   ),
                 ),
                 SizedBox(height: 20),
-                (venteController.vente?.id != null)
+                (operationController.operation?.id != null)
                     ? ElevatedButton(
-                        onPressed: () => {
+                        onPressed: () {
                           logger.w(
-                            "ok pour modifier vente: ${venteController.vente.id}",
-                          ),
-                          // if (venteController.designation.text.isNotEmpty &&
-                          //     venteController.selectedProduit.value != null) {
-                          //   errorMessage(
-                          //     "Vous devez choisir entre Produit et Désignation"
-                          //   ),
-
-                          // },
-                          // if ((int.parse(venteController.prix.text) <= 0) ||
-                          //     (int.parse(venteController.nombre.text) <= 0)) {
-                          //   errorMessage(
-                          //     'Le montant ou le nombre doît être supérieur a 0',
-                          //   )
-                          //   return;
-                          // },
-                          // if (venteController.prix.text.length < 3) {
-                          //   errorMessage(
-                          //     "Le prix doît être supérieur à 3 chiffres",
-                          //   )
-                          //   return null;
-                          // },
-                          venteController.updateVente(
-                            venteController.vente,
-                          ), // Update the vente
-                        }, //  venteController.updateVente(vente),
+                            "ok pour modifier l'opértion: ${operationController.operation?.id}",
+                          );
+                          operationController.updateOperation(
+                            operationController.operation,
+                          );
+                        },
                         child: Text(
-                          "Modifier vente",
+                          "Modifier opération",
                           style: TextStyle(fontSize: 18),
                         ),
                         style: ElevatedButton.styleFrom(
@@ -457,33 +437,46 @@ class VenteScreen extends StatelessWidget {
                       )
                     : ElevatedButton(
                         onPressed: () {
-                          if (venteController.selectedType.value == null) {
+                          if (operationController.selectedType.value == null) {
                             errorMessage("Vous devez selectionner un type");
+                            return;
                           }
-                          if (venteController.designation.text.isNotEmpty &&
-                              venteController.selectedProduit.value != null) {
+
+                          if (operationController.designation.text.isNotEmpty &&
+                              operationController.selectedProduit.value != null) {
                             errorMessage(
                               "Vous devez choisir entre Produit et Désignation",
                             );
+                            return;
                           }
-                          if ((int.parse(venteController.prix.text) <= 0) ||
-                              (int.parse(venteController.nombre.text) <= 0)) {
+
+                          final prixText = operationController.prix.text.trim();
+                          final nombreText = operationController.nombre.text.trim();
+
+                          if (prixText.isEmpty || nombreText.isEmpty) {
+                            errorMessage(
+                              'Le montant et le nombre sont requis',
+                            );
+                            return;
+                          }
+
+                          final prix = Decimal.tryParse(prixText);
+                          final nombre = int.tryParse(nombreText);
+
+                          if (prix == null ||
+                              nombre == null ||
+                              prix <= Decimal.zero ||
+                              nombre <= 0) {
                             errorMessage(
                               'Le montant ou le nombre doît être supérieur a 0',
                             );
                             return;
                           }
-                          if (venteController.prix.text.length < 3) {
-                            errorMessage(
-                              "Le prix doît être supérieur à 3 chiffres",
-                            );
-                            return null;
-                          }
-                          venteController.createVente();
-                          //}
-                        }, //  venteController.createVente(),
+
+                          operationController.createOperation();
+                        },
                         child: Text(
-                          "Créer vente",
+                          "Créer opération",
                           style: TextStyle(fontSize: 18),
                         ),
                         style: ElevatedButton.styleFrom(
@@ -497,7 +490,7 @@ class VenteScreen extends StatelessWidget {
                       ),
                 SizedBox(height: 20),
                 TextButton(
-                  onPressed: () => Get.offAll(() => VentesScreen()),
+                  onPressed: () => Get.offAll(() => OperationsScreen()),
                   child: Text(
                     "Voir les ventes",
                     style: TextStyle(

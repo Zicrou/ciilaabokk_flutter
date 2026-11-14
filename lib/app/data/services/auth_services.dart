@@ -1,7 +1,7 @@
 import 'package:ciilaabokk/app/data/models/user_info.dart';
 import 'package:ciilaabokk/app/data/models/user_register.dart';
-import 'package:ciilaabokk/app/data/models/vente_info.dart';
-import 'package:ciilaabokk/app/data/models/ventes.dart';
+import 'package:ciilaabokk/app/data/models/operation_info.dart';
+import 'package:ciilaabokk/app/data/models/operations_response.dart';
 import 'package:ciilaabokk/app/data/repositories/auth_repositories.dart';
 import 'package:get/get.dart';
 import 'package:logger/logger.dart';
@@ -30,26 +30,27 @@ class AuthServices extends GetxService {
   //   }
   // }
 
-  Future<UserInfo> login(String phone, String password) async {
+  Future<UserInfo> login(String login, String password) async {
     logger.w("AuthReppositories: ${_authRepositories}");
 
     logger.i(
-      'AuthService: Logging in with phone: $phone and password: $password',
+      'AuthService: Logging in with phone: $login and password: $password',
     );
-    return await _authRepositories.login(phone, password);
+    return await _authRepositories.login(login, password);
   }
 
   Future<UserRegister> signin(
     String name,
+    String email,
     String phone,
     String password,
   ) async {
     logger.w("AuthReppositories: ${_authRepositories}");
 
     logger.i(
-      'AuthService: Signing in with name: ${name}, phone: $phone and password: $password',
+      'AuthService: Signing in with name: $name, email: $email, phone: $phone and password: $password',
     );
-    return await _authRepositories.signin(name, phone, password);
+    return await _authRepositories.signin(name, email, phone, password);
   }
 
   Future<dynamic> signout() async {

@@ -61,7 +61,7 @@ class ProduitsRepositories {
     return Produit.fromJson(response['produit']);
   }
 
-  Future updateProduit(int id, Map<String, dynamic> json) async {
+  Future updateProduit(String id, Map<String, dynamic> json) async {
     var res;
     try {
       logger.i("Json from Repositories: $produitsEndpoint$id'");
@@ -81,7 +81,7 @@ class ProduitsRepositories {
     }
   }
 
-  Future deleteProduits(int id_produit) async {
+  Future deleteProduits(String id_produit) async {
     try {
       var idProduit = int.parse(id_produit.toString());
       logger.i("Id from Repositories: ${idProduit}");

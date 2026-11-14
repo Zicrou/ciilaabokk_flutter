@@ -1,11 +1,14 @@
 import 'package:ciilaabokk/app/data/models/depenses.dart';
 import 'package:ciilaabokk/app/data/providers/api_providers.dart';
+import 'package:decimal/decimal.dart';
 import 'package:get/get.dart';
+import 'package:logger/web.dart';
 
+final logger = Logger();
 class DepensesInfo {
   RxList<Depenses> depenses = <Depenses>[].obs;
   String? status;
-  int? totalOfTheDay;
+  Decimal? totalOfTheDay;
 
   DepensesInfo({required this.depenses, this.status});
 

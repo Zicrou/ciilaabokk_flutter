@@ -1,7 +1,7 @@
 import 'package:ciilaabokk/app/data/services/auth_services.dart';
 
 class Types {
-  int? id;
+  String? id;
   String? name;
   // String? deletedAt;
   // String? createdAt;
@@ -19,7 +19,7 @@ class Types {
 
   factory Types.fromJson(Map<String, dynamic> json) {
     return Types(
-      id: json['id'] as int,
+      id: json['id'],
       name: json['name'],
       // deletedAt: json['deleted_at'],
       // createdAt: json['created_at'],

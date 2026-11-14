@@ -2,15 +2,15 @@ import 'package:ciilaabokk/app/data/repositories/types_repositories.dart';
 import 'package:ciilaabokk/app/data/services/remote_services.dart';
 import 'package:ciilaabokk/app/modules/produits/produits/produits_controller.dart';
 import 'package:ciilaabokk/app/modules/types/types_controller.dart';
-import 'package:ciilaabokk/app/modules/ventes/new_vente/vente_controller.dart';
-import 'package:ciilaabokk/app/modules/ventes/ventes/ventes_controller.dart';
+import 'package:ciilaabokk/app/modules/operations/new_operation/operation_controller.dart';
+import 'package:ciilaabokk/app/modules/operations/operations/operations_controller.dart';
 import 'package:get/get.dart';
 
-class VenteBinding extends Bindings {
+class OperationBinding extends Bindings {
   @override
   void dependencies() {
-    Get.lazyPut(() => VenteController());
-    Get.lazyPut(() => VentesController());
+    Get.lazyPut(() => OperationController());
+    Get.lazyPut(() => OperationsController());
     Get.put(TypesRepositories()); // Assuming TypesRepositories is needed here
     Get.put(TypesController()); // Assuming TypesController is needed here
     Get.put(RemoteServices());
