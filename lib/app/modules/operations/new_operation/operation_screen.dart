@@ -16,7 +16,9 @@ final logger = Logger();
 
 // ignore: must_be_immutable
 class OperationScreen extends StatelessWidget {
-  final OperationController operationController = Get.put(OperationController());
+  final OperationController operationController = Get.put(
+    OperationController(),
+  );
   final TypesController typesController = Get.put(TypesController());
   final ProduitsController produitsController = Get.put(ProduitsController());
 
@@ -36,16 +38,20 @@ class OperationScreen extends StatelessWidget {
     // });
 
     logger.w("Le produit a modifier: ${operationController.produit}");
-    if (operationController.operation != null && operationController.operation is Operation) {
+    if (operationController.operation != null &&
+        operationController.operation is Operation) {
       title = "Modifier l'opération";
       if (operationController.operation.designation != null) {
-        operationController.designation.text = operationController.operation.designation!;
+        operationController.designation.text =
+            operationController.operation.designation!;
       }
       if (operationController.produit != null) {
         operationController.selectedProduit.value = operationController.produit;
       }
-      operationController.prix.text = operationController.operation.prix.toString();
-      operationController.nombre.text = operationController.operation.nombre.toString();
+      operationController.prix.text = operationController.operation.prix
+          .toString();
+      operationController.nombre.text = operationController.operation.nombre
+          .toString();
       logger.i("Selected Type: ${operationController.selectedType.value}");
     }
 
@@ -141,7 +147,8 @@ class OperationScreen extends StatelessWidget {
                           Icons.category,
                           color: Color.fromARGB(255, 0, 173, 253),
                         ),
-                        labelText: " ${operationController.produit?.designation}",
+                        labelText:
+                            " ${operationController.produit?.designation}",
                         labelStyle: TextStyle(
                           color: Color.fromARGB(255, 0, 173, 253),
                         ),
@@ -372,7 +379,7 @@ class OperationScreen extends StatelessWidget {
                         color: Color.fromARGB(255, 0, 173, 253),
                       ),
                       labelText:
-                          " ${operationController.operation?.types?.name ?? 'Sélectionner un type'}",
+                          " ${operationController.operation?.types is List ? (operationController.operation!.types as List).map((type) => type.name).join(', ') : operationController.operation?.types?.name ?? 'Sélectionner un type'}",
                       labelStyle: TextStyle(
                         color: Color.fromARGB(255, 0, 173, 253),
                       ),
@@ -443,7 +450,8 @@ class OperationScreen extends StatelessWidget {
                           }
 
                           if (operationController.designation.text.isNotEmpty &&
-                              operationController.selectedProduit.value != null) {
+                              operationController.selectedProduit.value !=
+                                  null) {
                             errorMessage(
                               "Vous devez choisir entre Produit et Désignation",
                             );
@@ -451,12 +459,11 @@ class OperationScreen extends StatelessWidget {
                           }
 
                           final prixText = operationController.prix.text.trim();
-                          final nombreText = operationController.nombre.text.trim();
+                          final nombreText = operationController.nombre.text
+                              .trim();
 
                           if (prixText.isEmpty || nombreText.isEmpty) {
-                            errorMessage(
-                              'Le montant et le nombre sont requis',
-                            );
+                            errorMessage('Le montant et le nombre sont requis');
                             return;
                           }
 

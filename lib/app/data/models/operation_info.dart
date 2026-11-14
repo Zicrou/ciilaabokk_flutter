@@ -32,11 +32,9 @@ class OperationInfo {
     );
     depenseTotal = Decimal.tryParse(json['depenseTotal']?.toString() ?? '');
     status = json['status'];
-    if (json['operation'] != null) {
-      operations = operations;
+    if (json['operations'] != null) {
       json['operations'].forEach((o) {
-        operations.add(new Operation.fromJson(o));
-        json['types'] = o['types']['name']; // Ensure types is handled correctly
+        operations.add(Operation.fromJson(Map<String, dynamic>.from(o)));
       });
     }
     if (json['input'] != null) {
@@ -45,7 +43,6 @@ class OperationInfo {
         input!.add(o);
       });
     }
-    
   }
 
   Map<String, dynamic> toJson() {

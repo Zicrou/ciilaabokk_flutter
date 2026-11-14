@@ -28,8 +28,10 @@ final logger = Logger();
 class OperationsScreen extends StatelessWidget {
   final OperationsController controller = Get.put(OperationsController());
   final ProduitController produitController = Get.put(ProduitController());
-  final OperationController _operationController = Get.put(OperationController());
-  
+  final OperationController _operationController = Get.put(
+    OperationController(),
+  );
+
   // final Vente vente;
   // const VentesScreen(this.vente, {Key? key}) : super(key: key);
   //final UserInfo userInfo = Get.arguments;
@@ -152,16 +154,16 @@ class OperationsScreen extends StatelessWidget {
 
       body: Column(
         children: [
-          Container(
-            margin: EdgeInsets.all(4),
-            child: Padding(
-              padding: const EdgeInsets.all(4),
-              child: Row(
-                children: [Text("${controller.authProvider.user.user?.name}")],
-              ),
-            ),
-          ),
-          SizedBox(height: 2),
+          // // Container(
+          // //   margin: EdgeInsets.all(4),
+          // //   child: Padding(
+          // //     padding: const EdgeInsets.all(4),
+          // //     child: Row(
+          // //       children: [Text("${controller.authProvider.user.user?.name}")],
+          // //     ),
+          // //   ),
+          // // ),
+          SizedBox(height: 4),
 
           Obx(() {
             if (controller.operationsList.isEmpty) {
@@ -196,8 +198,9 @@ class OperationsScreen extends StatelessWidget {
                 ),
               ),
             );
+
           }),
-          SizedBox(height: 2),
+          SizedBox(height: 8),
           Expanded(
             child: Obx(() {
               if (controller.isLoading.value) {
@@ -213,8 +216,8 @@ class OperationsScreen extends StatelessWidget {
                     children: operation.operations.map((o) {
                       final total =
                           (Decimal.tryParse(o.prix?.toString() ?? '0') ??
-                            Decimal.zero) *
-                            (Decimal.tryParse(o.nombre?.toString() ?? '0') ??
+                              Decimal.zero) *
+                          (Decimal.tryParse(o.nombre?.toString() ?? '0') ??
                               Decimal.zero);
                       return Card(
                         margin: EdgeInsets.symmetric(
@@ -232,7 +235,10 @@ class OperationsScreen extends StatelessWidget {
                             TextSpan(
                               style: TextStyle(color: Colors.black),
                               children: [
-                                TextSpan(text: 'Type: ${o.types.name}\n'),
+                                TextSpan(
+                                  text:
+                                      'Type: ${o.types is List ? (o.types as List).map((type) => type.name).join(', ') : o.types?.name ?? ''}\n',
+                                ),
                                 TextSpan(text: 'Nombre: ${o.nombre}\n'),
                                 TextSpan(text: 'Prix: ${o.prix} FCFA\n'),
                                 TextSpan(
@@ -267,16 +273,18 @@ class OperationsScreen extends StatelessWidget {
                                   var produitFromOperationList;
                                   try {
                                     // if (o.produit == null) {
-                                      // produitFromOperationList = null;
+                                    // produitFromOperationList = null;
                                     // } else {
-                                      logger.i("Produit from list d'opération(o): ${o.produit}, pourquoi le rechercher alors avec getProduit()");
-                                      // produitFromOperationList =
-                                      //     await produitController.getProduit(
-                                      //       o.produit.id,
-                                      //     );
-                                      // logger.w(
-                                      //   "Produit: ${produitFromOperationList == null}",
-                                      // );
+                                    logger.i(
+                                      "Produit from list d'opération(o): ${o.produit}, pourquoi le rechercher alors avec getProduit()",
+                                    );
+                                    // produitFromOperationList =
+                                    //     await produitController.getProduit(
+                                    //       o.produit.id,
+                                    //     );
+                                    // logger.w(
+                                    //   "Produit: ${produitFromOperationList == null}",
+                                    // );
                                     // }
 
                                     logger.i(
@@ -321,4 +329,5 @@ class OperationsScreen extends StatelessWidget {
     );
   }
 }
+
 // ...existing code...

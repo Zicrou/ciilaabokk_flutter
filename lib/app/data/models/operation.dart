@@ -4,7 +4,6 @@ import 'package:ciilaabokk/app/data/models/produit.dart';
 import 'package:ciilaabokk/app/data/models/types.dart';
 import 'package:ciilaabokk/app/data/services/remote_services.dart';
 import 'package:decimal/decimal.dart';
-import 'package:get/get.dart';
 
 Operation OperationFromJson(String str) => Operation.fromJson(json.decode(str));
 
@@ -40,16 +39,24 @@ class Operation {
     id = json['id'];
     designation = json['designation'];
     nombre = json['nombre'];
-    prix = Decimal.tryParse(json['prix']); //!= null ? (json['prix'] as num).toDouble() : 0.0;
+    prix = Decimal.tryParse(json['prix']?.toString() ?? '');
     image = json['image'];
     produit = json['produit'] != null
         ? Produit.fromJson(json['produit'])
         : null;
     deletedAt = json['deleted_at'];
     userId = json['user_id'];
-    types = json['types'] != null
-        ? Types.fromJson(json['types'])
-        : null; //Types.fromJson(json['types']);
+    final typeData = json['types'];
+    if (typeData is List) {
+      types = typeData
+          .whereType<Map>()
+          .map((type) => Types.fromJson(Map<String, dynamic>.from(type)))
+          .toList();
+    } else if (typeData is Map) {
+      types = Types.fromJson(Map<String, dynamic>.from(typeData));
+    } else {
+      types = null;
+    }
     // logger.w("Types: ${types}");
     createdAt = json['created_at'];
     updatedAt = json['updated_at'];
