@@ -189,7 +189,7 @@ class RemoteServices {
 
   Future<void> createProduitWithBase64(dynamic payload) async {
     final userId = authProvider.user.user?.id;
-    logger.w(userId);
+    logger.w("user id: $userId");
     if (userId == null) {
       throw Exception("User ID is null — user is not logged in.");
     }
@@ -202,7 +202,7 @@ class RemoteServices {
       'image': payload['image'],
     };
     var bodyToJson = jsonEncode(body);
-    print(bodyToJson);
+    print("Body to json: $bodyToJson");
     try {
       final token = authProvider.authToken;
       logger.i("Token from Authprovider: ${token}");
@@ -210,7 +210,6 @@ class RemoteServices {
         'designation': body['designation'],
         'montant': body['montant'],
         'nombre': body['nombre'],
-        'user_id': userId,
         'image': body['image'],
       });
       final response = await _dio.post(
@@ -227,7 +226,8 @@ class RemoteServices {
 
       logger.i("Response from remote service: ${response.data})");
 
-      if (response.statusCode == 200 && response.data != null) {
+      if ((response.statusCode == 200 || response.statusCode == 201) &&
+          response.data != null) {
         // Dio automatically parses JSON, so we use response.data
         var produits = Produit.fromJson(response.data);
         //ventesList.assignAll([ventes]);
@@ -242,10 +242,20 @@ class RemoteServices {
           Get.offAll(ProduitsScreen());
         });
       } else {
-        errorMessage("Erreur lors de l'envoi");
+        throw Exception(
+          "Échec de création du produit (HTTP ${response.statusCode}).",
+        );
       }
+    } on DioException catch (e) {
+      final responseData = e.response?.data;
+      final details = responseData is Map
+          ? responseData['errors'] ?? responseData['message'] ?? responseData
+          : responseData ?? e.message;
+      throw Exception(
+        'Erreur API (${e.response?.statusCode ?? 'réseau'}): $details',
+      );
     } catch (e) {
-      throw Exception("Error fetching Produit: ${e.toString()}");
+      throw Exception("Erreur création produit: $e");
     }
   }
 

@@ -26,18 +26,6 @@ class OperationScreen extends StatelessWidget {
   var title = "Nouvelle Opération";
   @override
   Widget build(BuildContext context) {
-    // Create a list of Produit with nombre > 0
-    // RxList<Produit?> produitList = <Produit>[].obs;
-    // Future.delayed(Duration(seconds: 1), () {
-    //   if (produitsController.produitsList.isNotEmpty) {
-    //     produitsController.produitsList[0].produits!.forEach((produit) {
-    //       if (produit.nombre != null && produit.nombre! > 0) {
-    //         produitList.add(produit);
-    //       }
-    //     });
-    //   }
-    // });
-
     logger.w("Le produit a modifier: ${operationController.produit}");
     if (operationController.operation != null &&
         operationController.operation is Operation) {
@@ -460,8 +448,7 @@ class OperationScreen extends StatelessWidget {
                           }
 
                           final prixText = operationController.prix.text.trim();
-                          final nombreText = operationController.nombre.text
-                              .trim();
+                          final nombreText = operationController.nombre.text.trim();
 
                           if (prixText.isEmpty || nombreText.isEmpty) {
                             errorMessage('Le montant et le nombre sont requis');

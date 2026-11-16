@@ -10,7 +10,7 @@ class OperationBinding extends Bindings {
   @override
   void dependencies() {
     Get.lazyPut(() => OperationController());
-    Get.lazyPut(() => OperationsController());
+    Get.lazyPut(() => OperationsController(), fenix: true);
     Get.put(TypesRepositories()); // Assuming TypesRepositories is needed here
     Get.put(TypesController()); // Assuming TypesController is needed here
     Get.put(RemoteServices());

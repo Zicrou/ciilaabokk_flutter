@@ -11,6 +11,7 @@ class OperationInfo {
   Decimal? totalReparationOfTheDay;
   Decimal? depenseTotal;
   String? status;
+  
 
   OperationInfo({
     required this.operations,

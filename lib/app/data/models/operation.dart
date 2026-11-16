@@ -60,6 +60,7 @@ class Operation {
     // logger.w("Types: ${types}");
     createdAt = json['created_at'];
     updatedAt = json['updated_at'];
+
   }
 
   Map<String, dynamic> toJson() {
@@ -81,6 +82,6 @@ class Operation {
 
   @override
   String toString() {
-    return 'Operation{id: $id, designation: $designation, nombre: $nombre, prix: $prix, image: $image, produitId: ${produit}, Type: ${types}, deletedAt: $deletedAt, userId: $userId, createdAt: $createdAt, updatedAt: $updatedAt}';
+    return 'Operation{id: $id, designation: $designation, nombre: $nombre, prix: $prix, image: $image, produitId: ${produit}, Type: ${types}, Produit: ${produit.toString()} deletedAt: $deletedAt, userId: $userId, createdAt: $createdAt, updatedAt: $updatedAt}';
   }
 }

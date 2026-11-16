@@ -43,18 +43,19 @@ class ProduitsRepositories {
     }
   }
 
-  Future createProduitsWithImage(dynamic formData) async {
+  Future createProduitWithBase64(dynamic formData) async {
     try {
       // logger.i("Json from Repositories: ${json}");
       final res = await _apiProvider.post(produitsEndpoint, formData);
-      logger.w('ProduitsRepositories: Create depense response: $res');
+      logger.w('ProduitsRepositories: Create produit response: $res');
+      logger.w('Response[success]: ${res['success']}');
       return res;
     } on BadRequestException {
       rethrow;
     }
   }
 
-  Future<Produit> getProduit(id) async {
+  Future<Produit> getProduit(String id) async {
     final response = await _apiProvider.get('$produitsEndpoint$id');
     logger.i("Response: ${response['produit']}");
 

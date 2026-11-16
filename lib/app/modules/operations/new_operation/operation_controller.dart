@@ -153,15 +153,17 @@ class OperationController extends GetxController {
         );
         logger.i("Res: $res");
         if (res != null) {
-          if (res['message'] == "L\'opération a été créée") {
-            goodMessage("Opérqtion créée avec succés");
+          if (res['success'] == "L'opération a été créée") {
+            logger.i("res['success']: ${res['success']}");
+            goodMessage("Opération créée avec succés");
+             // Appel de la liste des opérations
+            await _operationsController.fetchOperations();
           } else {
-            errorMessage("Erreur: ${res['message']}");
+            errorMessage("Erreur: ${res['success']}");
             return;
           }
 
-          // Appel de la liste des opérations
-          await _operationsController.fetchOperations();
+         
 
           Future.delayed(Duration(seconds: 2), () {
             Get.offAll(OperationsScreen());

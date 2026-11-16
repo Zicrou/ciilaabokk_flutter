@@ -198,7 +198,6 @@ class OperationsScreen extends StatelessWidget {
                 ),
               ),
             );
-
           }),
           SizedBox(height: 8),
           Expanded(
@@ -228,7 +227,7 @@ class OperationsScreen extends StatelessWidget {
                           title: Text(
                             o.designation?.isNotEmpty == true
                                 ? o.designation!
-                                : 'Produit ID: ${o.produit.designation}',
+                                : 'Produit: ${o.produit.designation}',
                             style: TextStyle(fontWeight: FontWeight.bold),
                           ),
                           subtitle: Text.rich(
@@ -258,56 +257,69 @@ class OperationsScreen extends StatelessWidget {
                           trailing: Row(
                             mainAxisSize: MainAxisSize.min,
                             children: [
-                              IconButton(
-                                icon: Icon(
-                                  Icons.edit,
-                                  color: Color.fromARGB(255, 4, 38, 255),
-                                ),
-                                onPressed: () async {
-                                  produitController.isLoading(true);
-                                  // if (produitController.isLoading.value ==
-                                  //     true) {
-                                  //   CircularProgressIndicator;
-                                  // }
-
-                                  var produitFromOperationList;
-                                  try {
-                                    // if (o.produit == null) {
-                                    // produitFromOperationList = null;
-                                    // } else {
-                                    logger.i(
-                                      "Produit from list d'opération(o): ${o.produit}, pourquoi le rechercher alors avec getProduit()",
-                                    );
-                                    // produitFromOperationList =
-                                    //     await produitController.getProduit(
-                                    //       o.produit.id,
-                                    //     );
-                                    // logger.w(
-                                    //   "Produit: ${produitFromOperationList == null}",
-                                    // );
-                                    // }
-
-                                    logger.i(
-                                      "ok pour modifier l'opération ${o} avec Produit ${produitFromOperationList}",
-                                    );
-                                    Get.to(
-                                      () => OperationScreen(),
-                                      arguments: {
-                                        "Opération": o,
-                                        "produit": o.produit,
-                                      },
-                                    );
-                                  } catch (e) {
-                                    throw errorMessage("${e.toString()}");
-                                  } finally {
-                                    produitController.isLoading(false);
-                                  }
-                                  // verifier si le produit de la vente existe dans produitList;
-                                },
-                              ),
+                              // IconButton(
+                              //   icon: Icon(
+                              //     Icons.edit,
+                              //     color: Color.fromARGB(255, 4, 38, 255),
+                              //   ),
+                              //   onPressed: () async {
+                              //     var produitFromOperationList;
+                              //     try {
+                              //       logger.i(
+                              //         "Produit from list d'opération(o): ${o.produit}, pourquoi le rechercher alors avec getProduit()",
+                              //       );
+                              //       logger.i(
+                              //         "ok pour modifier l'opération ${o} avec Produit ${o.produit}",
+                              //       );
+                              //       Get.to(
+                              //         () => OperationScreen(),
+                              //         arguments: {
+                              //           "operation": o,
+                              //           "produit": o.produit,
+                              //         },
+                              //       );
+                              //     } catch (e) {
+                              //       throw errorMessage("${e.toString()}");
+                              //     } finally {
+                              //       produitController.isLoading(false);
+                              //     }
+                              //     // verifier si le produit de la vente existe dans produitList;
+                              //   },
+                              // ),
                               IconButton(
                                 icon: Icon(Icons.delete, color: Colors.red),
-                                onPressed: () {
+                                onPressed: () async {
+                                  final confirm = await showDialog<bool>(
+                                    context: context,
+                                    builder: (dialogContext) => AlertDialog(
+                                      title: const Text(
+                                        'Supprimer cette opération ?',
+                                      ),
+                                      content: const Text(
+                                        'Cette action est irréversible.',
+                                      ),
+                                      actions: [
+                                        TextButton(
+                                          onPressed: () => Navigator.of(
+                                            dialogContext,
+                                          ).pop(false),
+                                          child: const Text('Annuler'),
+                                        ),
+                                        TextButton(
+                                          onPressed: () => Navigator.of(
+                                            dialogContext,
+                                          ).pop(true),
+                                          child: const Text(
+                                            'Supprimer',
+                                            style: TextStyle(color: Colors.red),
+                                          ),
+                                        ),
+                                      ],
+                                    ),
+                                  );
+
+                                  if (confirm != true) return;
+
                                   logger.i(
                                     "ok pour supprimer l'opération ${o.id}",
                                   );

@@ -32,7 +32,6 @@ class ProduitsController extends GetxController {
     super.onInit();
     //fetchVentes();
     fetchProduits();
-    getProduitsSupAZero();
   }
 
   Future<void> fetchProduits() async {
@@ -43,6 +42,16 @@ class ProduitsController extends GetxController {
       logger.i("Liste produits fom ProduitController: ${produits}");
 
       produitsList.assignAll([produits]);
+
+      var produitsSupAZeo = produitsList[0].produits;
+      if(produitsSupAZeo != null){
+        for (var produit in produitsSupAZeo) {
+          if (produit.nombre != null && produit.nombre! > 0) {
+            produitsListSupAZero.add(produit);
+            logger.i("Produit Sup à zéro: ${produitsListSupAZero.toString()} ");
+          }
+        }
+      }
 
       logger.i("Fetched produits: ${produitsList.toString()}");
     } catch (e) {

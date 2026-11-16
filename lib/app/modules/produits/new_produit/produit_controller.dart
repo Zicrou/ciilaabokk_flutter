@@ -168,26 +168,15 @@ class ProduitController extends GetxController {
           'designation': designation.text.trim(),
           'montant': int.parse(montant.text.trim()),
           'nombre': int.parse(nombre.text.trim()),
-          'user_id': user_id,
           'image': imageBase64,
         };
         logger.i("Payload: ${payload}");
         // 📨 Send request through your repository
         // Send JSON via your API provider
-        // final response = await produitsRepositories.createProduitWithBase64(payload)
-        await remoteService.createProduitWithBase64(payload);
-        // if (response != null) {
-        //   goodMessage("Produit créé avec succès ✅");
-        //   clearImage();
-
-        //   await ProduitsController().fetchProduits();
-
-        //   Future.delayed(const Duration(seconds: 2), () {
-        //     Get.offAll(ProduitsScreen());
-        //   });
-        // } else {
-        //   errorMessage("Erreur, échec de l’envoi (aucune réponse)");
-        // }
+        await produitsRepositories.createProduitWithBase64(payload);
+        clearImage();
+        await ProduitsController().fetchProduits();
+        Get.offAll(() => ProduitsScreen(showCreationSuccess: true));
       } catch (e) {
         errorMessage("Erreur: ${e.toString()}");
         print("error creating produit: $e.toString()");
@@ -197,7 +186,7 @@ class ProduitController extends GetxController {
     }
   }
 
-  Future<Produit> getProduit(int id) async {
+  Future<Produit> getProduit(String id) async {
     try {
       var res = await produitsRepositories.getProduit(id);
 

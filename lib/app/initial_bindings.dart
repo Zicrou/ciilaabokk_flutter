@@ -42,7 +42,7 @@ class AppInitialBindings extends Bindings {
     // safe to find dependencies
     Get.lazyPut(() => AuthController());
     Get.lazyPut(() => OperationController());
-    Get.lazyPut(() => OperationsController());
+    Get.lazyPut(() => OperationsController(), fenix: true);
     Get.lazyPut(() => ProduitsController());
     Get.put(() => DepenseController());
     Get.lazyPut(() => DepensesController());

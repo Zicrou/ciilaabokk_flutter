@@ -1,4 +1,3 @@
-import 'package:ciilaabokk/app/data/models/depensesInfo.dart';
 import 'package:decimal/decimal.dart';
 
 class Produit {
@@ -28,7 +27,7 @@ class Produit {
     id = json['id'];
     designation = json['designation'];
     nombre = json['nombre'];
-    montant = json['montant'];
+    montant = Decimal.tryParse(json['montant']?.toString() ?? '');
     image = json['image'];
     userId = json['user_id'];
     deletedAt = json['deleted_at'];

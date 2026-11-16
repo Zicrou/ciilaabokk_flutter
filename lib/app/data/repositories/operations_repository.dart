@@ -16,7 +16,7 @@ class OperationsRepository {
       logger.i("Json from Repositories: ${json}");
       final res = await _apiProvider.post(operationsEndpoint, json);
       logger.w(
-        'AuthRepositories: Création d\'opération, response message: ${res}', //res['message']
+        'Opértion Repositories: Création d\'opération, response success: ${res}', //res['message']
       );
       return res;
     } on BadRequestException {
@@ -74,6 +74,8 @@ class OperationsRepository {
   Future<OperationInfo> listOperations() async {
     final response = await _apiProvider.get("$operationsEndpoint");
     logger.i("Response: $response");
-    return OperationInfo.fromJson(response);
+    var listOperation =  OperationInfo.fromJson(response);
+    logger.i("La liste des opérations; ${listOperation.toString()}");
+    return listOperation;
   }
 }

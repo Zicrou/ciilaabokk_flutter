@@ -14,8 +14,30 @@ import 'package:logger/web.dart';
 // ...existing code...
 final logger = Logger();
 
-class ProduitsScreen extends StatelessWidget {
+class ProduitsScreen extends StatefulWidget {
+  final bool showCreationSuccess;
+
+  const ProduitsScreen({super.key, this.showCreationSuccess = false});
+
+  @override
+  State<ProduitsScreen> createState() => _ProduitsScreenState();
+}
+
+class _ProduitsScreenState extends State<ProduitsScreen> {
   final ProduitsController controller = Get.put(ProduitsController());
+
+  @override
+  void initState() {
+    super.initState();
+    if (widget.showCreationSuccess) {
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        if (!mounted) return;
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(content: Text('Produit créé avec succès ✅')),
+        );
+      });
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
