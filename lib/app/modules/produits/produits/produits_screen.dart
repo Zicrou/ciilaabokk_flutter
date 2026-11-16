@@ -1,7 +1,9 @@
 import 'package:ciilaabokk/app/core/values/app_colors.dart';
+import 'package:ciilaabokk/app/data/repositories/produits_repositories.dart';
 import 'package:ciilaabokk/app/modules/journaux/journaux/journal_screen.dart';
 import 'package:ciilaabokk/app/modules/depenses/depenses/depenses_screen.dart';
 import 'package:ciilaabokk/app/modules/login/login_screen.dart';
+import 'package:ciilaabokk/app/modules/produits/new_produit/produit_controller.dart';
 import 'package:ciilaabokk/app/modules/produits/new_produit/produit_screen.dart';
 import 'package:ciilaabokk/app/modules/produits/produits/produits_controller.dart';
 import 'package:ciilaabokk/app/modules/profils/profils_screen.dart';
@@ -25,18 +27,12 @@ class ProduitsScreen extends StatefulWidget {
 
 class _ProduitsScreenState extends State<ProduitsScreen> {
   final ProduitsController controller = Get.put(ProduitsController());
+  final ProduitController _produitController = Get.put(ProduitController());
 
   @override
   void initState() {
     super.initState();
-    if (widget.showCreationSuccess) {
-      WidgetsBinding.instance.addPostFrameCallback((_) {
-        if (!mounted) return;
-        ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(content: Text('Produit créé avec succès ✅')),
-        );
-      });
-    }
+    
   }
 
   @override
@@ -309,7 +305,8 @@ class _ProduitsScreenState extends State<ProduitsScreen> {
                                       logger.i(
                                         "ok pour supprimer le produit ${p.id}",
                                       );
-                                      controller.deleteProduits(p.id!);
+                                      // ProduitsRepositories().deleteProduits(p.id!);
+                                      _produitController.deleteProduits(p.id!);
                                     },
                                   ),
                                 ],

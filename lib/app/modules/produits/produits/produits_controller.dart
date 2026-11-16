@@ -92,23 +92,4 @@ class ProduitsController extends GetxController {
       isLoading(false);
     }
   }
-
-  Future<void> deleteProduits(String id) async {
-    isLoading(true);
-    try {
-      // var idProduit = int.parse(id.toString());
-      var response = await _produitsRepositories.deleteProduits(id);
-      if (response['errMessage'] != null) {
-        errorMessage(response['errMessage']);
-      } else {
-        logger.i("Produit with ID $id deleted successfully.");
-        fetchProduits(); // Refresh the list after deletion
-        goodMessage("Produit supprimé avec succés");
-      }
-    } catch (e) {
-      logger.e("Error deleting vente: $e");
-    } finally {
-      isLoading(false);
-    }
-  }
 }

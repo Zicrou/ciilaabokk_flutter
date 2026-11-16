@@ -1,10 +1,8 @@
 import 'dart:io';
 
 import 'package:ciilaabokk/app/data/models/produit.dart';
-import 'package:ciilaabokk/app/data/models/operation.dart';
 import 'package:ciilaabokk/app/data/providers/auth_providers.dart';
 import 'package:ciilaabokk/app/data/repositories/produits_repositories.dart';
-import 'package:ciilaabokk/app/data/services/auth_services.dart';
 import 'package:ciilaabokk/app/data/services/remote_services.dart';
 import 'package:ciilaabokk/app/modules/produits/produits/produits_controller.dart';
 import 'package:ciilaabokk/app/modules/produits/produits/produits_screen.dart';
@@ -250,6 +248,27 @@ class ProduitController extends GetxController {
       } finally {
         isLoading(false);
       }
+    }
+  }
+  Future<void> deleteProduits(String id) async {
+    isLoading(true);
+    try {
+      // var idProduit = int.parse(id.toString());
+      var response = await produitsRepositories.deleteProduits(id);
+      if (response['errMessage'] != null) {
+        errorMessage(response['errMessage']);
+      } else {
+        goodMessage("Produit supprimé avec succés");
+        logger.i("Produit with ID $id deleted successfully.");
+        await ProduitsController().fetchProduits(); // Refresh the list after deletion
+        // Future.delayed(Duration(seconds: 1), () {
+            Get.offAll(ProduitsScreen());
+          // });
+      }
+    } catch (e) {
+      logger.e("Error deleting vente: $e");
+    } finally {
+      isLoading(false);
     }
   }
 }
