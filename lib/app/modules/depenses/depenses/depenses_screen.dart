@@ -78,7 +78,7 @@ class DepensesScreen extends StatelessWidget {
             ListTile(
               title: Text("Journal"),
               onTap: () {
-                // Get.offAll(JournalScreen());
+                Get.offAll(() => JournalScreen());
               },
             ),
           ],
@@ -164,28 +164,10 @@ class DepensesScreen extends StatelessWidget {
               margin: EdgeInsets.symmetric(horizontal: 16, vertical: 8),
               child: ListTile(
                 title: Text(
-                  "Total dépense de la journée: ${controller.listeDepenses[0].totalOfTheDay}FCFA",
+                  "Total dépense de la journée: ${controller.listeDepenses[0].totalOfTheDay ?? 0} FCFA",
                   style: TextStyle(fontWeight: FontWeight.bold),
                 ),
-                subtitle: Text.rich(
-                  TextSpan(
-                    style: TextStyle(color: Colors.black),
-                    children: [
-                      // TextSpan(
-                      //   text:
-                      //       'Vente total: ${controller.listeDepenses[0].totalVenteOfTheDay}FCFA\n',
-                      // ),
-                      // TextSpan(
-                      //   text:
-                      //       'Réparation: ${controller.listeDepenses[0].totalReparationOfTheDay} FCFA\n',
-                      // ),
-                      // TextSpan(
-                      //   text:
-                      //       'Dépense total:${controller.listeDepenses[0].depenseTotal} FCFA',
-                      // ),
-                    ],
-                  ),
-                ),
+                
               ),
             );
           }),

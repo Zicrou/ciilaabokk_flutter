@@ -46,6 +46,11 @@ class OperationScreen extends StatelessWidget {
 
     return Scaffold(
       appBar: AppBar(
+        leading: IconButton(
+          tooltip: "Retour",
+          icon: Icon(Icons.arrow_back),
+          onPressed: () => Get.offAll(() => OperationsScreen()),
+        ),
         title: Text(
           title,
           style: TextStyle(
@@ -80,7 +85,7 @@ class OperationScreen extends StatelessWidget {
                 SizedBox(height: 30),
                 Obx(() {
                   if (operationController.operation == null) {
-                    return DropdownButtonFormField<Produit>(
+                    return DropdownButtonFormField<Produit?>(
                       value: operationController.selectedProduit.value,
                       decoration: InputDecoration(
                         prefixIcon: Icon(
@@ -102,28 +107,37 @@ class OperationScreen extends StatelessWidget {
                           borderSide: BorderSide.none,
                         ),
                       ),
-                      items: produitsController.produitsListSupAZero.isNotEmpty
-                          ? produitsController.produitsListSupAZero.map((
-                              produit,
-                            )
-                            // produitList.isNotEmpty
-                            // ? produitList.map((produit)
-                            {
-                              return DropdownMenuItem<Produit>(
-                                value: produit,
-                                child: Text(
-                                  produit!.designation!,
-                                  style: TextStyle(
-                                    color: Color.fromARGB(255, 0, 173, 253),
-                                  ),
-                                ),
-                              );
-                            }).toList()
-                          : [],
+                      items: [
+                        DropdownMenuItem<Produit?>(
+                          value: null,
+                          child: Text(
+                            "Aucun produit",
+                            style: TextStyle(
+                              color: Color.fromARGB(255, 0, 173, 253),
+                            ),
+                          ),
+                        ),
+                        ...produitsController.produitsListSupAZero.map((
+                          produit,
+                        ) {
+                          return DropdownMenuItem<Produit?>(
+                            value: produit,
+                            child: Text(
+                              produit!.designation!,
+                              style: TextStyle(
+                                color: Color.fromARGB(255, 0, 173, 253),
+                              ),
+                            ),
+                          );
+                        }),
+                      ],
                       onChanged: (value) {
-                        operationController.selectedProduit.value = value!;
+                        operationController.selectedProduit.value = value;
+                        if (value != null) {
+                          operationController.designation.clear();
+                        }
                         logger.i(
-                          "Selected produit opération Screen: ${operationController.selectedProduit.value!.id}",
+                          "Selected produit opération Screen: ${value?.id}",
                         );
                       },
                     );
@@ -235,43 +249,43 @@ class OperationScreen extends StatelessWidget {
                 //   },
                 // ),
                 // ),
-                SizedBox(height: 30),
-
                 // vente?.designation == null
                 //     ? SizedBox.shrink() :
                 // if(vente != null and produit != null){
 
                 // }
-                SizedBox(height: 30),
-                Visibility(
-                  visible: operationController.selectedProduit.value == null,
-                  child: TextFormField(
-                    controller: operationController.designation,
-                    decoration: InputDecoration(
-                      prefixIcon: Icon(
-                        Icons.label,
-                        color: Color.fromARGB(255, 0, 173, 253),
-                      ),
+                SizedBox(height: 20),
+                Obx(
+                  () => Visibility(
+                    visible: operationController.selectedProduit.value == null,
+                    child: TextFormField(
+                      controller: operationController.designation,
+                      decoration: InputDecoration(
+                        prefixIcon: Icon(
+                          Icons.label,
+                          color: Color.fromARGB(255, 0, 173, 253),
+                        ),
 
-                      labelText: "Désignation",
-                      labelStyle: TextStyle(
-                        color: Color.fromARGB(255, 0, 173, 253),
+                        labelText: "Désignation",
+                        labelStyle: TextStyle(
+                          color: Color.fromARGB(255, 0, 173, 253),
+                        ),
+                        // errorText: operationController.isDesignationValid.value
+                        //     ? null
+                        //     : "Désignation invalide",
+                        filled: true,
+                        fillColor: Colors.white,
+                        border: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(12),
+                          borderSide: BorderSide.none,
+                        ),
+                        focusedBorder: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(12),
+                          borderSide: BorderSide.none,
+                        ),
                       ),
-                      // errorText: operationController.isDesignationValid.value
-                      //     ? null
-                      //     : "Désignation invalide",
-                      filled: true,
-                      fillColor: Colors.white,
-                      border: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(12),
-                        borderSide: BorderSide.none,
-                      ),
-                      focusedBorder: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(12),
-                        borderSide: BorderSide.none,
-                      ),
+                      keyboardType: TextInputType.text,
                     ),
-                    keyboardType: TextInputType.text,
                   ),
                 ),
                 SizedBox(height: 20),
@@ -448,7 +462,8 @@ class OperationScreen extends StatelessWidget {
                           }
 
                           final prixText = operationController.prix.text.trim();
-                          final nombreText = operationController.nombre.text.trim();
+                          final nombreText = operationController.nombre.text
+                              .trim();
 
                           if (prixText.isEmpty || nombreText.isEmpty) {
                             errorMessage('Le montant et le nombre sont requis');
@@ -484,16 +499,6 @@ class OperationScreen extends StatelessWidget {
                         ),
                       ),
                 SizedBox(height: 20),
-                TextButton(
-                  onPressed: () => Get.offAll(() => OperationsScreen()),
-                  child: Text(
-                    "Voir les ventes",
-                    style: TextStyle(
-                      color: Color.fromARGB(255, 0, 173, 253),
-                      fontSize: 16,
-                    ),
-                  ),
-                ),
               ],
             ),
           ),

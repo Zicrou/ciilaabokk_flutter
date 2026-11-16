@@ -96,7 +96,7 @@ class OperationsScreen extends StatelessWidget {
             ListTile(
               title: Text("Journal"),
               onTap: () {
-                // Get.offAll(JournalScreen());
+                Get.offAll(() => JournalScreen());
               },
             ),
           ],
@@ -293,7 +293,7 @@ class OperationsScreen extends StatelessWidget {
                                     context: context,
                                     builder: (dialogContext) => AlertDialog(
                                       title: const Text(
-                                        'Supprimer cette opération ?',
+                                        'Annuler cette opération ?',
                                       ),
                                       content: const Text(
                                         'Cette action est irréversible.',

@@ -28,7 +28,7 @@ class DepensesRepositories {
 
   Future<DepensesInfo> listeDepenses() async {
     final response = await _apiProvider.get(depensesEndpoint);
-    logger.i("Response: ${response}");
+    logger.i("Response Depense Respository: $response, total: ${response['totalDepense']}");
     //final ventesResponse = VenteResponse.fromJson(response.data);
     return DepensesInfo.fromJson(response);
   }

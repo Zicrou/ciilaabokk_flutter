@@ -21,7 +21,7 @@ class DepensesInfo {
       });
     }
     status = json['status'];
-    totalOfTheDay = json['totalOfTheDay'];
+    totalOfTheDay = Decimal.tryParse(json['totalDepense'].toString());
   }
 
   Map<String, dynamic> toJson() {

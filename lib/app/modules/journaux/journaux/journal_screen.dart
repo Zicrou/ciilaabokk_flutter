@@ -1,291 +1,204 @@
-// import 'package:ciilaabokk/app/modules/journaux/journaux/journal_controller.dart';
-// import 'package:ciilaabokk/app/modules/depenses/depenses/depenses_screen.dart';
-// import 'package:ciilaabokk/app/modules/produits/produits/produits_screen.dart';
-// import 'package:ciilaabokk/app/modules/profils/profils_screen.dart';
-// import 'package:ciilaabokk/app/modules/operations/new_operation/operation_screen.dart';
-// import 'package:ciilaabokk/app/modules/operations/operations/operations_screen.dart';
-// import 'package:flutter/material.dart';
-// import 'package:get/get.dart';
-// import 'package:logger/web.dart';
-// 
-// // ...existing code...
-// final logger = Logger();
-// 
-// class JournalScreen extends StatelessWidget {
-//   final JournalController controller = Get.put(JournalController());
-// 
-//   final args = Get.arguments;
-// 
-//   @override
-//   Widget build(BuildContext context) {
-//     logger.w("Journal list: ${controller.fetchJournal()}");
-//     return Scaffold(
-//       floatingActionButton: FloatingActionButton(
-//         backgroundColor: Color.fromARGB(255, 0, 173, 253),
-// 
-//         onPressed: () => Get.offAll(() => OperationScreen()),
-//         child: Center(child: Icon(Icons.add, size: 30, color: Colors.white)),
-//       ),
-//       drawer: Drawer(
-//         child: ListView(
-//           padding: EdgeInsets.zero,
-//           children: [
-//             DrawerHeader(
-//               decoration: BoxDecoration(
-//                 color: Color.fromARGB(255, 0, 173, 253),
-//               ),
-//               margin: EdgeInsets.zero,
-//               padding: EdgeInsets.symmetric(horizontal: 20, vertical: 10),
-//               child: Align(
-//                 alignment: Alignment.centerLeft,
-//                 child: Text(
-//                   "Menu",
-//                   style: TextStyle(
-//                     color: Colors.white,
-//                     fontSize: 22,
-//                     fontWeight: FontWeight.bold,
-//                   ),
-//                 ),
-//               ),
-//             ),
-//             ListTile(
-//               title: Text("Profils"),
-//               onTap: () {
-//                 Get.offAll(ProfilsScreen());
-//               },
-//             ),
-//             ListTile(
-//               title: Text("Ventes"),
-//               onTap: () {
-//                 Get.offAll(OperationsScreen());
-//               },
-//             ),
-//             ListTile(
-//               title: Text("Dépenses"),
-//               onTap: () {
-//                 Get.offAll(DepensesScreen());
-//               },
-//             ),
-//             ListTile(
-//               title: Text("Produits"),
-//               onTap: () {
-//                 Get.offAll(ProduitsScreen());
-//               },
-//             ),
-//             ListTile(
-//               title: Text("Journal"),
-//               onTap: () {
-//                 Get.offAll(JournalScreen());
-//               },
-//             ),
-//           ],
-//         ),
-//       ),
-//       appBar: AppBar(
-//         title: Text(
-//           "Journal",
-//           style: TextStyle(
-//             fontSize: 32,
-//             fontFamily: 'avenir',
-//             fontWeight: FontWeight.w900,
-//             color: Color.fromARGB(255, 0, 173, 253),
-//           ),
-//         ),
-//         backgroundColor: Color.fromARGB(255, 255, 255, 255),
-//         actions: [
-//           IconButton(
-//             icon: Icon(Icons.logout, color: Colors.red),
-//             onPressed: () {
-//               showDialog(
-//                 context: context,
-//                 builder: (BuildContext context) {
-//                   return AlertDialog(
-//                     title: Text("Déconnexion"),
-//                     content: Text(
-//                       "Êtes-vous sûr de vouloir vous déconnecter ?",
-//                     ),
-//                     actions: [
-//                       TextButton(
-//                         child: Text("Annuler"),
-//                         onPressed: () {
-//                           Navigator.of(context).pop();
-//                         },
-//                       ),
-//                       // TextButton(
-//                       //   child: Text("Se déconnecter"),
-//                       //   onPressed: () async {
-//                       //     Navigator.of(context).pop(); // Close the dialog
-//                       //     await controller.authControler.logout();
-//                       //     Get.to(() => LoginScreen());
-//                       //   },
-//                       // ),
-//                     ],
-//                   );
-//                 },
-//               );
-//             },
-//           ),
-//         ],
-//       ),
-//       backgroundColor: Color(0xFFF5F5F5),
-// 
-//       body: Column(
-//         children: [
-//           Expanded(
-//             child: Obx(() {
-//               if (controller.isLoading.value) {
-//                 return Center(child: CircularProgressIndicator());
-//               }
-// 
-//               if (controller.journal.isEmpty) {
-//                 return Center(child: Text("Aucune donnée disponible"));
-//               }
-// 
-//               // Calculer les totaux Globaux
-//               int totalGlobalVentes = 0;
-//               int totalGlobalDepense = 0;
-// 
-//               controller.journal.forEach((date, jour) {
-//                 totalGlobalDepense += jour.depenses.totalDepenses;
-//                 totalGlobalVentes += jour.ventes.totalVentes;
-//               });
-// 
-//               return ListView(
-//                 children: [
-//                   // 🔹 Boucle par date
-//                   ...controller.journal.entries.map((entry) {
-//                     final date = entry.key;
-//                     final jour = entry.value;
-// 
-//                     return Card(
-//                       margin: EdgeInsets.all(12),
-//                       child: Padding(
-//                         padding: const EdgeInsets.all(12),
-//                         child: Column(
-//                           crossAxisAlignment: CrossAxisAlignment.start,
-//                           children: [
-//                             Center(
-//                               child: Text(
-//                                 "$date",
-//                                 style: TextStyle(
-//                                   fontSize: 18,
-//                                   fontWeight: FontWeight.bold,
-//                                 ),
-//                               ),
-//                             ),
-//                             SizedBox(height: 8),
-// 
-//                             // Liste des ventes
-//                             Center(
-//                               child: Text(
-//                                 "Ventes:",
-//                                 style: TextStyle(fontWeight: FontWeight.bold),
-//                               ),
-//                             ),
-//                             ...jour.ventes.ventes.map(
-//                               (vente) => ListTile(
-//                                 title: Center(
-//                                   child: Text(
-//                                     (vente.designation != null)
-//                                         ? vente.designation!
-//                                         : "Produit: ${vente.produit}",
-//                                   ),
-//                                 ),
-//                                 subtitle: Center(
-//                                   child: Text(
-//                                     "Prix: ${vente.prix} x Nombre: ${vente.nombre}",
-//                                   ),
-//                                 ),
-//                               ),
-//                             ),
-//                             Center(
-//                               child: Text(
-//                                 "Total Ventes: ${jour.ventes.totalVentes} FCFA",
-//                                 style: TextStyle(
-//                                   color: Colors.green,
-//                                   fontWeight: FontWeight.bold,
-//                                 ),
-//                               ),
-//                             ),
-// 
-//                             Divider(),
-// 
-//                             // Liste des dépenses
-//                             Center(
-//                               child: Text(
-//                                 "Dépenses:",
-//                                 style: TextStyle(fontWeight: FontWeight.bold),
-//                               ),
-//                             ),
-//                             ...jour.depenses.depenses.map(
-//                               (depense) => ListTile(
-//                                 title: Center(child: Text(depense.libelle)),
-//                                 subtitle: Center(
-//                                   child: Text("Montant: ${depense.montant}"),
-//                                 ),
-//                               ),
-//                             ),
-//                             Center(
-//                               child: Text(
-//                                 "Total Dépenses: ${jour.depenses.totalDepenses} FCFA",
-//                                 style: TextStyle(
-//                                   color: Colors.red,
-//                                   fontWeight: FontWeight.bold,
-//                                 ),
-//                               ),
-//                             ),
-//                           ],
-//                         ),
-//                       ),
-//                     );
-//                   }),
-// 
-//                   // 🔹 Résumé global en bas
-//                   Card(
-//                     color: Colors.blue.shade50,
-//                     margin: EdgeInsets.all(16),
-//                     child: Padding(
-//                       padding: const EdgeInsets.all(16),
-//                       child: Column(
-//                         children: [
-//                           Text(
-//                             "Résumé Global",
-//                             style: TextStyle(
-//                               fontSize: 20,
-//                               fontWeight: FontWeight.bold,
-//                             ),
-//                           ),
-//                           SizedBox(height: 12),
-//                           Text(
-//                             "Total Ventes: $totalGlobalVentes FCFA",
-//                             style: TextStyle(
-//                               color: Colors.green,
-//                               fontSize: 16,
-//                               fontWeight: FontWeight.bold,
-//                             ),
-//                           ),
-//                           Text(
-//                             "Total Dépenses: $totalGlobalDepense FCFA",
-//                             style: TextStyle(
-//                               color: Colors.red,
-//                               fontSize: 16,
-//                               fontWeight: FontWeight.bold,
-//                             ),
-//                           ),
-//                           Divider(),
-//                         ],
-//                       ),
-//                     ),
-//                   ),
-//                 ],
-//               );
-//             }),
-//           ),
-//         ],
-//       ),
-//     );
-//   }
-// }
-//               // Resume Global
-//            
-// // ...existing code...
+import 'package:ciilaabokk/app/data/models/depenses.dart';
+import 'package:ciilaabokk/app/data/models/operation.dart';
+import 'package:ciilaabokk/app/data/models/produit.dart';
+import 'package:ciilaabokk/app/modules/depenses/depenses/depenses_controller.dart';
+import 'package:ciilaabokk/app/modules/operations/operations/operations_controller.dart';
+import 'package:decimal/decimal.dart';
+import 'package:flutter/material.dart';
+import 'package:get/get.dart';
+
+class _JournalDataSource<T> extends DataTableSource {
+  _JournalDataSource(this.items, this.buildCells);
+
+  final List<T> items;
+  final List<DataCell> Function(T item) buildCells;
+
+  @override
+  DataRow? getRow(int index) {
+    if (index >= items.length) {
+      return null;
+    }
+
+    return DataRow.byIndex(index: index, cells: buildCells(items[index]));
+  }
+
+  @override
+  int get rowCount => items.length;
+
+  @override
+  bool get isRowCountApproximate => false;
+
+  @override
+  int get selectedRowCount => 0;
+}
+
+class JournalScreen extends StatelessWidget {
+  JournalScreen({super.key});
+
+  final OperationsController operationsController =
+      Get.find<OperationsController>();
+  final DepensesController depensesController = Get.find<DepensesController>();
+
+  List<Operation> get operations => operationsController.operationsList
+      .expand((operationInfo) => operationInfo.operations)
+      .toList();
+
+  List<Depenses> get depenses => depensesController.listeDepenses
+      .expand((depenseInfo) => depenseInfo.depenses)
+      .toList();
+
+  String _operationDesignation(Operation operation) {
+    if (operation.designation?.trim().isNotEmpty == true) {
+      return operation.designation!.trim();
+    }
+
+    final produit = operation.produit;
+    if (produit is Produit) {
+      return produit.designation ?? 'Produit';
+    }
+
+    return produit == null ? '—' : 'Produit: $produit';
+  }
+
+  String _operationType(Operation operation) {
+    final type = operation.types;
+    if (type is List) {
+      return type.map((item) => item.name).join(', ');
+    }
+    return type?.name?.toString() ?? '—';
+  }
+
+  Decimal _operationTotal(Operation operation) {
+    final prix =
+        Decimal.tryParse(operation.prix?.toString() ?? '') ?? Decimal.zero;
+    return prix * Decimal.fromInt(operation.nombre ?? 0);
+  }
+
+  Widget _buildOperationsTable() {
+    final items = operations;
+    if (items.isEmpty) {
+      return const Padding(
+        padding: EdgeInsets.all(16),
+        child: Text('Aucune opération trouvée'),
+      );
+    }
+
+    return PaginatedDataTable(
+      rowsPerPage: 5,
+      availableRowsPerPage: const [5, 10, 20],
+      columns: const [
+        DataColumn(label: Text('Désignation')),
+        DataColumn(label: Text('Type')),
+        DataColumn(label: Text('Nombre'), numeric: true),
+        DataColumn(label: Text('Prix unitaire'), numeric: true),
+        DataColumn(label: Text('Total'), numeric: true),
+      ],
+      source: _JournalDataSource(
+        items,
+        (operation) => [
+          DataCell(Text(_operationDesignation(operation))),
+          DataCell(Text(_operationType(operation))),
+          DataCell(Text('${operation.nombre ?? 0}')),
+          DataCell(Text('${operation.prix ?? Decimal.zero} FCFA')),
+          DataCell(Text('${_operationTotal(operation)} FCFA')),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildDepensesTable() {
+    final items = depenses;
+    if (items.isEmpty) {
+      return const Padding(
+        padding: EdgeInsets.all(16),
+        child: Text('Aucune dépense trouvée'),
+      );
+    }
+
+    return PaginatedDataTable(
+      rowsPerPage: 5,
+      availableRowsPerPage: const [5, 10, 20],
+      columns: const [
+        DataColumn(label: Text('Libellé')),
+        DataColumn(label: Text('Montant'), numeric: true),
+      ],
+      source: _JournalDataSource(
+        items,
+        (depense) => [
+          DataCell(Text(depense.libelle ?? '—')),
+          DataCell(Text('${depense.montant ?? Decimal.zero} FCFA')),
+        ],
+      ),
+    );
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        title: const Text(
+          'Journal',
+          style: TextStyle(
+            fontSize: 32,
+            fontFamily: 'avenir',
+            fontWeight: FontWeight.w900,
+            color: Color.fromARGB(255, 0, 173, 253),
+          ),
+        ),
+        backgroundColor: Colors.white,
+        actions: [
+          IconButton(
+            tooltip: 'Actualiser',
+            icon: const Icon(Icons.refresh),
+            onPressed: () {
+              operationsController.fetchOperations();
+              depensesController.fetchDepenses();
+            },
+          ),
+        ],
+      ),
+      backgroundColor: const Color(0xFFF5F5F5),
+      body: Obx(() {
+        if (operationsController.isLoading.value &&
+            depensesController.isLoading.value) {
+          return const Center(child: CircularProgressIndicator());
+        }
+
+        return ListView(
+          padding: const EdgeInsets.all(16),
+          children: [
+            const Text(
+              'Opérations',
+              style: TextStyle(fontSize: 22, fontWeight: FontWeight.bold),
+            ),
+            const SizedBox(height: 8),
+            Card(
+              clipBehavior: Clip.antiAlias,
+              child: operationsController.isLoading.value
+                  ? const Padding(
+                      padding: EdgeInsets.all(16),
+                      child: Center(child: CircularProgressIndicator()),
+                    )
+                  : _buildOperationsTable(),
+            ),
+            const SizedBox(height: 24),
+            const Text(
+              'Dépenses',
+              style: TextStyle(fontSize: 22, fontWeight: FontWeight.bold),
+            ),
+            const SizedBox(height: 8),
+            Card(
+              clipBehavior: Clip.antiAlias,
+              child: depensesController.isLoading.value
+                  ? const Padding(
+                      padding: EdgeInsets.all(16),
+                      child: Center(child: CircularProgressIndicator()),
+                    )
+                  : _buildDepensesTable(),
+            ),
+          ],
+        );
+      }),
+    );
+  }
+}

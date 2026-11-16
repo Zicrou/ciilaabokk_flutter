@@ -24,8 +24,8 @@ class Depenses {
   Depenses.fromJson(Map<String, dynamic> json) {
     id = json['id'];
     libelle = json['libelle'];
-    montant = json['montant'];
-    // deletedAt = json['deleted_at'];
+    montant = Decimal.tryParse(json['montant'].toString());
+    deletedAt = json['deleted_at'];
     userId = json['user_id'];
     createdAt = json['created_at'];
     updatedAt = json['updated_at'];
