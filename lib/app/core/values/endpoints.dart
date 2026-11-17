@@ -11,3 +11,4 @@ const listJournalDepensesEndpoints = '$baseUrl/journal/depenses/';
 const listJournalOperationsEndpoints = '$baseUrl/journal/operations/';
 const produitSupAZeroEndpoint = '$baseUrl/produits/supeAzero/';
 const teamEndpoints = '$baseUrl/equipes/';
+const journalEndpoint = '$baseUrl/journal/';

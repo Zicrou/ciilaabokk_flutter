@@ -58,7 +58,7 @@ class DepensesScreen extends StatelessWidget {
               },
             ),
             ListTile(
-              title: Text("Opération"),
+              title: Text("Opérations"),
               onTap: () {
                 Get.offAll(OperationsScreen());
               },
@@ -79,6 +79,13 @@ class DepensesScreen extends StatelessWidget {
               title: Text("Journal"),
               onTap: () {
                 Get.offAll(() => JournalScreen());
+              },
+            ),
+            ListTile(
+              title: Text("Equipe"),
+              onTap: () {
+                //Tester equipe repository
+                
               },
             ),
           ],

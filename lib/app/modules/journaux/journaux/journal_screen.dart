@@ -1,8 +1,9 @@
-import 'package:ciilaabokk/app/data/models/depenses.dart';
 import 'package:ciilaabokk/app/data/models/operation.dart';
 import 'package:ciilaabokk/app/data/models/produit.dart';
-import 'package:ciilaabokk/app/modules/depenses/depenses/depenses_controller.dart';
-import 'package:ciilaabokk/app/modules/operations/operations/operations_controller.dart';
+import 'package:ciilaabokk/app/modules/depenses/depenses/depenses_screen.dart';
+import 'package:ciilaabokk/app/modules/journaux/journaux/journal_controller.dart';
+import 'package:ciilaabokk/app/modules/operations/operations/operations_screen.dart';
+import 'package:ciilaabokk/app/modules/produits/produits/produits_screen.dart';
 import 'package:decimal/decimal.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
@@ -35,17 +36,7 @@ class _JournalDataSource<T> extends DataTableSource {
 class JournalScreen extends StatelessWidget {
   JournalScreen({super.key});
 
-  final OperationsController operationsController =
-      Get.find<OperationsController>();
-  final DepensesController depensesController = Get.find<DepensesController>();
-
-  List<Operation> get operations => operationsController.operationsList
-      .expand((operationInfo) => operationInfo.operations)
-      .toList();
-
-  List<Depenses> get depenses => depensesController.listeDepenses
-      .expand((depenseInfo) => depenseInfo.depenses)
-      .toList();
+  final _journalController = Get.find<JournalController>();
 
   String _operationDesignation(Operation operation) {
     if (operation.designation?.trim().isNotEmpty == true) {
@@ -75,7 +66,7 @@ class JournalScreen extends StatelessWidget {
   }
 
   Widget _buildOperationsTable() {
-    final items = operations;
+    final items = _journalController.operationsList;
     if (items.isEmpty) {
       return const Padding(
         padding: EdgeInsets.all(16),
@@ -94,7 +85,7 @@ class JournalScreen extends StatelessWidget {
         DataColumn(label: Text('Total'), numeric: true),
       ],
       source: _JournalDataSource(
-        items,
+        items.toList(),
         (operation) => [
           DataCell(Text(_operationDesignation(operation))),
           DataCell(Text(_operationType(operation))),
@@ -107,7 +98,7 @@ class JournalScreen extends StatelessWidget {
   }
 
   Widget _buildDepensesTable() {
-    final items = depenses;
+    final items = _journalController.depensesList.toList();
     if (items.isEmpty) {
       return const Padding(
         padding: EdgeInsets.all(16),
@@ -151,16 +142,71 @@ class JournalScreen extends StatelessWidget {
             tooltip: 'Actualiser',
             icon: const Icon(Icons.refresh),
             onPressed: () {
-              operationsController.fetchOperations();
-              depensesController.fetchDepenses();
+              // Rafraîchier les données
+              _journalController.fetchJournal();
             },
           ),
         ],
       ),
+      drawer: Drawer(
+        child: ListView(
+          padding: EdgeInsets.zero,
+          children: [
+            DrawerHeader(
+              decoration: BoxDecoration(
+                color: Color.fromARGB(255, 0, 173, 253),
+              ),
+              margin: EdgeInsets.zero,
+              padding: EdgeInsets.symmetric(horizontal: 20, vertical: 10),
+              child: Align(
+                alignment: Alignment.centerLeft,
+                child: Text(
+                  "Menu",
+                  style: TextStyle(
+                    color: Colors.white,
+                    fontSize: 22,
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+              ),
+            ),
+            ListTile(
+              title: Text("Profils"),
+              onTap: () {
+                // Get.offAll(ProfilsScreen());
+              },
+            ),
+            ListTile(
+              title: Text("Opération"),
+              onTap: () {
+                Get.offAll(OperationsScreen());
+              },
+            ),
+            ListTile(
+              title: Text("Dépenses"),
+              onTap: () {
+                Get.offAll(DepensesScreen());
+              },
+            ),
+            ListTile(
+              title: Text("Produits"),
+              onTap: () {
+                Get.offAll(ProduitsScreen());
+              },
+            ),
+            ListTile(
+              title: Text("Journal"),
+              onTap: () {
+                Get.offAll(() => JournalScreen());
+              },
+            ),
+          ],
+        ),
+      ),
       backgroundColor: const Color(0xFFF5F5F5),
       body: Obx(() {
-        if (operationsController.isLoading.value &&
-            depensesController.isLoading.value) {
+        // Verifier si isLoading est a true
+        if (_journalController.isLoading.value) {
           return const Center(child: CircularProgressIndicator());
         }
 
@@ -174,7 +220,7 @@ class JournalScreen extends StatelessWidget {
             const SizedBox(height: 8),
             Card(
               clipBehavior: Clip.antiAlias,
-              child: operationsController.isLoading.value
+              child: _journalController.isLoading.value
                   ? const Padding(
                       padding: EdgeInsets.all(16),
                       child: Center(child: CircularProgressIndicator()),
@@ -189,7 +235,7 @@ class JournalScreen extends StatelessWidget {
             const SizedBox(height: 8),
             Card(
               clipBehavior: Clip.antiAlias,
-              child: depensesController.isLoading.value
+              child: _journalController.isLoading.value
                   ? const Padding(
                       padding: EdgeInsets.all(16),
                       child: Center(child: CircularProgressIndicator()),

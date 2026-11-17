@@ -2,6 +2,7 @@ import 'dart:convert';
 
 import 'package:ciilaabokk/app/data/models/produit.dart';
 import 'package:ciilaabokk/app/data/models/types.dart';
+import 'package:ciilaabokk/app/data/models/user.dart';
 import 'package:ciilaabokk/app/data/services/remote_services.dart';
 import 'package:decimal/decimal.dart';
 
@@ -19,6 +20,7 @@ class Operation {
   String? createdAt;
   String? updatedAt;
   dynamic types;
+  dynamic user;
   //RxList<Types> types = <Types>[].obs;
 
   Operation({
@@ -33,6 +35,7 @@ class Operation {
     this.createdAt,
     this.updatedAt,
     this.types,
+    this.user
   });
 
   Operation.fromJson(Map<String, dynamic> json) {
@@ -57,6 +60,9 @@ class Operation {
     } else {
       types = null;
     }
+    user = json['user'] != null
+        ? User.fromJson(json['user'])
+        : null;
     // logger.w("Types: ${types}");
     createdAt = json['created_at'];
     updatedAt = json['updated_at'];

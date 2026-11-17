@@ -4,6 +4,7 @@ import 'package:ciilaabokk/app/data/models/operation.dart';
 import 'package:ciilaabokk/app/data/models/operation_info.dart';
 import 'package:ciilaabokk/app/data/providers/auth_providers.dart';
 import 'package:ciilaabokk/app/data/repositories/auth_repositories.dart';
+import 'package:ciilaabokk/app/data/repositories/journal_repository.dart';
 import 'package:ciilaabokk/app/modules/journaux/journaux/journal_screen.dart';
 import 'package:ciilaabokk/app/modules/depenses/depenses/depenses_screen.dart';
 import 'package:ciilaabokk/app/modules/login/login_screen.dart';

@@ -104,7 +104,7 @@ class _ProduitsScreenState extends State<ProduitsScreen> {
             ListTile(
               title: Text("Journal"),
               onTap: () {
-                // Get.offAll(JournalScreen());
+                Get.offAll(() => JournalScreen());
               },
             ),
           ],

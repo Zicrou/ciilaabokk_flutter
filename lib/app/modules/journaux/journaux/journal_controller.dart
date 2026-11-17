@@ -1,53 +1,35 @@
-// import 'package:ciilaabokk/app/data/models/journalResponse.dart';
-// import 'package:ciilaabokk/app/data/repositories/journaux_repositories.dart';
-// import 'package:ciilaabokk/app/utils/messages.dart';
-// import 'package:get/get.dart';
-// import 'package:logger/logger.dart';
-// 
-// final logger = Logger();
-// 
-// class JournalController extends GetxController {
-//   final JournauxRepositories _journauxRepositories = Get.put(
-//     JournauxRepositories(),
-//   );
-// 
-//   var isLoading = false.obs;
-//   var journal = <String, JournalDay>{}.obs; // Map<Date, JournalDay>
-//   var user;
-// 
-//   @override
-//   void onInit() {
-//     super.onInit();
-//     // _loadProduits();
-// 
-//     fetchJournal();
-//   }
-// 
-//   // Récupérer le journal depuis l’API
-//   Future<void> fetchJournal() async {
-//     try {
-//       isLoading(true);
-//       var response;
-//       logger.i("User from journal: ${user == null}");
-//       response = await _journauxRepositories.listJournal();
-//       logger.i("Response from Controller: ${response}");
-//       // final journalResponse = JournalResponse.fromJson(response.data);
-//       journal.value = response.journal;
-//       logger.i("Journal: ${journal}");
-//     } catch (e) {
-//       Get.snackbar("Erreur", e.toString());
-//     } finally {
-//       isLoading(false);
-//     }
-//   }
-// 
-//   // Exemple : récupérer le total des ventes d’un jour
-//   int getTotalVentes(String date) {
-//     return journal[date]?.ventes.totalVentes ?? 0;
-//   }
-// 
-//   // Exemple : récupérer le total des dépenses d’un jour
-//   int getTotalDepenses(String date) {
-//     return journal[date]?.depenses.totalDepenses ?? 0;
-//   }
-// }
+import 'package:ciilaabokk/app/data/models/depenses.dart';
+import 'package:ciilaabokk/app/data/models/operation.dart';
+import 'package:ciilaabokk/app/data/repositories/journal_repository.dart';
+import 'package:get/get.dart';
+import 'package:logger/logger.dart';
+
+final Logger logger = Logger();
+
+class JournalController extends GetxController {
+  final JournalRepository journalRepository = Get.find<JournalRepository>();
+  final isLoading = true.obs;
+  final operationsList = <Operation>[].obs;
+  final depensesList = <Depenses>[].obs;
+
+  @override
+  void onInit() {
+    super.onInit();
+    fetchJournal();
+  }
+
+  Future<void> fetchJournal() async {
+    isLoading(true);
+    try {
+      final reponse = await journalRepository.fetchJournal();
+      logger.i("Réponse fetchJournal controller: ${reponse.depenses}");
+      operationsList.assignAll(reponse.operations);
+      depensesList.assignAll(reponse.depenses ?? <Depenses>[]);
+      logger.i("Opértion liste: ${operationsList[0]}");
+    } catch (error) {
+      Get.snackbar('Erreur', error.toString());
+    } finally {
+      isLoading(false);
+    }
+  }
+}

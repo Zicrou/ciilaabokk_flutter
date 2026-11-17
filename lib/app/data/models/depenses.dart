@@ -1,3 +1,4 @@
+import 'package:ciilaabokk/app/data/models/user.dart';
 import 'package:decimal/decimal.dart';
 import 'package:logger/web.dart';
 
@@ -10,6 +11,7 @@ class Depenses {
   String? userId;
   String? createdAt;
   String? updatedAt;
+  dynamic user;
 
   Depenses({
     this.id,
@@ -19,16 +21,20 @@ class Depenses {
     this.userId,
     this.createdAt,
     this.updatedAt,
+    this.user,
   });
 
   Depenses.fromJson(Map<String, dynamic> json) {
     id = json['id'];
     libelle = json['libelle'];
-    montant = Decimal.tryParse(json['montant'].toString());
+    montant = Decimal.tryParse(json['montant']?.toString() ?? '');
     deletedAt = json['deleted_at'];
     userId = json['user_id'];
     createdAt = json['created_at'];
     updatedAt = json['updated_at'];
+    user = json['user'] != null
+        ? User.fromJson(json['user'])
+        : null;
   }
 
   Map<String, dynamic> toJson() {
