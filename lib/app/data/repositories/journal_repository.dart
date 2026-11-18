@@ -21,8 +21,8 @@ class JournalRepository {
   final RxList<Operation> operationListe = <Operation>[].obs;
   final RxList<Depenses> depenseListe = <Depenses>[].obs;
 
-  Future<JournalInfo> fetchJournal() async {
-    final results = await _apiProvider.get("$journalEndpoint");
+  Future<JournalInfo> fetchJournal(String coequipier) async {
+    final results = await _apiProvider.post("$journalEndpoint", {"coequipier": coequipier});
     logger.i("Response journal: $results");
     var journal =  JournalInfo.fromJson(results);
     return journal;

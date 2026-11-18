@@ -1,12 +1,10 @@
 import 'dart:math';
 
+import 'package:ciilaabokk/app/modules/journaux/journaux/journal_controller.dart';
 import 'package:ciilaabokk/app/modules/journaux/journaux/journal_screen.dart';
-import 'package:ciilaabokk/app/modules/depenses/depenses/depenses_screen.dart';
-import 'package:ciilaabokk/app/modules/produits/produits/produits_screen.dart';
-import 'package:ciilaabokk/app/modules/profils/journaux/jouralMembresUser_screen.dart';
 import 'package:ciilaabokk/app/modules/profils/membres/ajouter_membre_screen.dart';
 import 'package:ciilaabokk/app/modules/profils/profils_controller.dart';
-import 'package:ciilaabokk/app/modules/operations/operations/operations_screen.dart';
+import 'package:ciilaabokk/app/widgets/app_drawer.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:logger/logger.dart';
@@ -60,21 +58,22 @@ class ProfilsScreen extends StatelessWidget {
         DataColumn(label: Text('Journal')),
         DataColumn(label: Text('Actions')),
       ],
-      source: _ProfilsDataSource(
-        items.toList(),
-        (membre)  {
-          final userId = membre.id;
-          return[
-            DataCell(Text(membre.name ?? '')),
-          DataCell(TextButton(
-                onPressed: userId == null
-                    ? null
-                    : () => Get.to(
-                          () => (userId: userId),
-                        ),
-                child: const Text('Voir le journal'),
-              ),
+      source: _ProfilsDataSource(items.toList(), (membre) {
+        final userId = membre.id;
+        return [
+          DataCell(Text(membre.name ?? '')),
+          DataCell(
+            TextButton(
+              onPressed: userId == null
+                  ? null
+                  : () async {
+                      final journalController = Get.find<JournalController>();
+                      await journalController.fetchJournal(userId);
+                      Get.to(() => JournalScreen(userId: userId));
+                    },
+              child: const Text('Voir le journal'),
             ),
+          ),
           DataCell(
             (membre.pivot?.teamId != membre.team_id)
                 ? IconButton(
@@ -118,10 +117,8 @@ class ProfilsScreen extends StatelessWidget {
                     child: Text("Moi"),
                   ),
           ),
-          ];
-          
-        }
-      ),
+        ];
+      }),
     );
   }
 
@@ -140,49 +137,13 @@ class ProfilsScreen extends StatelessWidget {
       columns: const [
         DataColumn(label: Text('Nom')),
         DataColumn(label: Text('Statut')),
-        DataColumn(label: Text('Actions')),
       ],
       source: _ProfilsDataSource(
         demandesEnvoyees.toList(),
         (demande) => [
           DataCell(Text(demande.user!.name ?? '')),
           DataCell(Text(demande.status! ?? '')),
-          DataCell(
-            IconButton(
-              tooltip: 'Supprimer le membre',
-              icon: const Icon(Icons.delete, color: Colors.red),
-              onPressed: demande.id == null
-                  ? null
-                  : () async {
-                      final confirm = await showDialog<bool>(
-                        context: context,
-                        builder: (dialogContext) => AlertDialog(
-                          title: const Text('Supprimer la demande ?'),
-                          content: const Text('Cette action est irréversible.'),
-                          actions: [
-                            TextButton(
-                              onPressed: () =>
-                                  Navigator.of(dialogContext).pop(false),
-                              child: const Text('Annuler'),
-                            ),
-                            TextButton(
-                              onPressed: () =>
-                                  Navigator.of(dialogContext).pop(true),
-                              child: const Text(
-                                'Supprimer',
-                                style: TextStyle(color: Colors.red),
-                              ),
-                            ),
-                          ],
-                        ),
-                      );
-
-                      if (confirm == true) {
-                        await controller.deleteMembre(demande.id!);
-                      }
-                    },
-            ),
-          ),
+          
         ],
       ),
     );
@@ -283,26 +244,25 @@ class ProfilsScreen extends StatelessWidget {
         DataColumn(label: Text('Nom')),
         DataColumn(label: Text('Actions')),
       ],
-      source: _ProfilsDataSource(
-        items.toList(),
-        (equipe) {
-          final userId = equipe.user?.id?.toString();
+      source: _ProfilsDataSource(items.toList(), (equipe) {
+        final userId = equipe.user?.id?.toString();
 
-          return [
-            DataCell(Text(equipe.user?.name ?? '')),
-            DataCell(
-              TextButton(
-                onPressed: userId == null
-                    ? null
-                    : () => Get.to(
-                          () => (userId: userId),
-                        ),
-                child: const Text('Voir le journal'),
-              ),
+        return [
+          DataCell(Text(equipe.user?.name ?? '')),
+          DataCell(
+            TextButton(
+              onPressed: userId == null
+                  ? null
+                  : () async {
+                      final journalController = Get.find<JournalController>();
+                      await journalController.fetchJournal(userId);
+                      Get.to(() => JournalScreen(userId: userId));
+                    },
+              child: const Text('Voir le journal'),
             ),
-          ];
-        },
-      ),
+          ),
+        ];
+      }),
     );
   }
 
@@ -315,61 +275,7 @@ class ProfilsScreen extends StatelessWidget {
         onPressed: () => Get.offAll(() => AjouterMembreScreen()),
         child: Center(child: Icon(Icons.add, size: 30, color: Colors.white)),
       ),
-      drawer: Drawer(
-        child: ListView(
-          padding: EdgeInsets.zero,
-          children: [
-            DrawerHeader(
-              decoration: BoxDecoration(
-                color: Color.fromARGB(255, 0, 173, 253),
-              ),
-              margin: EdgeInsets.zero,
-              padding: EdgeInsets.symmetric(horizontal: 20, vertical: 10),
-              child: Align(
-                alignment: Alignment.centerLeft,
-                child: Text(
-                  "Menu",
-                  style: TextStyle(
-                    color: Colors.white,
-                    fontSize: 22,
-                    fontWeight: FontWeight.bold,
-                  ),
-                ),
-              ),
-            ),
-            ListTile(
-              title: Text("Profils"),
-              onTap: () {
-                Get.offAll(ProfilsScreen());
-              },
-            ),
-            ListTile(
-              title: Text("Opérations"),
-              onTap: () {
-                Get.offAll(OperationsScreen());
-              },
-            ),
-            ListTile(
-              title: Text("Dépenses"),
-              onTap: () {
-                Get.offAll(DepensesScreen());
-              },
-            ),
-            ListTile(
-              title: Text("Produits"),
-              onTap: () {
-                Get.offAll(ProduitsScreen());
-              },
-            ),
-            ListTile(
-              title: Text("Journal"),
-              onTap: () {
-                Get.offAll(JournalScreen());
-              },
-            ),
-          ],
-        ),
-      ),
+      drawer: const AppDrawer(),
       appBar: AppBar(
         title: Text(
           title,
@@ -450,7 +356,7 @@ class ProfilsScreen extends StatelessWidget {
                       child: Center(child: CircularProgressIndicator()),
                     )
                   : _buildEquipesTable(context),
-                )
+            ),
           ],
         );
       }),

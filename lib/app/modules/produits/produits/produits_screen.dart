@@ -1,13 +1,10 @@
 import 'package:ciilaabokk/app/core/values/app_colors.dart';
 import 'package:ciilaabokk/app/data/repositories/produits_repositories.dart';
-import 'package:ciilaabokk/app/modules/journaux/journaux/journal_screen.dart';
-import 'package:ciilaabokk/app/modules/depenses/depenses/depenses_screen.dart';
 import 'package:ciilaabokk/app/modules/login/login_screen.dart';
 import 'package:ciilaabokk/app/modules/produits/new_produit/produit_controller.dart';
 import 'package:ciilaabokk/app/modules/produits/new_produit/produit_screen.dart';
 import 'package:ciilaabokk/app/modules/produits/produits/produits_controller.dart';
-import 'package:ciilaabokk/app/modules/profils/profils_screen.dart';
-import 'package:ciilaabokk/app/modules/operations/operations/operations_screen.dart';
+import 'package:ciilaabokk/app/widgets/app_drawer.dart';
 import 'package:decimal/decimal.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
@@ -32,7 +29,6 @@ class _ProduitsScreenState extends State<ProduitsScreen> {
   @override
   void initState() {
     super.initState();
-    
   }
 
   @override
@@ -55,61 +51,7 @@ class _ProduitsScreenState extends State<ProduitsScreen> {
         onPressed: () => Get.offAll(() => ProduitScreen()),
         child: Center(child: Icon(Icons.add, size: 30, color: Colors.white)),
       ),
-      drawer: Drawer(
-        child: ListView(
-          padding: EdgeInsets.zero,
-          children: [
-            DrawerHeader(
-              decoration: BoxDecoration(
-                color: Color.fromARGB(255, 0, 173, 253),
-              ),
-              margin: EdgeInsets.zero,
-              padding: EdgeInsets.symmetric(horizontal: 20, vertical: 10),
-              child: Align(
-                alignment: Alignment.centerLeft,
-                child: Text(
-                  "Menu",
-                  style: TextStyle(
-                    color: Colors.white,
-                    fontSize: 22,
-                    fontWeight: FontWeight.bold,
-                  ),
-                ),
-              ),
-            ),
-            ListTile(
-              title: Text("Profils"),
-              onTap: () {
-                // Get.offAll(ProfilsScreen());
-              },
-            ),
-            ListTile(
-              title: Text("Opérations"),
-              onTap: () {
-                Get.offAll(OperationsScreen());
-              },
-            ),
-            ListTile(
-              title: Text("Dépenses"),
-              onTap: () {
-                Get.offAll(DepensesScreen());
-              },
-            ),
-            ListTile(
-              title: Text("Produits"),
-              onTap: () {
-                Get.offAll(ProduitsScreen());
-              },
-            ),
-            ListTile(
-              title: Text("Journal"),
-              onTap: () {
-                Get.offAll(() => JournalScreen());
-              },
-            ),
-          ],
-        ),
-      ),
+      drawer: const AppDrawer(),
       appBar: AppBar(
         title: Text(
           "Liste des produits",
@@ -327,4 +269,5 @@ class _ProduitsScreenState extends State<ProduitsScreen> {
     );
   }
 }
+
 // ...existing code...

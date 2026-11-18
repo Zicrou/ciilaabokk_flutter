@@ -1,9 +1,7 @@
 import 'package:ciilaabokk/app/data/models/operation.dart';
 import 'package:ciilaabokk/app/data/models/produit.dart';
-import 'package:ciilaabokk/app/modules/depenses/depenses/depenses_screen.dart';
 import 'package:ciilaabokk/app/modules/journaux/journaux/journal_controller.dart';
-import 'package:ciilaabokk/app/modules/operations/operations/operations_screen.dart';
-import 'package:ciilaabokk/app/modules/produits/produits/produits_screen.dart';
+import 'package:ciilaabokk/app/widgets/app_drawer.dart';
 import 'package:decimal/decimal.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
@@ -34,7 +32,9 @@ class _JournalDataSource<T> extends DataTableSource {
 }
 
 class JournalScreen extends StatelessWidget {
-  JournalScreen({super.key});
+  JournalScreen({super.key, this.userId});
+
+  final String? userId;
 
   final _journalController = Get.find<JournalController>();
 
@@ -141,68 +141,11 @@ class JournalScreen extends StatelessWidget {
           IconButton(
             tooltip: 'Actualiser',
             icon: const Icon(Icons.refresh),
-            onPressed: () {
-              // Rafraîchier les données
-              _journalController.fetchJournal();
-            },
+            onPressed: () => _journalController.fetchJournal(userId),
           ),
         ],
       ),
-      drawer: Drawer(
-        child: ListView(
-          padding: EdgeInsets.zero,
-          children: [
-            DrawerHeader(
-              decoration: BoxDecoration(
-                color: Color.fromARGB(255, 0, 173, 253),
-              ),
-              margin: EdgeInsets.zero,
-              padding: EdgeInsets.symmetric(horizontal: 20, vertical: 10),
-              child: Align(
-                alignment: Alignment.centerLeft,
-                child: Text(
-                  "Menu",
-                  style: TextStyle(
-                    color: Colors.white,
-                    fontSize: 22,
-                    fontWeight: FontWeight.bold,
-                  ),
-                ),
-              ),
-            ),
-            ListTile(
-              title: Text("Profils"),
-              onTap: () {
-                // Get.offAll(ProfilsScreen());
-              },
-            ),
-            ListTile(
-              title: Text("Opération"),
-              onTap: () {
-                Get.offAll(OperationsScreen());
-              },
-            ),
-            ListTile(
-              title: Text("Dépenses"),
-              onTap: () {
-                Get.offAll(DepensesScreen());
-              },
-            ),
-            ListTile(
-              title: Text("Produits"),
-              onTap: () {
-                Get.offAll(ProduitsScreen());
-              },
-            ),
-            ListTile(
-              title: Text("Journal"),
-              onTap: () {
-                Get.offAll(() => JournalScreen());
-              },
-            ),
-          ],
-        ),
-      ),
+      drawer: const AppDrawer(),
       backgroundColor: const Color(0xFFF5F5F5),
       body: Obx(() {
         // Verifier si isLoading est a true

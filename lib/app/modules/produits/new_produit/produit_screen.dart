@@ -7,10 +7,9 @@ import 'package:ciilaabokk/app/data/models/operation.dart';
 import 'package:ciilaabokk/app/modules/produits/new_produit/produit_controller.dart';
 import 'package:ciilaabokk/app/modules/produits/produits/produits_controller.dart';
 import 'package:ciilaabokk/app/modules/produits/produits/produits_screen.dart';
-import 'package:ciilaabokk/app/modules/types/types_controller.dart';
 import 'package:ciilaabokk/app/modules/operations/new_operation/operation_controller.dart';
-import 'package:ciilaabokk/app/modules/operations/operations/operations_screen.dart';
 import 'package:ciilaabokk/app/utils/messages.dart';
+import 'package:ciilaabokk/app/widgets/app_drawer.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:image_picker/image_picker.dart';
@@ -52,8 +51,10 @@ class ProduitScreen extends StatelessWidget {
             color: Color.fromARGB(255, 0, 173, 253),
           ),
         ),
+
         backgroundColor: Color.fromARGB(255, 255, 255, 255),
       ),
+      drawer: const AppDrawer(),
       backgroundColor: Color(0xFFF5F5F5),
       body: Center(
         child: SingleChildScrollView(

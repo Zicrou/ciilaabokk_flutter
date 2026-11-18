@@ -1,10 +1,7 @@
-import 'package:ciilaabokk/app/modules/journaux/journaux/journal_screen.dart';
 import 'package:ciilaabokk/app/modules/depenses/depenses/depenses_controller.dart';
 import 'package:ciilaabokk/app/modules/depenses/new_depense/depense_screen.dart';
 import 'package:ciilaabokk/app/modules/login/login_screen.dart';
-import 'package:ciilaabokk/app/modules/produits/produits/produits_screen.dart';
-import 'package:ciilaabokk/app/modules/profils/profils_screen.dart';
-import 'package:ciilaabokk/app/modules/operations/operations/operations_screen.dart';
+import 'package:ciilaabokk/app/widgets/app_drawer.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:get/get.dart';
@@ -29,68 +26,7 @@ class DepensesScreen extends StatelessWidget {
         onPressed: () => Get.to(() => DepenseScreen()),
         child: Center(child: Icon(Icons.add, size: 30, color: Colors.white)),
       ),
-      drawer: Drawer(
-        child: ListView(
-          padding: EdgeInsets.zero,
-          children: [
-            DrawerHeader(
-              decoration: BoxDecoration(
-                color: Color.fromARGB(255, 0, 173, 253),
-              ),
-              margin: EdgeInsets.zero,
-              padding: EdgeInsets.symmetric(horizontal: 20, vertical: 10),
-              child: Align(
-                alignment: Alignment.centerLeft,
-                child: Text(
-                  "Menu",
-                  style: TextStyle(
-                    color: Colors.white,
-                    fontSize: 22,
-                    fontWeight: FontWeight.bold,
-                  ),
-                ),
-              ),
-            ),
-            ListTile(
-              title: Text("Profils"),
-              onTap: () {
-                // Get.offAll(ProfilsScreen());
-              },
-            ),
-            ListTile(
-              title: Text("Opérations"),
-              onTap: () {
-                Get.offAll(OperationsScreen());
-              },
-            ),
-            ListTile(
-              title: Text("Dépenses"),
-              onTap: () {
-                Get.offAll(DepensesScreen());
-              },
-            ),
-            ListTile(
-              title: Text("Produits"),
-              onTap: () {
-                Get.offAll(ProduitsScreen());
-              },
-            ),
-            ListTile(
-              title: Text("Journal"),
-              onTap: () {
-                Get.offAll(() => JournalScreen());
-              },
-            ),
-            ListTile(
-              title: Text("Equipe"),
-              onTap: () {
-                //Tester equipe repository
-                
-              },
-            ),
-          ],
-        ),
-      ),
+      drawer: const AppDrawer(),
       appBar: AppBar(
         title: Text(
           "${controller.depensesProvider.user.user?.name ?? 'Dépenses'}",
@@ -174,7 +110,6 @@ class DepensesScreen extends StatelessWidget {
                   "Total dépense de la journée: ${controller.listeDepenses[0].totalOfTheDay ?? 0} FCFA",
                   style: TextStyle(fontWeight: FontWeight.bold),
                 ),
-                
               ),
             );
           }),
@@ -249,4 +184,5 @@ class DepensesScreen extends StatelessWidget {
     );
   }
 }
+
 // ...existing code...
