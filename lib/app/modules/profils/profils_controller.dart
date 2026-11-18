@@ -1,5 +1,7 @@
+import 'package:ciilaabokk/app/data/models/demandesEnvoyees.dart';
 import 'package:ciilaabokk/app/data/models/membre.dart';
 import 'package:ciilaabokk/app/data/models/produit.dart';
+import 'package:ciilaabokk/app/data/models/team.dart';
 import 'package:ciilaabokk/app/data/models/types.dart';
 import 'package:ciilaabokk/app/data/models/user.dart';
 import 'package:ciilaabokk/app/data/models/operation.dart';
@@ -28,7 +30,11 @@ class ProfilController extends GetxController {
   final GlobalKey<FormState> ajouterMembreKeyForm = GlobalKey<FormState>();
   // final GlobalKey<FormState> updateVenteKeyForm = GlobalKey<FormState>();
   var listMembres = <Membres>[].obs;
+  var listDemandesEnvoyees = <DemandesEnvoye>[].obs;
+  var listDemandesRecues = <DemandesEnvoye>[].obs;
+  final reponsesDemandes = <String, String>{}.obs;
   late final user;
+  var listDesEquipesDansLesquellesJeSuis = <Team>[].obs;
 
   // Assuming user_id is an integer and you have a way to set it
   final user_email_or_phone = TextEditingController();
@@ -52,13 +58,17 @@ class ProfilController extends GetxController {
   Future<void> fetchMembres() async {
     isLoading(true);
     try {
-      var membres = await _profilsRepositories.fetchMembres();
-      // var membres = await remoteServices.fetchMembres();
-      logger.i("Membres : ${membres}");
-      //listeVentes = await _authServices.getAllVentes();=]['-,.]
-      listMembres.value = membres;
-
-      logger.i("Fetched membres: ${listMembres.toString()}");
+      var resultats = await _profilsRepositories.fetchMembres();
+      logger.i("Resultats depuis profils controller : ${resultats}");
+      listMembres.value = resultats['membres'];
+      listDemandesEnvoyees.value = resultats['demandesEnvoyes'];
+      listDemandesRecues.value = resultats['demandesRecu'];
+      listDesEquipesDansLesquellesJeSuis.assignAll(
+        resultats['lesEquipesDansLesQuelleslsJeSuis'] as List<Team>,
+      );
+      logger.i(
+        "Fetched membres: AppartenantAEquipe: ${listDesEquipesDansLesquellesJeSuis}",
+      );
     } catch (e) {
       print("Errors fetching membres: $e");
     } finally {
@@ -114,12 +124,45 @@ class ProfilController extends GetxController {
 
       goodMessage("Membre supprimé avec succès");
       await fetchMembres();
-      // Future.delayed(Duration(milliseconds: 500), () {
-      // Get.offAll(() => ProfilsScreen());
-      // });
+      Future.delayed(Duration(milliseconds: 500), () {
+        Get.offAll(() => ProfilsScreen());
+      });
     } catch (e) {
       logger.e("Error removing User from a team: $e");
       errorMessage("Erreur lors de la suppression du membre");
+    }
+  }
+
+  Future<void> accepterRefuserReponse(
+    String userId,
+    String accepter_refuser_reponse,
+  ) async {
+    isLoading(true);
+    try {
+      final response = await _profilsRepositories.accepterRefuserInvitations(
+        userId: userId,
+        accepter_refuser_reponse: accepter_refuser_reponse,
+      );
+      if (response['success'] == true) {
+        reponsesDemandes.remove(userId);
+        goodMessage(
+          response['message']?.toString() ?? "Réponse envoyée avec succès",
+        );
+        await fetchMembres();
+        // Future.delayed(Duration(seconds: 1), () {
+        //     Get.offAll(ProfilsScreen());
+        //   });
+      } else {
+        errorMessage(
+          response['message']?.toString() ??
+              "Erreur lors de l'envoi de la réponse",
+        );
+      }
+    } catch (e) {
+      logger.e("Error responding to invitation: $e");
+      errorMessage("Erreur lors de l'envoi de la réponse");
+    } finally {
+      isLoading(false);
     }
   }
 }

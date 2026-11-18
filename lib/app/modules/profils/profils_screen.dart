@@ -1,3 +1,5 @@
+import 'dart:math';
+
 import 'package:ciilaabokk/app/modules/journaux/journaux/journal_screen.dart';
 import 'package:ciilaabokk/app/modules/depenses/depenses/depenses_screen.dart';
 import 'package:ciilaabokk/app/modules/produits/produits/produits_screen.dart';
@@ -54,19 +56,25 @@ class ProfilsScreen extends StatelessWidget {
       rowsPerPage: 5,
       availableRowsPerPage: const [5, 10, 20],
       columns: const [
-        DataColumn(label: Text('nom')),
-        DataColumn(label: Text('Rôle')),
+        DataColumn(label: Text('Nom')),
+        DataColumn(label: Text('Journal')),
         DataColumn(label: Text('Actions')),
       ],
       source: _ProfilsDataSource(
         items.toList(),
-        (membre) => [
-          DataCell(Text(membre.name ?? '')),
-          DataCell(
-            (membre.pivot?.teamId == membre.team_id)
-                ? Text("${membre.pivot?.role ?? ''} (Moi)")
-                : Text(membre.pivot?.role ?? ''),
-          ),
+        (membre)  {
+          final userId = membre.id;
+          return[
+            DataCell(Text(membre.name ?? '')),
+          DataCell(TextButton(
+                onPressed: userId == null
+                    ? null
+                    : () => Get.to(
+                          () => (userId: userId),
+                        ),
+                child: const Text('Voir le journal'),
+              ),
+            ),
           DataCell(
             (membre.pivot?.teamId != membre.team_id)
                 ? IconButton(
@@ -79,8 +87,9 @@ class ProfilsScreen extends StatelessWidget {
                               context: context,
                               builder: (dialogContext) => AlertDialog(
                                 title: const Text('Supprimer ce membre ?'),
-                                content:
-                                    const Text('Cette action est irréversible.'),
+                                content: const Text(
+                                  'Cette action est irréversible.',
+                                ),
                                 actions: [
                                   TextButton(
                                     onPressed: () =>
@@ -104,18 +113,24 @@ class ProfilsScreen extends StatelessWidget {
                             }
                           },
                   )
-                : Padding(padding: EdgeInsetsGeometry.all(16), child: Text("Moi"),),
+                : Padding(
+                    padding: EdgeInsetsGeometry.all(16),
+                    child: Text("Moi"),
+                  ),
           ),
-        ],
+          ];
+          
+        }
       ),
     );
   }
-  Widget _buildDemandesTable(BuildContext context) {
-    final items = controller.listMembres; //listDemandes
-    if (items.isEmpty) {
+
+  Widget _buildDemandesEnvoyeesTable(BuildContext context) {
+    final demandesEnvoyees = controller.listDemandesEnvoyees; //listDemandes
+    if (demandesEnvoyees.isEmpty) {
       return const Padding(
         padding: EdgeInsets.all(16),
-        child: Text('Aucune demande d\'ajout.'),
+        child: Text('Aucune demande envoyée.'),
       );
     }
 
@@ -123,54 +138,170 @@ class ProfilsScreen extends StatelessWidget {
       rowsPerPage: 5,
       availableRowsPerPage: const [5, 10, 20],
       columns: const [
-        DataColumn(label: Text('nom')),
+        DataColumn(label: Text('Nom')),
+        DataColumn(label: Text('Statut')),
+        DataColumn(label: Text('Actions')),
+      ],
+      source: _ProfilsDataSource(
+        demandesEnvoyees.toList(),
+        (demande) => [
+          DataCell(Text(demande.user!.name ?? '')),
+          DataCell(Text(demande.status! ?? '')),
+          DataCell(
+            IconButton(
+              tooltip: 'Supprimer le membre',
+              icon: const Icon(Icons.delete, color: Colors.red),
+              onPressed: demande.id == null
+                  ? null
+                  : () async {
+                      final confirm = await showDialog<bool>(
+                        context: context,
+                        builder: (dialogContext) => AlertDialog(
+                          title: const Text('Supprimer la demande ?'),
+                          content: const Text('Cette action est irréversible.'),
+                          actions: [
+                            TextButton(
+                              onPressed: () =>
+                                  Navigator.of(dialogContext).pop(false),
+                              child: const Text('Annuler'),
+                            ),
+                            TextButton(
+                              onPressed: () =>
+                                  Navigator.of(dialogContext).pop(true),
+                              child: const Text(
+                                'Supprimer',
+                                style: TextStyle(color: Colors.red),
+                              ),
+                            ),
+                          ],
+                        ),
+                      );
+
+                      if (confirm == true) {
+                        await controller.deleteMembre(demande.id!);
+                      }
+                    },
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildDemandesRecuesTable(BuildContext context) {
+    final demandesRecues = controller.listDemandesRecues; //listDemandes
+    if (demandesRecues.isEmpty) {
+      return const Padding(
+        padding: EdgeInsets.all(16),
+        child: Text('Aucune demande reçue.'),
+      );
+    }
+
+    return PaginatedDataTable(
+      rowsPerPage: 5,
+      availableRowsPerPage: const [5, 10, 20],
+      columns: const [
+        DataColumn(label: Text('Nom')),
+        DataColumn(label: Text('Statut')),
+        DataColumn(label: Text('Actions')),
+      ],
+      source: _ProfilsDataSource(demandesRecues.toList(), (demande) {
+        final userId = demande.user?.id;
+
+        return [
+          DataCell(Text(demande.user?.name ?? '')),
+          DataCell(Text(demande.status ?? '')),
+          DataCell(
+            Obx(() {
+              final selectedResponse = userId == null
+                  ? null
+                  : controller.reponsesDemandes[userId];
+
+              return Row(
+                children: [
+                  DropdownButton<String>(
+                    value: selectedResponse ?? 'choisir',
+                    items: const [
+                      DropdownMenuItem(
+                        value: 'choisir',
+                        child: Text('Choisir'),
+                      ),
+                      DropdownMenuItem(
+                        value: 'accepter',
+                        child: Text('Accepter'),
+                      ),
+                      DropdownMenuItem(
+                        value: 'refuser',
+                        child: Text('Refuser'),
+                      ),
+                    ],
+                    onChanged: userId == null
+                        ? null
+                        : (value) {
+                            if (value != null) {
+                              controller.reponsesDemandes[userId] = value;
+                            }
+                          },
+                  ),
+                  const SizedBox(width: 8),
+                  ElevatedButton(
+                    onPressed:
+                        userId == null ||
+                            selectedResponse == null ||
+                            selectedResponse == 'choisir'
+                        ? null
+                        : () {
+                            controller.accepterRefuserReponse(
+                              userId,
+                              selectedResponse,
+                            );
+                          },
+                    child: const Text('Valider'),
+                  ),
+                ],
+              );
+            }),
+          ),
+        ];
+      }),
+    );
+  }
+
+  Widget _buildEquipesTable(BuildContext context) {
+    final items = controller.listDesEquipesDansLesquellesJeSuis;
+    if (items.isEmpty) {
+      return const Padding(
+        padding: EdgeInsets.all(16),
+        child: Text('Vous êtes dans aucune équipe.'),
+      );
+    }
+
+    return PaginatedDataTable(
+      rowsPerPage: 5,
+      availableRowsPerPage: const [5, 10, 20],
+      columns: const [
+        DataColumn(label: Text('Nom')),
         DataColumn(label: Text('Actions')),
       ],
       source: _ProfilsDataSource(
         items.toList(),
-        (membre) => [
-          DataCell(Text(membre.name ?? '')),
-          
-          DataCell(
-            (membre.pivot?.teamId != membre.team_id)
-                ? IconButton(
-                    tooltip: 'Supprimer le membre',
-                    icon: const Icon(Icons.delete, color: Colors.red),
-                    onPressed: membre.id == null
-                        ? null
-                        : () async {
-                            final confirm = await showDialog<bool>(
-                              context: context,
-                              builder: (dialogContext) => AlertDialog(
-                                title: const Text('Supprimer ce membre ?'),
-                                content:
-                                    const Text('Cette action est irréversible.'),
-                                actions: [
-                                  TextButton(
-                                    onPressed: () =>
-                                        Navigator.of(dialogContext).pop(false),
-                                    child: const Text('Annuler'),
-                                  ),
-                                  TextButton(
-                                    onPressed: () =>
-                                        Navigator.of(dialogContext).pop(true),
-                                    child: const Text(
-                                      'Supprimer',
-                                      style: TextStyle(color: Colors.red),
-                                    ),
-                                  ),
-                                ],
-                              ),
-                            );
+        (equipe) {
+          final userId = equipe.user?.id?.toString();
 
-                            if (confirm == true) {
-                              await controller.deleteMembre(membre.id!);
-                            }
-                          },
-                  )
-                :  Text(""),
-          ),
-        ],
+          return [
+            DataCell(Text(equipe.user?.name ?? '')),
+            DataCell(
+              TextButton(
+                onPressed: userId == null
+                    ? null
+                    : () => Get.to(
+                          () => (userId: userId),
+                        ),
+                child: const Text('Voir le journal'),
+              ),
+            ),
+          ];
+        },
       ),
     );
   }
@@ -277,7 +408,7 @@ class ProfilsScreen extends StatelessWidget {
             ),
             const SizedBox(height: 24),
             const Text(
-              'Demande d\'ajout',
+              'Demandes envoyés',
               style: TextStyle(fontSize: 22, fontWeight: FontWeight.bold),
             ),
             const SizedBox(height: 8),
@@ -288,8 +419,38 @@ class ProfilsScreen extends StatelessWidget {
                       padding: EdgeInsets.all(16),
                       child: Center(child: CircularProgressIndicator()),
                     )
-                  : _buildDemandesTable(context),
+                  : _buildDemandesEnvoyeesTable(context),
             ),
+            const SizedBox(height: 8),
+            const Text(
+              'Demandes reçues',
+              style: TextStyle(fontSize: 22, fontWeight: FontWeight.bold),
+            ),
+            const SizedBox(height: 8),
+            const SizedBox(height: 8),
+            Card(
+              clipBehavior: Clip.antiAlias,
+              child: controller.isLoading.value
+                  ? const Padding(
+                      padding: EdgeInsets.all(16),
+                      child: Center(child: CircularProgressIndicator()),
+                    )
+                  : _buildDemandesRecuesTable(context),
+            ),
+            const Text(
+              'Je suis dans l\'equpe de:',
+              style: TextStyle(fontSize: 22, fontWeight: FontWeight.bold),
+            ),
+            const SizedBox(height: 8),
+            Card(
+              clipBehavior: Clip.antiAlias,
+              child: controller.isLoading.value
+                  ? const Padding(
+                      padding: EdgeInsets.all(16),
+                      child: Center(child: CircularProgressIndicator()),
+                    )
+                  : _buildEquipesTable(context),
+                )
           ],
         );
       }),

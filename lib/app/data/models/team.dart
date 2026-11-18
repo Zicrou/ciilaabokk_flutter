@@ -1,7 +1,10 @@
 
+import 'package:ciilaabokk/app/data/models/user.dart';
+
 class Team {
   String? id;
   String? name;
+  dynamic user;
   // String? deletedAt;
   // String? createdAt;
   // String? updatedAt;
@@ -10,6 +13,7 @@ class Team {
   Team({
     this.id,
     this.name,
+    this.user,
     // this.deletedAt,
     // this.createdAt,
     // this.updatedAt,
@@ -20,6 +24,10 @@ class Team {
     return Team(
       id: json['id'],
       name: json['name'],
+      user: json['user'] != null
+        ? User.fromJson(json['user'])
+        : null
+      
       // deletedAt: json['deleted_at'],
       // createdAt: json['created_at'],
       // updatedAt: json['updated_at'],
@@ -36,6 +44,6 @@ class Team {
 
   @override
   String toString() {
-    return "Id: ${id}, Name: ${name}";
+    return "Id: ${id}, Name: ${name}, User: ${user.toString()}";
   }
 }

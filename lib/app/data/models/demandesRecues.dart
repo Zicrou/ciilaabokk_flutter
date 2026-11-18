@@ -1,3 +1,5 @@
+import 'package:ciilaabokk/app/data/models/user.dart';
+
 class DemandesEnvoye {
   String? id;
   String? teamId;
@@ -8,6 +10,7 @@ class DemandesEnvoye {
   Null? deletedAt;
   String? createdAt;
   String? updatedAt;
+  User? user;
 
   DemandesEnvoye(
       {this.id,
@@ -18,7 +21,8 @@ class DemandesEnvoye {
       this.expiresAt,
       this.deletedAt,
       this.createdAt,
-      this.updatedAt});
+      this.updatedAt,
+      this.user});
 
   DemandesEnvoye.fromJson(Map<String, dynamic> json) {
     id = json['id'];
@@ -30,6 +34,9 @@ class DemandesEnvoye {
     deletedAt = json['deleted_at'];
     createdAt = json['created_at'];
     updatedAt = json['updated_at'];
+    user = json['user'] != null
+        ? User.fromJson(json['user'])
+        : null;
   }
 
   Map<String, dynamic> toJson() {
@@ -44,5 +51,11 @@ class DemandesEnvoye {
     data['created_at'] = this.createdAt;
     data['updated_at'] = this.updatedAt;
     return data;
+  }
+
+  @override
+  String toString() {
+    // TODO: implement toString
+    return "Id: $id, team id: $teamId, invited_by: $invitedBy, user id: $userId, status: $status";
   }
 }
