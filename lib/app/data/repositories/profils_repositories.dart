@@ -1,4 +1,5 @@
 import 'package:ciilaabokk/app/core/values/endpoints.dart';
+import 'package:ciilaabokk/app/data/models/demandesEnvoye.dart';
 import 'package:ciilaabokk/app/data/models/membre.dart';
 import 'package:ciilaabokk/app/data/models/user.dart';
 import 'package:ciilaabokk/app/data/providers/api_providers.dart';
@@ -12,15 +13,32 @@ class ProfilsRepositories {
   //final dio = Dio();
   final _authProvider = Get.find<AuthProvider>();
   final _apiProvider = Get.find<ApiProvider>();
+  
 
-  Future<List<Membres>> fetchMembres() async {
+  Future<dynamic> fetchMembres() async {
     try {
       final token = _authProvider.authToken;
       logger.i("Token from Authprovider: ${token}");
-      final response = await _apiProvider.get('${teamEndpoints}members');
-      final list = response['users'] as List;
-      logger.i("Team's users repositories: ${list}");
-      return list.map((item) => Membres.fromJson(item)).toList();
+      final reponse = await _apiProvider.get('$teamEndpoints');
+      logger.i("Reponse Profil repository: $reponse");
+      logger.i("Reponse Profil repository reponse[liste_membres]: ${reponse['liste_membres']}");
+
+      final listMembre = reponse['liste_membres'] as List;
+      logger.i("Team's users repositories: ${listMembre}");
+      var membres = listMembre.map((item) => Membres.fromJson(item)).toList();
+      logger.i("Team's users repositories fromJson: ${listMembre}");
+      
+      final listDemandesEnvoye = reponse['demandes_envoyes'] as List;
+      logger.i("Profil repository demande envoyé: ${listDemandesEnvoye}");
+      var demandesEnvoyes = listDemandesEnvoye.map((item) => DemandesEnvoye.fromJson(item)).toList();
+      logger.i("Profil repository demande envoyé fromJson: ${demandesEnvoyes}");
+
+      final listDemandesRecus = reponse['demandes_recus'] as List;
+      logger.i("Profil repository demande recus: ${listDemandesRecus}");
+      var demandesRecus = listDemandesRecus.map((item) => DemandesEnvoye.fromJson(item)).toList();
+      logger.i("Profil repository demande recus fromJson: ${demandesRecus.toString()}");
+
+      return {"membres: $membres", "demandesEnvoyes: $demandesEnvoyes", "demandesRecu: $demandesRecus"};
     } catch (e) {
       throw Exception("Error fetching membres: $e");
     }
@@ -38,7 +56,7 @@ class ProfilsRepositories {
       final token = _authProvider.authToken;
       logger.i("Token from Authprovider: ${token}");
       final response = await _apiProvider.post(
-        "${teamEndpoints}add-member",
+        "${teamEndpoints}invite",
         json,
       );
       logger.i("Response from profils repositories: ${response})");
@@ -47,13 +65,12 @@ class ProfilsRepositories {
       }
 
       logger.i("Response.data from profils repositories: ${response['user']})");
-      if (response['status'] == 201 && response['user'] != null) {
+      if (response['success'] == true) {
         // final list = response['users'] as List;
-        var user = Membres.fromJson(response['user']);
         var message = response['message'];
-        var status = response['status'];
+        var success = response['success'];
         // logger.i("data user: {$user}, message: ${message}, status: ${status}");
-        return {'user': user, 'message': message, 'status': status};
+        return { 'message': message, 'success': success};
       } else {
         throw Exception("User not found");
       }
@@ -62,19 +79,17 @@ class ProfilsRepositories {
     }
   }
 
-  Future<List<Membres>> deleteMembre(id) async {
+  Future<dynamic> deleteMembre(id) async {
     try {
+      var idMembre = id;
       final token = _authProvider.authToken;
       // final user = authProvider.user.user;
       logger.i("Token from Authprovider: ${token}");
-
-      var response = await _apiProvider.delete('${teamEndpoints}members/${id}');
-      logger.i("Response from profils repositories: ${response}");
-      if (response['status'] == 200 && response['users'] != null) {
-        final list = response['users'] as List;
-        List<Membres> users = list.map((e) => Membres.fromJson(e)).toList();
-        logger.i("user: ${users}");
-        return users;
+      logger.i("Team endpoint et id user: $teamEndpoints$id");
+      var reponse = await _apiProvider.delete('$teamEndpoints$idMembre');
+      logger.i("Reponse from profils repositories DELETE: ${reponse}");
+      if (reponse['success'] == true) {
+        return reponse;
       }
       throw "Erreur de suppression";
     } catch (e) {

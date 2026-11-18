@@ -73,7 +73,7 @@ class OperationsScreen extends StatelessWidget {
             ListTile(
               title: Text("Profils"),
               onTap: () {
-                // Get.offAll(ProfilsScreen());
+                Get.offAll(ProfilsScreen());
               },
             ),
             ListTile(
