@@ -35,6 +35,7 @@ class DepenseController extends GetxController {
   final user_id = Get.find<AuthProvider>().user?.user?.id;
   final DepensesRepositories depensesRepositories =
       Get.find<DepensesRepositories>();
+  final DepensesController _depensesController = Get.put(DepensesController());
 
   @override
   void onInit() {
@@ -60,12 +61,10 @@ class DepenseController extends GetxController {
         response = await depensesRepositories.createDepense(depense.toJson());
 
         logger.i("Res: ${response}");
-        var depenses = Depenses.fromJson(response);
-        logger.i("Depense from createDepense: ${depenses.toString()}");
-        if (depenses != null) {
-          //Depenses
+        
+        if (response['success']== true) {
           goodMessage("Dépense créée avec succés");
-
+          await _depensesController.fetchDepenses();
           Future.delayed(Duration(seconds: 1), () {
             Get.offAll(DepensesScreen());
           });
@@ -102,16 +101,16 @@ class DepenseController extends GetxController {
           depense.toJson(),
         );
 
-        var updatedDepense = response;
-        logger.i("Response Depense updatedDepense: ${response}");
-        if (updatedDepense == null) {
+        if(response['success'] != true){
           errorMessage("Erreur: Modification dépense");
-        } else {
+          logger.e("Erreur: Modification dépense");
+        }
+        logger.i("Response Depense updatedDepense : ${response}");
           goodMessage("Dépense modifiée avec succés");
           Future.delayed(Duration(seconds: 1), () {
             Get.offAll(DepensesScreen());
-          });
-        }
+            });
+          
       } catch (e) {
         throw "Erreur : ${e}";
       } finally {

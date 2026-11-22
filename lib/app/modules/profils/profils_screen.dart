@@ -142,8 +142,8 @@ class ProfilsScreen extends StatelessWidget {
         demandesEnvoyees.toList(),
         (demande) => [
           DataCell(Text(demande.user!.name ?? '')),
-          DataCell(Text(demande.status! ?? '')),
           
+          DataCell(Text(demande.status! ?? '')),
         ],
       ),
     );

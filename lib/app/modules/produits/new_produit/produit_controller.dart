@@ -25,10 +25,6 @@ class ProduitController extends GetxController {
   final GlobalKey<FormState> createProduitKeyForm = GlobalKey<FormState>();
   final GlobalKey<FormState> updateProduitKeyForm = GlobalKey<FormState>();
 
-  final ImagePicker _picker = ImagePicker();
-  // Rxn<File> _picked = Rxn<File>();
-  // Reactive variable for the selected image file
-  Rxn<File> selectedImage = Rxn<File>();
   late final Produit produit;
   // RxString userName = ''.obs;
   RxBool isLoading = false.obs;
@@ -53,53 +49,16 @@ class ProduitController extends GetxController {
     // Initialize any necessary data or state here
   }
 
+ 
+
   @override
-  void onClose() {
+  void dispose() {
     designation.dispose();
     montant.dispose();
     nombre.dispose();
-    super.onClose();
+    super.dispose();
   }
-
-  // @override
-  // void dispose() {
-  //   designation.dispose();
-  //   montant.dispose();
-  //   nombre.dispose();
-  //   super.dispose();
-  // }
-  // Pick image from gallery
-  Future<void> pickImageFromGallery() async {
-    final pickedFile = await _picker.pickImage(source: ImageSource.gallery);
-    if (pickedFile != null) {
-      selectedImage.value = File(pickedFile.path);
-    }
-  }
-
-  // Pick image from camera
-  Future<void> pickImageFromCamera() async {
-    final pickedFile = await _picker.pickImage(source: ImageSource.camera);
-    if (pickedFile != null) {
-      selectedImage.value = File(pickedFile.path);
-    }
-  }
-
-  /// Convert selected image to Base64
-  Future<String?> getImageBase64() async {
-    if (selectedImage.value == null) return null;
-    final bytes = await selectedImage.value!.readAsBytes();
-    return base64Encode(bytes);
-  }
-
-  // Optional: clear the image
-  void clearImage() {
-    logger.i("Clearing image");
-    if (selectedImage.value.obs != null) {
-      selectedImage.value = null;
-      produit.image = null;
-    }
-    selectedImage.value = null;
-  }
+  
 
   // void createProduitWithImage() async {
   //   if (createProduitKeyForm.currentState!.validate()) {
@@ -109,7 +68,6 @@ class ProduitController extends GetxController {
   //       "Creating Produits from form: Designation: ${designation.text.trim()}, Montant: ${montant.text.trim()}, Nombre: ${nombre.text.trim()}, User_id: ${user_id}",
   //     );
   //     logger.i("User_id : ${user_id}");
-  //     final image = await selectedImage.value;
   //     try {
   //       isLoading(true);
   //       // Build JSON payload
@@ -159,20 +117,18 @@ class ProduitController extends GetxController {
       );
       logger.i("User_id : ${user_id}");
       isLoading(true);
-      final imageBase64 = await getImageBase64();
       try {
         // Build JSON payload
         final payload = {
           'designation': designation.text.trim(),
           'montant': int.parse(montant.text.trim()),
           'nombre': int.parse(nombre.text.trim()),
-          'image': imageBase64,
+          
         };
         logger.i("Payload: ${payload}");
         // 📨 Send request through your repository
         // Send JSON via your API provider
         await produitsRepositories.createProduitWithBase64(payload);
-        clearImage();
         await ProduitsController().fetchProduits();
         Get.offAll(() => ProduitsScreen(showCreationSuccess: true));
       } catch (e) {
@@ -224,15 +180,6 @@ class ProduitController extends GetxController {
           produitFromForm.id,
           produit.toJson(),
         );
-        // var designationV = designation.text.trim();
-        // var montantV = int.parse(montant.text.trim());
-        // var nombreV = int.parse(nombre.text.trim());
-        // var res = await remoteService.updateProduits(
-        //   designationV,
-        //   montantV,
-        //   nombreV,
-        //   produitFromForm.id,
-        // );
         logger.i("Res: ${res}");
 
         if (res != null) {

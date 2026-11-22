@@ -236,7 +236,7 @@ class RemoteServices {
         );
         logger.i("Produit: ${produits}");
         goodMessage("Produit créé avec succès ✅");
-        Get.find<ProduitController>().clearImage();
+        // Get.find<ProduitController>().clearImage();
         await ProduitsController().fetchProduits();
         Future.delayed(const Duration(seconds: 2), () {
           Get.offAll(ProduitsScreen());
@@ -340,7 +340,7 @@ class RemoteServices {
         );
         logger.i("Produit: ${produits}");
         goodMessage("Produit créé avec succès ✅");
-        Get.find<ProduitController>().clearImage();
+        // Get.find<ProduitController>().clearImage();
         await ProduitsController().fetchProduits();
         Future.delayed(const Duration(seconds: 2), () {
           Get.offAll(ProduitsScreen());

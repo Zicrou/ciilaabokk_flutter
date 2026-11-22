@@ -27,7 +27,7 @@ class DepensesController extends GetxController {
     fetchDepenses();
   }
 
-  void fetchDepenses() async {
+  Future<void> fetchDepenses() async {
     isLoading(true);
 
     try {
@@ -52,9 +52,9 @@ class DepensesController extends GetxController {
     try {
       var response = await _depensesRepositories.deleteDepenses(id);
       logger.i("Response Depense: ${response}");
-      if (response != null) {
+      if (response['success'] == true) {
         goodMessage("Dépense supprimée avec succés");
-        fetchDepenses(); // Refresh the list after deletion
+        await fetchDepenses(); // Refresh the list after deletion
       } else {
         errorMessage("Erreur, Dépense ne peut pas être suprrimée");
       }

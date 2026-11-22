@@ -1,49 +1,46 @@
-import 'dart:convert';
-import 'dart:io';
-
 import 'package:ciilaabokk/app/data/models/produit.dart';
-import 'package:ciilaabokk/app/data/models/types.dart';
-import 'package:ciilaabokk/app/data/models/operation.dart';
 import 'package:ciilaabokk/app/modules/produits/new_produit/produit_controller.dart';
-import 'package:ciilaabokk/app/modules/produits/produits/produits_controller.dart';
 import 'package:ciilaabokk/app/modules/produits/produits/produits_screen.dart';
-import 'package:ciilaabokk/app/modules/operations/new_operation/operation_controller.dart';
-import 'package:ciilaabokk/app/utils/messages.dart';
 import 'package:ciilaabokk/app/widgets/app_drawer.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:image_picker/image_picker.dart';
 import 'package:logger/logger.dart';
 
 final logger = Logger();
 
-// ignore: must_be_immutable
-class ProduitScreen extends StatelessWidget {
-  final ProduitController controller = Get.put(ProduitController());
-  // final Produit produit = Get.arguments ?? Produit();
-  var stl = ''.obs;
+class ProduitScreen extends StatefulWidget {
+  const ProduitScreen({super.key});
 
-  var title = "Nouveau Produit";
+  @override
+  State<ProduitScreen> createState() => _ProduitScreenState();
+}
+
+class _ProduitScreenState extends State<ProduitScreen> {
+  final ProduitController controller = Get.put(ProduitController());
+  late final Produit? produit;
+
+  @override
+  void initState() {
+    super.initState();
+    final argument = Get.arguments;
+    produit = argument is Produit ? argument : null;
+
+    controller.designation.text = produit?.designation ?? '';
+    controller.montant.text = produit?.montant?.toString() ?? '';
+    controller.nombre.text = produit?.nombre?.toString() ?? '';
+
+    logger.i(
+      "Produit à modifier: ${produit?.id}, ${produit?.designation}, "
+      "${produit?.montant}, ${produit?.nombre}",
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
-    if (controller.produit.id != null && controller.produit is Produit) {
-      title = "Modifier Produit";
-      controller.designation.text = controller.produit.designation!;
-      controller.montant.text = controller.produit.montant.toString();
-      controller.nombre.text = controller.produit.nombre.toString();
-      controller.selectedImage.value = controller.produit.image != null
-          ? File(controller.produit.image!) // ✅ convert path → File
-          : null;
-      // final pickedFile = await ImagePicker().pickImage(source: ImageSource.gallery);
-      // if (produit.image != null) {
-      //   selectedImage = File(pickedFile.path); // ✅ convert path → File
-      // }
-    }
-
     return Scaffold(
       appBar: AppBar(
         title: Text(
-          title,
+          produit?.id != null ? "Modifier Produit" : "Nouveau Produit",
           style: TextStyle(
             fontSize: 32,
             fontFamily: 'avenir',
@@ -60,7 +57,7 @@ class ProduitScreen extends StatelessWidget {
         child: SingleChildScrollView(
           padding: EdgeInsets.all(24),
           child: Form(
-            key: controller.produit.id != null
+            key: produit?.id != null
                 ? controller.updateProduitKeyForm
                 : controller.createProduitKeyForm,
             child: Column(
@@ -76,49 +73,7 @@ class ProduitScreen extends StatelessWidget {
                   textAlign: TextAlign.center,
                 ),
                 SizedBox(height: 30),
-                Obx(() {
-                  final image = controller.selectedImage.value.obs;
-                  return Container(
-                    height: 200,
-                    width: double.infinity,
-                    decoration: BoxDecoration(
-                      border: Border.all(color: Colors.grey),
-                      borderRadius: BorderRadius.circular(10),
-                    ),
-                    child: controller.produit.image != null
-                        ? Image.network(
-                            controller.produit.image!,
-                            width: double.infinity,
-                            height: 300,
-                            fit: BoxFit.cover,
-                          )
-                        : const Center(child: Text("Pas d'image")),
-                  );
-                }),
                 const SizedBox(height: 20),
-                // Obx(() {
-                // final image = controller.selectedImage.value;
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                  children: [
-                    ElevatedButton.icon(
-                      onPressed: controller.pickImageFromGallery,
-                      icon: const Icon(Icons.photo),
-                      label: const Text("Gallery"),
-                    ),
-                    ElevatedButton.icon(
-                      onPressed: controller.pickImageFromCamera,
-                      icon: const Icon(Icons.camera_alt),
-                      label: const Text("Camera"),
-                    ),
-                    IconButton(
-                      onPressed: () {
-                        controller.clearImage();
-                      },
-                      icon: const Icon(Icons.delete, color: Colors.red),
-                    ),
-                  ],
-                ),
                 // }),
                 SizedBox(height: 20),
                 TextFormField(
@@ -238,11 +193,11 @@ class ProduitScreen extends StatelessWidget {
                 ),
 
                 SizedBox(height: 20),
-                (controller.produit.id != null && controller.produit is Produit)
+                (produit?.id != null)
                     ? ElevatedButton(
                         onPressed: () => {
                           controller.updateProduit(
-                            controller.produit,
+                            produit!,
                           ), // Update the vente
                         }, //  controller.updateVente(vente),
                         child: Text(

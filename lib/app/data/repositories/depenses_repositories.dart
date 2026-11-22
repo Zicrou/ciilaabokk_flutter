@@ -38,7 +38,7 @@ class DepensesRepositories {
     try {
       logger.i("Json from Repositories: $depensesEndpoint$id'");
       res = await _apiProvider.put('$depensesEndpoint$id', json);
-      logger.i('Update Depense response: ${res == null}');
+      logger.i('Update Depense response: ${res}');
       if (res == null) {
         res = null;
         throw FetchDataException('Update depense failed');
