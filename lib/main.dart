@@ -1,5 +1,6 @@
 import 'package:ciilaabokk/app/initial_bindings.dart';
 import 'package:ciilaabokk/app/modules/login/login_screen.dart';
+import 'package:ciilaabokk/app/utils/messages.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:logger/web.dart';
@@ -17,6 +18,10 @@ class Home extends StatelessWidget {
     return GetMaterialApp(
       debugShowCheckedModeBanner: false,
       title: 'Getx Auth',
+      builder: (context, child) => AppMessageHost(
+        key: appMessageHostKey,
+        child: child ?? const SizedBox.shrink(),
+      ),
       theme: ThemeData(
         primaryColor: Color(0xFF493AD5),
         scaffoldBackgroundColor: Color(0xFFF5F5F5),

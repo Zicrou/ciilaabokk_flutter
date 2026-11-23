@@ -63,10 +63,10 @@ class DepenseController extends GetxController {
         logger.i("Res: ${response}");
         
         if (response['success']== true) {
-          goodMessage("Dépense créée avec succés");
           await _depensesController.fetchDepenses();
           Future.delayed(Duration(seconds: 1), () {
             Get.offAll(DepensesScreen());
+            goodMessage("Dépense créée avec succés");
           });
 
           // You can also reset the controllers if needed
@@ -106,10 +106,10 @@ class DepenseController extends GetxController {
           logger.e("Erreur: Modification dépense");
         }
         logger.i("Response Depense updatedDepense : ${response}");
-          goodMessage("Dépense modifiée avec succés");
           Future.delayed(Duration(seconds: 1), () {
             Get.offAll(DepensesScreen());
-            });
+            goodMessage("Dépense modifiée avec succés");
+          });
           
       } catch (e) {
         throw "Erreur : ${e}";
